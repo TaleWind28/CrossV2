@@ -1,0 +1,54 @@
+{
+  "askMap": {
+    "pino:1": {
+      "orderID": 5,
+      "type": "limit",
+      "exchangeType": "ask",
+      "size": 1,
+      "price": 1,
+      "user": "pino"
+    },
+    "pino:12": {
+      "orderID": 7,
+      "type": "limit",
+      "exchangeType": "ask",
+      "size": 35,
+      "price": 12,
+      "user": "pino"
+    },
+    "pino:5": {
+      "orderID": 0,
+      "type": "limit",
+      "exchangeType": "ask",
+      "size": 3,
+      "price": 5,
+      "user": "pino"
+    },
+    "pino:6": {
+      "orderID": 1,
+      "type": "limit",
+      "exchangeType": "ask",
+      "size": 3,
+      "price": 6,
+      "user": "pino"
+    }
+  },
+  "bidMap": {
+    "pino:2": {
+      "orderID": 3,
+      "type": "limit",
+      "exchangeType": "bid",
+      "size": 3,
+      "price": 2,
+      "user": "pino"
+    },
+    "pino:6": {
+      "orderID": 2,
+      "type": "limit",
+      "exchangeType": "bid",
+      "size": 3,
+      "price": 6,
+      "user": "pino"
+    }
+  }
+}
