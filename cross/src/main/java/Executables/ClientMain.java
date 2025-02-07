@@ -6,6 +6,7 @@ import java.util.NoSuchElementException;
 
 import Communication.ClientProtocol;
 import Communication.Message;
+import Communication.ServerMessage;
 import Communication.TCP;
 
 
@@ -33,7 +34,7 @@ public class ClientMain extends ClientProtocol{
                     //ho bisogno di shutdownhook solo per controllare il logout dell'utente dal server nel caso di sigint
                     if (this.sigintTermination == false)return;
                     try {
-                        System.out.println(this.protocol.receiveMessage().payload);
+                        System.out.println(this.protocol.receiveMessage().toString());
                     } catch (Exception e) {;}
                 }
             )
@@ -45,7 +46,7 @@ public class ClientMain extends ClientProtocol{
                 Message serverAnswer = this.protocol.receiveMessage();
                 //System.out.println("risposta: "+serverAnswer.payload);
                 //controllo risposta server
-                switch (serverAnswer.code) {
+                switch (serverAnswer.r) {
                     //richiesta eseguita correttamente
                     case 200:
                         if (serverAnswer.payload.equals("FIN")){

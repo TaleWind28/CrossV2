@@ -11,6 +11,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.stream.JsonReader;
 
+import Communication.Values;
 import Users.Commands.Order;
 import Utils.PriceComparator;
 
@@ -58,6 +59,9 @@ public class Orderbook implements JsonAccessedData{
         return;
     }
 
+    public synchronized void addData(Values val,String mapType){
+        return ;
+    }
     public TreeMap<String,Order> getRequestedMap(String request){
         if(request.equals("ask"))return this.askOrders;
         else return this.bidOrders;

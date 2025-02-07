@@ -1,6 +1,6 @@
 package Communication;
 
-public class ServerMessage {
+public class ServerMessage implements Message{
     public String errorMessage;
     public int response;
 

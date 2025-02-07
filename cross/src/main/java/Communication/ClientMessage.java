@@ -1,6 +1,6 @@
 package Communication;
 
-public class ClientMessage {
+public class ClientMessage implements Message{
     public String operation;
     public Values values;
 
