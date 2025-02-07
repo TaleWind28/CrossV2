@@ -8,7 +8,7 @@ import Communication.ServerMessage;
 import JsonMemories.JsonAccessedData;
 import JsonMemories.Orderbook;
 
-public class CancelOrder  extends Values implements Order{
+public class CancelOrder  implements Values, Order{
     private int orderID;
     private String user;
 
@@ -18,9 +18,10 @@ public class CancelOrder  extends Values implements Order{
     }
     
     @Override
-    public ServerMessage execute(JsonAccessedData data){
+    public ServerMessage execute(JsonAccessedData data,String user){
         //Order order = (Order)cmd;
-        
+        this.setUsername(user);
+        if(this.user.equals(""))return new ServerMessage("Devi effettuare l'accesso per piazzare ordini", 104);
         Orderbook orderbook = (Orderbook)data;//order.getOrderbook();
         
         if(searchMap(orderbook, "ask", this.orderID, this.user))return new ServerMessage("[100] Ordine correttamente Cancellato",100);
@@ -63,5 +64,15 @@ public class CancelOrder  extends Values implements Order{
     }
     public int getOrderID() {
         return orderID;
+    }
+
+    @Override
+    public void setUsername(String user) {
+        this.user = user;
+    }
+
+    @Override
+    public String getUsername() {
+        return this.user;
     }
 }

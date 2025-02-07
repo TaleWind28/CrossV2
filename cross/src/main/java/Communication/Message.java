@@ -1,4 +1,4 @@
 package Communication;
 
-public class Message {
+public interface Message {
 }

@@ -6,6 +6,7 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
+import Commands.Credentials.Login;
 import Communication.ClientMessage;
 import Communication.Protocol;
 import Communication.ServerMessage;
@@ -87,15 +88,23 @@ public class GenericTask implements Runnable {
             System.out.println("Values: "+clientRequest.values.toString());
             // //creo il comando richiedendo la factory
             // UserCommand cmd = FactoryRegistry.getFactory(clientRequest.code).createUserCommand(clientRequest.payload.split(" "));
+            clientRequest.values.setUsername(this.onlineUser);
             //stampa di debug
             System.out.println("Comando fabbricato: "+clientRequest.toString());
             JsonAccessedData data = null;
+            
             if(clientRequest.operation.contains("order"))data = this.generatorServer.getOrderbook();
             else data = this.generatorServer.getRegisteredUsers();
 
             //ottengo la risposta per il client eseguendo il comando creato dalla factory
-            ServerMessage responseMessage = clientRequest.values.execute(data);
-            //Stampa di debug -> risposta del server
+            ServerMessage responseMessage = clientRequest.values.execute(data,this.onlineUser);
+            if(responseMessage.response == 200 && clientRequest.operation.equals("login")){
+                Login log = (Login)clientRequest.values;
+                this.onlineUser = log.getUsername();
+                System.out.println("[GenericTask]username: "+log.getUsername());
+            
+
+            }//Stampa di debug -> risposta del server
             System.out.println("Messaggio generato:\nPayload: "+responseMessage.errorMessage+", code: "+responseMessage.response);
             //invio il messaggio al client
             protocol.sendMessage(responseMessage);

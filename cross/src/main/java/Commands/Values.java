@@ -3,12 +3,10 @@ package Commands;
 import Communication.ServerMessage;
 import JsonMemories.JsonAccessedData;
 
-public class Values {
+public interface Values {
     @Override
-    public String toString(){
-        return "none";
-    }
-    public ServerMessage execute(JsonAccessedData data){
-        return null;
-    }
+    public String toString();
+    public ServerMessage execute(JsonAccessedData data,String user);
+    public void setUsername(String user);
+    public String getUsername();
 }

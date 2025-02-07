@@ -2,7 +2,7 @@ package Communication;
 
 import Commands.Values;
 
-public class ClientMessage extends Message{
+public class ClientMessage implements Message{
     public String operation;
     public Values values;
 

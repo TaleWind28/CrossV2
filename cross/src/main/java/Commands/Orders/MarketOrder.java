@@ -5,10 +5,11 @@ import Communication.ServerMessage;
 import JsonMemories.JsonAccessedData;
 import JsonMemories.Orderbook;
 
-public class MarketOrder extends Values implements Order{
+public class MarketOrder implements Values,Order{
     private String exchangeType;
     private int size;
     private int orderID;
+    private String user;
 
     public MarketOrder(String exchangeType,int size){
         this.exchangeType = exchangeType;
@@ -16,8 +17,8 @@ public class MarketOrder extends Values implements Order{
     }
     
     @Override
-    public ServerMessage execute(JsonAccessedData data){
-        //if(context.onlineUser.equals(""))return new ServerMessage("401: Per effettuare ordini bisogna creare un account o accedervi",401);
+    public ServerMessage execute(JsonAccessedData data,String user){
+        if(user.equals(""))return new ServerMessage("401: Per effettuare ordini bisogna creare un account o accedervi",401);
         Orderbook orderbook = (Orderbook)data;
         //la faccio semplice per vedere se funziona
         //non so come funziona l'algoritmo richiesto dalla ricci quindi lo lascio così
@@ -58,5 +59,15 @@ public class MarketOrder extends Values implements Order{
     public int getOrderID() {
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'getOrderID'");
+    }
+
+    @Override
+    public void setUsername(String user) {
+        this.user = user;    
+    }
+
+    @Override
+    public String getUsername() {
+        return this.user;    
     }
 }

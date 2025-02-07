@@ -8,9 +8,9 @@ import JsonMemories.JsonAccessedData;
 import JsonMemories.Orderbook;
 
 
-public class ShowOrderBook extends Values {
+public class ShowOrderBook implements Values {
     @Override
-    public ServerMessage execute(JsonAccessedData data){
+    public ServerMessage execute(JsonAccessedData data,String user){
         Orderbook orderbook = (Orderbook) data;
         String prettyPrintedString = "------------------------------------------------------------------------------------------\n" + //
                         "User\t  ExchangeType\tBitcoin Size\tPrice per Bitcoin\tTotal Price\tOrder ID\n";
@@ -31,6 +31,18 @@ public class ShowOrderBook extends Values {
 
         return prettyPrinting;
         
+    }
+
+
+    @Override
+    public void setUsername(String user) {
+        return;
+    }
+
+
+    @Override
+    public String getUsername() {
+        return "unused";
     }
 
     

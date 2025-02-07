@@ -1,7 +1,6 @@
-package ClientFactories;
+package Commands;
 
 
-import Commands.Values;
 import Commands.Credentials.Login;
 import Commands.Credentials.Logout;
 import Commands.Credentials.Register;
@@ -13,13 +12,17 @@ import Commands.Orders.ShowOrderBook;
 import Commands.Orders.StopOrder;
 import Utils.CustomExceptions.UnrecognizedOrderException;
 
-public class OrderFactory{
+public class CommandFactory{
 
     public Values createValue(String[] command) {
         try {
             //sistemo il tipo di ordine per avere solo la parte significativa
-            String valueType = command[0].toLowerCase().replace("insert","").replace("order", "");
-            System.out.println("[ORDERFACTORY]"+command[0]+command[1]);
+            System.out.println("[ORDERFACTORY] prima stampa command[0] "+command[0]);
+            String valueType = command[0].toLowerCase();
+            valueType = valueType.replace("insert", "");
+            valueType = valueType.replace("order", "");
+            // System.out.println("[ORDERFACTORY]"+command[0]+command[1]);
+            System.out.println("[ORDERFACTORY]"+valueType);
             /*RIARRANGIARE LA FACTORY */
             switch (valueType) {    
                 case "cancel":
@@ -28,6 +31,7 @@ public class OrderFactory{
                 case "market":   
                     return new MarketOrder(command[1],Integer.parseInt(command[2]));
                 case "limit":
+                    System.out.println("limit"+command[1]+command[2]+command[3]);
                     return new Limitorder(command[1],Integer.parseInt(command[2]),Integer.parseInt(command[3]));
                 case "stop":
                     return new StopOrder(command[1],Integer.parseInt(command[2]),Integer.parseInt(command[3]));
@@ -38,7 +42,6 @@ public class OrderFactory{
                     return new Register(command[1],command[2]);
 
                 case "login":
-                System.out.println("entro nel login");
                     return new Login(command[1],command[2]);
 
                 case "updatecredentials":
@@ -59,7 +62,7 @@ public class OrderFactory{
         catch (Exception e) {
             //if ()return new Values(null, null, 0, 0, 0, orderbook, new ShowOrderBook());
             System.out.println("[ORDERFACTORY] "+e.getClass() +" "+e.getCause());
-            return null;
+            return new ErrorMessage("parametri non corretti, digitare aiuto per una lista di comandi");
         }
     }
 }

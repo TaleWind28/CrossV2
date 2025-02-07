@@ -5,7 +5,7 @@ import Communication.ServerMessage;
 import JsonMemories.JsonAccessedData;
 import JsonMemories.Orderbook;
 
-public class StopOrder extends Values implements Order{
+public class StopOrder implements Values, Order{
     private String exchangeType;
     private int size;
     private int price;
@@ -20,7 +20,7 @@ public class StopOrder extends Values implements Order{
     }
 
     @Override
-    public ServerMessage execute(JsonAccessedData data){
+    public ServerMessage execute(JsonAccessedData data,String user){
         //if(context.onlineUser.equals(""))return new ServerMessage("401: Per effettuare ordini bisogna creare un account o accedervi",401);
         Orderbook orderbook = (Orderbook)data;
         //la faccio semplice per vedere se funziona
@@ -61,6 +61,16 @@ public class StopOrder extends Values implements Order{
     @Override
     public int getOrderID() {
         return this.orderID;
+    }
+
+    @Override
+    public void setUsername(String user) {
+        this.user =user;
+    }
+
+    @Override
+    public String getUsername() {
+        return this.user;    
     }
 
 }

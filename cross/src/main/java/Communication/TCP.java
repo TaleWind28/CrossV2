@@ -7,8 +7,10 @@ import java.io.InputStreamReader;
 import com.squareup.moshi.JsonAdapter;
 import com.squareup.moshi.adapters.PolymorphicJsonAdapterFactory;
 
+import Commands.ErrorMessage;
 import Commands.Help;
 import Commands.Values;
+import Commands.Credentials.Disconnect;
 import Commands.Credentials.Login;
 import Commands.Credentials.Logout;
 import Commands.Credentials.Register;
@@ -39,6 +41,8 @@ public class TCP implements Protocol{
         .withSubtype(Login.class, "login")
         .withSubtype(UpdateCredentials.class, "updatecredentials")
         .withSubtype(Help.class, "help")
+        .withSubtype(ErrorMessage.class, "errormessage")
+        .withSubtype(Disconnect.class, "disconnect")
         )
         .build();
 

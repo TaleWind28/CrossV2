@@ -4,7 +4,8 @@ import java.net.Socket;
 import java.net.SocketException;
 import java.util.NoSuchElementException;
 
-import ClientFactories.OrderFactory;
+import Commands.CommandFactory;
+import Commands.Credentials.Disconnect;
 import Commands.Credentials.Logout;
 import Communication.ClientMessage;
 import Communication.ClientProtocol;
@@ -16,13 +17,13 @@ public class ClientMain extends ClientProtocol{
     public volatile boolean canSend = true;
     public Socket sock = null;
     public String helpMessage = "Comandi:\nregister<username,password> -> ti permette di registrarti per poter accedere al servizio di trading\nlogin<username,password> -> permette di accedere ad un account registrato\nupdateCredentials<username,currentPasswd,newPasswd> -> permette di aggiornare le credenziali\nlogout<username> -> permette di uscire dal servizio di trading";
-    public OrderFactory factory;
+    public CommandFactory factory;
     //public CountDownLatch latch = new CountDownLatch(1);
     private volatile boolean sigintTermination = false;
     public ClientMain(String IP, int PORT){
         super(IP,PORT);
         this.canSend = false;   
-        this.factory = new OrderFactory();
+        this.factory = new CommandFactory();
     }
         
     public static void main(String args[]) throws Exception{
@@ -46,7 +47,7 @@ public class ClientMain extends ClientProtocol{
         
         try{
             while(true){
-                System.out.println("Attendo messaggio...");
+                //System.out.println("Attendo messaggio...");
                 ServerMessage serverAnswer = (ServerMessage)this.protocol.receiveMessage();
                 //System.out.println("risposta: "+serverAnswer.errorMessage);
                 //controllo risposta server
@@ -86,31 +87,16 @@ public class ClientMain extends ClientProtocol{
     }
 
         public void sendBehaviour(){
-            System.out.println("entro");
             while(true){
                 //System.out.println("entro");
                 if(this.canSend){
-                    /*FACTORY */
-                    System.out.println("ricevo");
                     String rawClientRequest = this.userInput.nextLine();
-                    System.out.println("splittato");
                     String[] clientRequest = rawClientRequest.split(" ");
                     ClientMessage userMessage = new ClientMessage(clientRequest[0],this.factory.createValue(clientRequest));
+                    System.out.println(userMessage.toString());
                     System.out.println("[CLIENTMAIN]"+userMessage.values.toString());
                     this.protocol.sendMessage(userMessage);
                     this.canSend = false;
-                    // ClientMessage serverCommand = new ClientMessage(this.userInput.nextLine());
-                    // String[] cmd = serverCommand.errorMessage.split(" "); 
-                    // //controllo il tipo di comando richiesto
-                    // if(cmd[0].toLowerCase().equals("register") || cmd[0].toLowerCase().equals("login") || cmd[0].toLowerCase().equals("logout") || cmd[0].toLowerCase().equals("updatecredentials") || cmd[0].toLowerCase().equals("exit")){
-                    //     //0 -> credenziali
-                    //     serverCommand.code = 0;
-                    // }else if(cmd[0].toLowerCase().contains("order")) serverCommand.code = 1;//1 -> order
-                    // else serverCommand.code = 2; //2 -> internalCommand
-                    // //invio la richiesta al server
-                    // this.protocol.sendMessage(serverCommand);
-                    // //impedisco al client di mandare altri messaggi finchè non arriva la risposta del server
-                    // this.canSend = false;
                 }
             }
         }
@@ -127,12 +113,12 @@ public class ClientMain extends ClientProtocol{
                 this.protocol.setReceiver(sock);
                 this.protocol.setSender(sock);
                 this.setReceiverThread();
-                System.out.println("mino");
+                //System.out.println("mino");
                 //attivo il thread di ricezione
                 this.receiverThread.start();
                 //faccio eseguire il comportamento di invio dal main thread
                 this.sendBehaviour();
-                System.out.println("mino");
+                //System.out.println("mino");
             }
             //disconnessione accidentale
             catch (SocketException e) {
@@ -147,7 +133,7 @@ public class ClientMain extends ClientProtocol{
                 //comunico al client la chiusura imminente
                 System.out.println("Ctr+c Rilevato -> disconnessione in corso...");
                 //invio al server un messaggio di exit
-                this.protocol.sendMessage(new ClientMessage("exit",new Logout("bella zio")));
+                this.protocol.sendMessage(new ClientMessage("exit",new Disconnect("disconnect")));
                 //imposto la variabile sigintTermination a true per poter sfruttare il shutdownHook sul receiver
                 this.sigintTermination = true;
             }
