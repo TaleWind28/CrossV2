@@ -6,7 +6,6 @@ import java.util.NoSuchElementException;
 
 import Commands.CommandFactory;
 import Commands.Credentials.Disconnect;
-import Commands.Credentials.Logout;
 import Communication.ClientMessage;
 import Communication.ClientProtocol;
 import Communication.ServerMessage;
@@ -91,10 +90,12 @@ public class ClientMain extends ClientProtocol{
                 //System.out.println("entro");
                 if(this.canSend){
                     String rawClientRequest = this.userInput.nextLine();
+                
                     String[] clientRequest = rawClientRequest.split(" ");
                     ClientMessage userMessage = new ClientMessage(clientRequest[0],this.factory.createValue(clientRequest));
-                    System.out.println(userMessage.toString());
-                    System.out.println("[CLIENTMAIN]"+userMessage.values.toString());
+                    if(userMessage.operation.equals(""))userMessage.operation = "help";
+                    System.out.println("[CLIENTMAIN]"+userMessage.toString());
+                    //System.out.println("[CLIENTMAIN]"+userMessage.values.toString());
                     this.protocol.sendMessage(userMessage);
                     this.canSend = false;
                 }

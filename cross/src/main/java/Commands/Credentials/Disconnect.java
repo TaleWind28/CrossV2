@@ -23,6 +23,6 @@ public class Disconnect implements Values{
 
     @Override
     public String getUsername() {
-        return "unused";    
+        return this.username;    
     }
 }

@@ -17,12 +17,12 @@ public class CommandFactory{
     public Values createValue(String[] command) {
         try {
             //sistemo il tipo di ordine per avere solo la parte significativa
-            System.out.println("[ORDERFACTORY] prima stampa command[0] "+command[0]);
+            //System.out.println("[ORDERFACTORY] prima stampa command[0] "+command[0]);
             String valueType = command[0].toLowerCase();
             valueType = valueType.replace("insert", "");
             valueType = valueType.replace("order", "");
             // System.out.println("[ORDERFACTORY]"+command[0]+command[1]);
-            System.out.println("[ORDERFACTORY]"+valueType);
+            //System.out.println("[ORDERFACTORY]"+valueType);
             /*RIARRANGIARE LA FACTORY */
             switch (valueType) {    
                 case "cancel":
@@ -31,7 +31,7 @@ public class CommandFactory{
                 case "market":   
                     return new MarketOrder(command[1],Integer.parseInt(command[2]));
                 case "limit":
-                    System.out.println("limit"+command[1]+command[2]+command[3]);
+                    //System.out.println("limit"+command[1]+command[2]+command[3]);
                     return new Limitorder(command[1],Integer.parseInt(command[2]),Integer.parseInt(command[3]));
                 case "stop":
                     return new StopOrder(command[1],Integer.parseInt(command[2]),Integer.parseInt(command[3]));
@@ -51,13 +51,13 @@ public class CommandFactory{
                     return new Logout("unset");
                 
                 default:
-                    throw new UnrecognizedOrderException("Ordine non disponibile");
+                    throw new UnrecognizedOrderException("ordine non gestito");        
             }
         }//potrei generare delle eccezioni specifiche per marketorder e cancelorder
         catch(UnrecognizedOrderException e){
             //gestire eccezione
             System.out.println("Ordine non gestito");
-            return null;
+            return new Help("unset");
         }
         catch (Exception e) {
             //if ()return new Values(null, null, 0, 0, 0, orderbook, new ShowOrderBook());

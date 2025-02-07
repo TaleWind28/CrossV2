@@ -64,7 +64,7 @@ public class ServerMain extends ServerProtocol{
                 while(true){
                     Socket client_Socket = server.accept();
                     //realizzare con factory per miglior versatilità -> inutile in quanto ho solo una task
-                    TCP protocolToUse = new TCP();
+                    //TCP protocolToUse = new TCP();
                     //protocolToUse.setGson(this.gson);
                     GenericTask task = new GenericTask(client_Socket,this,new TCP());
                     addClient(client_Socket);

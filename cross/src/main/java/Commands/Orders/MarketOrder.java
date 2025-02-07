@@ -38,32 +38,27 @@ public class MarketOrder implements Values,Order{
 
     @Override
     public String getUser() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getUser'");
+        return this.user;
     }
 
     @Override
     public String getExchangeType() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getExchangeType'");
+        return this.exchangeType;    
     }
 
     @Override
     public int getPrice() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getPrice'");
+        return 0;
     }
 
     @Override
     public int getSize() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getSize'");
+        return this.size;
     }
 
     @Override
     public int getOrderID() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getOrderID'");
+        return this.orderID;
     }
 
     @Override
