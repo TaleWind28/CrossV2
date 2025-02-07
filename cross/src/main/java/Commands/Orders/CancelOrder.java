@@ -12,6 +12,12 @@ import Users.Commands.Order;
 public class CancelOrder implements Values{
     private int OrderID;
     private String user;
+
+    public CancelOrder(int orderID, String user){
+        this.OrderID = orderID;
+        this.user = user;
+    }
+    
     @Override
     public ServerMessage execute(JsonAccessedData data){
         //Order order = (Order)cmd;

@@ -1,22 +1,17 @@
-package ClientFactories.Factory;
+package ClientFactories;
 
 import JsonMemories.JsonAccessedData;
 import JsonMemories.Userbook;
 import Users.Commands.Credentials;
 import Users.Commands.UserCommand;
-import Users.Commands.CommandBehaviours.done.Disconnect;
-import Users.Commands.CommandBehaviours.done.Login;
-import Users.Commands.CommandBehaviours.done.Logout;
-import Users.Commands.CommandBehaviours.done.Register;
-import Users.Commands.CommandBehaviours.done.UpdateCredentials;
 
-public class CredentialsFactory implements UserCommandFactory{
+public class CredentialsFactory{
     private Userbook userbook;
     public void setJsonDataStructure(JsonAccessedData userbook) {
         this.userbook = (Userbook)userbook;
     }
 
-    @Override
+
     public UserCommand createUserCommand(String[] command) throws ArrayIndexOutOfBoundsException{
         String type = command[0].toLowerCase();
         System.out.println(type);
