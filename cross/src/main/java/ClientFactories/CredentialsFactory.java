@@ -46,9 +46,5 @@ public class CredentialsFactory{
         }
     }
 
-    @Override
-    public void additionalInfo(String otherinfo) {
-        return;    
-    }
-    
+
 }

@@ -6,7 +6,6 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
-import ClientFactories.Factory.FactoryRegistry;
 import Communication.ClientMessage;
 import Communication.Message;
 import Communication.Protocol;
