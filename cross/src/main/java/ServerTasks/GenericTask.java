@@ -6,13 +6,11 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
-import ClientFactories.Factory.FactoryRegistry;
 import Communication.ClientMessage;
-import Communication.Message;
 import Communication.Protocol;
 import Communication.ServerMessage;
-import Users.Commands.*;
 import Executables.ServerMain;
+import JsonMemories.JsonAccessedData;
 
 public class GenericTask implements Runnable {
     private Socket client;
@@ -36,17 +34,7 @@ public class GenericTask implements Runnable {
                         "insertmarketorder <ask/bid> <qtà di bitcoin da vendere/comprare> <limitprice> -> inserisce un limitorder\n"+
                         "insertmarketorder <ask/bid> <qtà di bitcoin da vendere/comprare> <stopprice> -> inserisce uno stoporder\n"+
                         "cancelorder <orderID>\n";
-    
-    public GenericTask(Socket client_socket,Protocol protocol) throws Exception{
-        super();
-        this.client = client_socket;
-        this.protocol = protocol;
-        protocol.setSender(client_socket);
-        protocol.setReceiver(client_socket);
-        this.timeoutScheduler = Executors.newSingleThreadScheduledExecutor();
-        //this.generatorServer = null; 
-    }
-    //overloading
+    //costruttore
     public GenericTask(Socket client_socket,ServerMain server,Protocol protocol) throws Exception{
         super();
         this.client = client_socket;
@@ -55,15 +43,6 @@ public class GenericTask implements Runnable {
         this.protocol.setReceiver(client_socket);
         this.timeoutScheduler = Executors.newSingleThreadScheduledExecutor();
         this.generatorServer = server; 
-    }
-    //overloading
-    public GenericTask(Socket client_socket,String delimiter,Protocol protocol) throws Exception{
-        super();
-        this.protocol = protocol;
-        this.client = client_socket;
-        protocol.setSender(client_socket);
-        protocol.setReceiver(client_socket); 
-        this.timeoutScheduler = Executors.newSingleThreadScheduledExecutor();
     }
 
     public void run(){
@@ -105,14 +84,17 @@ public class GenericTask implements Runnable {
         try{
             //stampa di debug
             System.out.println("richiesta factory: "+clientRequest.operation);
+            System.out.println("Values: "+clientRequest.values.toString());
             // //creo il comando richiedendo la factory
             // UserCommand cmd = FactoryRegistry.getFactory(clientRequest.code).createUserCommand(clientRequest.payload.split(" "));
             //stampa di debug
             System.out.println("Comando fabbricato: "+clientRequest.toString());
-            
-            //if(clientRequest.operation.contains("order"))
+            JsonAccessedData data = null;
+            if(clientRequest.operation.contains("order"))data = this.generatorServer.getOrderbook();
+            else data = this.generatorServer.getRegisteredUsers();
+
             //ottengo la risposta per il client eseguendo il comando creato dalla factory
-            ServerMessage responseMessage = clientRequest.values.execute(null);
+            ServerMessage responseMessage = clientRequest.values.execute(data);
             //Stampa di debug -> risposta del server
             System.out.println("Messaggio generato:\nPayload: "+responseMessage.errorMessage+", code: "+responseMessage.response);
             //invio il messaggio al client

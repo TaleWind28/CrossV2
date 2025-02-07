@@ -1,6 +1,8 @@
 package Communication;
 
-public class ClientMessage implements Message{
+import Commands.Values;
+
+public class ClientMessage extends Message{
     public String operation;
     public Values values;
 

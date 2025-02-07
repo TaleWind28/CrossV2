@@ -19,6 +19,11 @@
     "password": "$2a$10$41tqYhp.0dN8g0tbfx4I/u/CU3OjPg764lMBVyWPZoYZnTjxIEG3e",
     "isLogged": false
   },
+  "pi": {
+    "username": "pi",
+    "password": "$2a$10$Ry9H6uO9Vlq2xUxwO7IyXuB1lKGr3K7rkq4OaNPyQdyQrgOOG5kJe",
+    "isLogged": false
+  },
   "pnoi": {
     "username": "pnoi",
     "password": "$2a$10$Kgscx1pK4oZ6b1RAwhoWMOaiNdN2oxhwitK.P3dqXww8h0S9eqqla",
@@ -46,7 +51,7 @@
   },
   "pino": {
     "username": "pino",
-    "password": "$2a$10$MMmf2UzAjQEi9jRUfw2wGeHoQaYrazK/b6mC5.fozYF9hbv8vQus2",
+    "password": "$2a$10$jee0EMmEEjfoQHRdO7Vw6ewhF/eimaC1KtjBn7RKPJe5L3y9TtJ6K",
     "isLogged": false
   }
 }

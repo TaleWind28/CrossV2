@@ -43,8 +43,25 @@
             <artifactId>spring-security-crypto</artifactId>
             <version>5.7.6</version>
         </dependency>
+        
+        <!-- Moshi -->
+        <dependency>
+            <groupId>com.squareup.moshi</groupId>
+            <artifactId>moshi</artifactId>
+            <version>1.14.0</version>
+        </dependency>
+
+        <!-- Moshi Adapters-->
+        <dependency>
+            <groupId>com.squareup.moshi</groupId>
+            <artifactId>moshi-adapters</artifactId>
+            <version>1.14.0</version>
+        </dependency>
+
+    
     </dependencies>
 
+    
     <build>
         <plugins>
             <!-- Plugin per creare il JAR eseguibile con tutte le dipendenze (fat JAR) -->

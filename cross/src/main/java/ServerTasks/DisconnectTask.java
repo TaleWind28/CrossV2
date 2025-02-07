@@ -2,7 +2,7 @@ package ServerTasks;
 
 import java.net.Socket;
 
-import ClientFactories.Factory.FactoryRegistry;
+import ClientFactories.OrderFactory;
 import Communication.Message;
 import Communication.Protocol;
 import Communication.ServerMessage;
@@ -28,7 +28,9 @@ public class DisconnectTask implements Runnable{
             //se esiste effettuo un logout prima di dsiconnettere il client
             if(!onlineUser.equals("")){
                 String[] cmd = {"logout",onlineUser};
-                FactoryRegistry.getFactory(0).createUserCommand(cmd).execute(handlerClient);
+                //devo passare l'userbook
+                new OrderFactory().createValue(cmd).execute(null);
+                //FactoryRegistry.getFactory(0).createUserCommand(cmd).execute(handlerClient);
             }
             //creo il messaggio per comunicare al client la sua disconnessione
             Message clientMessage = new ServerMessage("Timeout di inattività. Disconnessione.",408);

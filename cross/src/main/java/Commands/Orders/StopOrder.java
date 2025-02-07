@@ -1,19 +1,22 @@
 package Commands.Orders;
 
+import Commands.Values;
 import Communication.ServerMessage;
-import Communication.Values;
 import JsonMemories.JsonAccessedData;
 import JsonMemories.Orderbook;
 
-public class StopOrder implements Values{
+public class StopOrder extends Values implements Order{
     private String exchangeType;
     private int size;
     private int price;
+    private int orderID;
+    private String user;
 
     public StopOrder(String exchangeType,int size, int price){
         this.exchangeType = exchangeType;
         this.size = size;
         this.price = price;
+        
     }
 
     @Override
@@ -25,6 +28,39 @@ public class StopOrder implements Values{
         orderbook.addData(this, this.exchangeType);
         //System.out.println("fatto");
         return new ServerMessage("Ordine Correttamente Evaso",100);
+    }
+
+    public void setUser(String user) {
+        this.user = user;
+    }
+
+    public void setOrderID(int orderID) {
+        this.orderID = orderID;
+    }
+
+    @Override
+    public String getUser() {
+        return this.user;
+    }
+
+    @Override
+    public String getExchangeType() {
+        return this.exchangeType;    
+    }
+
+    @Override
+    public int getPrice() {
+        return this.price;
+    }
+
+    @Override
+    public int getSize() {
+        return this.size;
+    }
+
+    @Override
+    public int getOrderID() {
+        return this.orderID;
     }
 
 }

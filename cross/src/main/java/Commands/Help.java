@@ -1,11 +1,10 @@
 package Commands;
 
 import Communication.ServerMessage;
-import Communication.Values;
 import JsonMemories.JsonAccessedData;
 
 
-public class Help implements Values{
+public class Help extends Values{
     String helpMessage;
     public Help(String helpMessage){
         this.helpMessage = helpMessage;

@@ -2,14 +2,13 @@ package Commands.Orders;
 
 import java.util.Map;
 
+import Commands.Values;
 import Communication.ServerMessage;
-import Communication.Values;
 import JsonMemories.JsonAccessedData;
 import JsonMemories.Orderbook;
-import Users.Commands.Order;
 
 
-public class ShowOrderBook implements Values{
+public class ShowOrderBook extends Values {
     @Override
     public ServerMessage execute(JsonAccessedData data){
         Orderbook orderbook = (Orderbook) data;
@@ -25,9 +24,9 @@ public class ShowOrderBook implements Values{
 
     public String prettyPrinting(Orderbook orderbook, String requestedmap, String prettyPrinting) {
         
-        for(Map.Entry<String,Order> entry: orderbook.getRequestedMap(requestedmap).entrySet()){
+        for(Map.Entry<String,Limitorder> entry: orderbook.getRequestedMap(requestedmap).entrySet()){
             Order ord = entry.getValue();
-            prettyPrinting+=ord.getUser()+"\t\t"+ord.getExchangeType()+"\t \t"+ord.getSize()+"\t \t"+ord.getPrice()+"\t\t    "+ord.getPrice()*ord.getSize()+"\t\t   "+ord.getorderID()+"\n";
+            prettyPrinting+=ord.getUser()+"\t\t"+ord.getExchangeType()+"\t \t"+ord.getSize()+"\t \t"+ord.getPrice()+"\t\t    "+ord.getPrice()*ord.getSize()+"\t\t   "+ord.getOrderID()+"\n";
         }
 
         return prettyPrinting;

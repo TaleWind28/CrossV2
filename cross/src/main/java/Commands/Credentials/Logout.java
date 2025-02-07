@@ -1,11 +1,11 @@
 package Commands.Credentials;
 
+import Commands.Values;
 import Communication.ServerMessage;
-import Communication.Values;
 import JsonMemories.JsonAccessedData;
 import JsonMemories.Userbook;
 
-public class Logout implements Values{
+public class Logout extends Values{
     private String username;
     public Logout(String username){
         this.username = username;

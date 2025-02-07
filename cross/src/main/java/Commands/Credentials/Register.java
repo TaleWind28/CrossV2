@@ -1,14 +1,19 @@
 package Commands.Credentials;
 
+import Commands.Values;
 import Communication.ServerMessage;
-import Communication.Values;
 import JsonMemories.JsonAccessedData;
 import JsonMemories.Userbook;
 import Users.User;
 
-public class Register implements Values{
+public class Register extends Values{
     private String username;
     private String password;
+
+    public Register(String username, String password){
+        this.username = username;
+        this.password = password;
+    }
 
     @Override
     public ServerMessage execute(JsonAccessedData data) {

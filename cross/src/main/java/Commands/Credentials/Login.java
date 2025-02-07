@@ -1,14 +1,19 @@
 package Commands.Credentials;
 
+import Commands.Values;
 import Communication.ServerMessage;
-import Communication.Values;
 import JsonMemories.JsonAccessedData;
 import JsonMemories.Userbook;
 import Users.User;
 
-public class Login implements Values{
+public class Login extends Values{
     private String username;
     private String password;
+
+    public Login(String username, String password){
+        this.password = password;
+        this.username = username;
+    }
 
     @Override
     public ServerMessage execute(JsonAccessedData data){
@@ -33,4 +38,13 @@ public class Login implements Values{
         userbook.dataFlush();
         return new ServerMessage("[200]: Utente correttamente loggato col nome: "+this.username,200);
     }
+
+    @Override
+    public String toString() {
+        return "Login{" +
+               "username='" + username + '\'' +
+               ", password='" + password + '\'' +
+               '}';
+    }
+    
 }   
