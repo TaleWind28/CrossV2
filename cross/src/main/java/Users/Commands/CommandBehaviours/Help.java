@@ -3,6 +3,7 @@ package Users.Commands.CommandBehaviours;
 import Communication.Message;
 import ServerTasks.GenericTask;
 import Users.Commands.UserCommand;
+import Users.Commands.CommandBehaviours.done.CommandBehaviour;
 
 //public String helpMessage = "updateCredentials<username,currentPasswd,newPasswd> -> permette di aggiornare le credenziali\nlogout<username> -> permette di uscire dal servizio di trading";
     

@@ -4,6 +4,8 @@ import java.net.Socket;
 import java.net.SocketException;
 import java.util.NoSuchElementException;
 
+import Commands.Credentials.Logout;
+import Communication.ClientMessage;
 import Communication.ClientProtocol;
 import Communication.Message;
 import Communication.ServerMessage;
@@ -43,28 +45,28 @@ public class ClientMain extends ClientProtocol{
         try{
             while(true){
                 //System.out.println("Attendo messaggio...");
-                Message serverAnswer = this.protocol.receiveMessage();
-                //System.out.println("risposta: "+serverAnswer.payload);
+                ServerMessage serverAnswer = (ServerMessage)this.protocol.receiveMessage();
+                //System.out.println("risposta: "+serverAnswer.errorMessage);
                 //controllo risposta server
-                switch (serverAnswer.r) {
+                switch (serverAnswer.response) {
                     //richiesta eseguita correttamente
                     case 200:
-                        if (serverAnswer.payload.equals("FIN")){
+                        if (serverAnswer.errorMessage.equals("FIN")){
                             System.out.println("Chiusura Connessione");
                             this.sock.close();
                             System.exit(0);
                         }
-                        System.out.print(serverAnswer.payload+"\n>>");
+                        System.out.print(serverAnswer.errorMessage+"\n>>");
                         this.canSend = true;
                         continue;
                     //disconnessione
                     case 408:
-                        System.out.println(serverAnswer.payload);
+                        System.out.println(serverAnswer.errorMessage);
                         if (!this.sigintTermination)System.exit(0);
                         return;
                     //default
                     default:
-                        System.out.print(serverAnswer.payload+"\n >>");
+                        System.out.print(serverAnswer.errorMessage+"\n >>");
                         this.canSend = true;
                         continue;
                 }            
@@ -83,18 +85,19 @@ public class ClientMain extends ClientProtocol{
         public void sendBehaviour(){ 
             while(true){
                 if(this.canSend){
-                    Message serverCommand = new Message(this.userInput.nextLine());
-                    String[] cmd = serverCommand.payload.split(" "); 
-                    //controllo il tipo di comando richiesto
-                    if(cmd[0].toLowerCase().equals("register") || cmd[0].toLowerCase().equals("login") || cmd[0].toLowerCase().equals("logout") || cmd[0].toLowerCase().equals("updatecredentials") || cmd[0].toLowerCase().equals("exit")){
-                        //0 -> credenziali
-                        serverCommand.code = 0;
-                    }else if(cmd[0].toLowerCase().contains("order")) serverCommand.code = 1;//1 -> order
-                    else serverCommand.code = 2; //2 -> internalCommand
-                    //invio la richiesta al server
-                    this.protocol.sendMessage(serverCommand);
-                    //impedisco al client di mandare altri messaggi finchè non arriva la risposta del server
-                    this.canSend = false;
+                    /*FACTORY */
+                    // ClientMessage serverCommand = new ClientMessage(this.userInput.nextLine());
+                    // String[] cmd = serverCommand.errorMessage.split(" "); 
+                    // //controllo il tipo di comando richiesto
+                    // if(cmd[0].toLowerCase().equals("register") || cmd[0].toLowerCase().equals("login") || cmd[0].toLowerCase().equals("logout") || cmd[0].toLowerCase().equals("updatecredentials") || cmd[0].toLowerCase().equals("exit")){
+                    //     //0 -> credenziali
+                    //     serverCommand.code = 0;
+                    // }else if(cmd[0].toLowerCase().contains("order")) serverCommand.code = 1;//1 -> order
+                    // else serverCommand.code = 2; //2 -> internalCommand
+                    // //invio la richiesta al server
+                    // this.protocol.sendMessage(serverCommand);
+                    // //impedisco al client di mandare altri messaggi finchè non arriva la risposta del server
+                    // this.canSend = false;
                 }
             }
         }
@@ -129,7 +132,7 @@ public class ClientMain extends ClientProtocol{
                 //comunico al client la chiusura imminente
                 System.out.println("Ctr+c Rilevato -> disconnessione in corso...");
                 //invio al server un messaggio di exit
-                this.protocol.sendMessage(new Message("exit",0));
+                this.protocol.sendMessage(new ClientMessage("exit",new Logout("bella zio")));
                 //imposto la variabile sigintTermination a true per poter sfruttare il shutdownHook sul receiver
                 this.sigintTermination = true;
             }

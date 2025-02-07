@@ -3,9 +3,9 @@ package Users.Commands;
 import Communication.Message;
 import JsonMemories.JsonAccessedData;
 import ServerTasks.GenericTask;
-import Users.Commands.CommandBehaviours.CommandBehaviour;
-import Users.Commands.CommandBehaviours.Disconnect;
 import Users.Commands.CommandBehaviours.Help;
+import Users.Commands.CommandBehaviours.done.CommandBehaviour;
+import Users.Commands.CommandBehaviours.done.Disconnect;
 
 public class InternalCommand implements UserCommand{
     private String command;

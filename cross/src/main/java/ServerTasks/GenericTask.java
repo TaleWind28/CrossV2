@@ -6,10 +6,12 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
+import ClientFactories.Factory.FactoryRegistry;
+import Communication.ClientMessage;
 import Communication.Message;
 import Communication.Protocol;
+import Communication.ServerMessage;
 import Users.Commands.*;
-import Users.Commands.Factory.FactoryRegistry;
 import Executables.ServerMain;
 
 public class GenericTask implements Runnable {
@@ -22,6 +24,18 @@ public class GenericTask implements Runnable {
     private Protocol protocol;
     public volatile String onlineUser = new String();
     public String welcomeMessage = "Per fare trading inserire un ordine di qualunque tipo";
+    private String nonLoggedUserMessage = "Comandi:\n" + 
+                        "register<username,password> -> ti permette di registrarti per poter accedere al servizio di trading\n" + 
+                        "login<username,password> -> permette di accedere ad un account registrato\n" +
+                        "";
+    private String loggedUserMessage = "Comandi:\n"+
+                        "updateCredentials<username,currentPasswd,newPasswd> -> permette di aggiornare le credenziali\n"+
+                        "logout<username> -> permette di uscire dal servizio di trading\n"+
+                        "showorderbook -> fa visualizzare l'orderbook\n"+
+                        "insertmarketorder <ask/bid> <qtà di bitcoin da vendere/comprare> -> inserisce un marketorder\n"+
+                        "insertmarketorder <ask/bid> <qtà di bitcoin da vendere/comprare> <limitprice> -> inserisce un limitorder\n"+
+                        "insertmarketorder <ask/bid> <qtà di bitcoin da vendere/comprare> <stopprice> -> inserisce uno stoporder\n"+
+                        "cancelorder <orderID>\n";
     
     public GenericTask(Socket client_socket,Protocol protocol) throws Exception{
         super();
@@ -56,19 +70,19 @@ public class GenericTask implements Runnable {
         //creo la task di disconnessione
         DisconnectTask inactivityDisconnection = new DisconnectTask(this.protocol,this.client,this.generatorServer,this);
         //invio il messaggio di benvenuto
-        protocol.sendMessage(new Message(welcomeMessage,200));
+        protocol.sendMessage(new ServerMessage(welcomeMessage,200));
         try{
             while(!(Thread.currentThread().isInterrupted())){
                 //this.onlineUser = "pippo";
                 //avvio timeout inattività
                 this.timeoutTask = this.timeoutScheduler.schedule(inactivityDisconnection, CONNECTION_TIMEOUT, TimeUnit.SECONDS);
                 //recupero il messaggio del client
-                Message clientRequest = protocol.receiveMessage();
+                ClientMessage clientRequest = (ClientMessage)protocol.receiveMessage();
                 //azzero il timeout
                 this.timeoutTask.cancel(false);
                 this.timeoutTask = null;
                 //stampa il contenuto del messaggio ricevuto
-                System.out.println("run:"+clientRequest.payload.toString());
+                System.out.println("run:"+clientRequest.operation.toString());
                 //reagisci al messaggio
                 this.serverReact(clientRequest);
             }
@@ -87,18 +101,20 @@ public class GenericTask implements Runnable {
         }
     }
 
-    public void serverReact(Message clientRequest){
+    public void serverReact(ClientMessage clientRequest){
         try{
             //stampa di debug
-            System.out.println("richiesta factory: "+clientRequest.payload);
-            //creo il comando richiedendo la factory
-            UserCommand cmd = FactoryRegistry.getFactory(clientRequest.code).createUserCommand(clientRequest.payload.split(" "));
+            System.out.println("richiesta factory: "+clientRequest.operation);
+            // //creo il comando richiedendo la factory
+            // UserCommand cmd = FactoryRegistry.getFactory(clientRequest.code).createUserCommand(clientRequest.payload.split(" "));
             //stampa di debug
-            System.out.println("Comando fabbricato: "+cmd.toString());
+            System.out.println("Comando fabbricato: "+clientRequest.toString());
+            
+            //if(clientRequest.operation.contains("order"))
             //ottengo la risposta per il client eseguendo il comando creato dalla factory
-            Message responseMessage = cmd.execute(this);
+            ServerMessage responseMessage = clientRequest.values.execute(null);
             //Stampa di debug -> risposta del server
-            System.out.println("Messaggio generato:\nPayload: "+responseMessage.payload+", code: "+responseMessage.code);
+            System.out.println("Messaggio generato:\nPayload: "+responseMessage.errorMessage+", code: "+responseMessage.response);
             //invio il messaggio al client
             protocol.sendMessage(responseMessage);
             //stampa di debug
@@ -106,7 +122,7 @@ public class GenericTask implements Runnable {
             return;
         }
         catch(Exception e){
-            protocol.sendMessage(new Message("[400]: Comando non correttamente formulato, digitare aiuto per una lista di comandi disponibili",400));
+            protocol.sendMessage(new ServerMessage("[400]: Comando non correttamente formulato, digitare aiuto per una lista di comandi disponibili",400));
         }
     }
 

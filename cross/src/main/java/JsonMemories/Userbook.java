@@ -51,7 +51,7 @@ public class Userbook implements JsonAccessedData{
         try (JsonReader reader = new JsonReader(new FileReader(this.jsonFilePath)))  {
             //inizio la lettura
             reader.beginObject();
-            System.out.println("oggetto iniziato");
+            //System.out.println("oggetto iniziato");
             //ciclo su tutti gli elementi del Json
             while(reader.hasNext()){
                 //consumo la key della hasmap

@@ -27,7 +27,7 @@ public class Orderbook implements JsonAccessedData{
         this.askOrders = new TreeMap<>(new PriceComparator());
         this.bidOrders = new TreeMap<>(new PriceComparator().reversed());
         this.stopOrders = new ConcurrentLinkedQueue<>(); 
-        System.out.println(this.stopOrders);
+        System.out.println("[ORDERBOOK] Stoporders"+this.stopOrders);
     }
     
     @Override
@@ -38,12 +38,12 @@ public class Orderbook implements JsonAccessedData{
     
     @Override
     public synchronized void loadData() {
-        System.out.println("copio");
+        //System.out.println("copio");
         try (JsonReader reader = new JsonReader(new FileReader(this.jsonFilePath)))  {
             OrderClass orderData = gson.fromJson(reader,OrderClass.class);
             this.askOrders = (TreeMap<String,Order>)orderData.askMap;
             this.bidOrders = (TreeMap<String,Order>)orderData.bidMap;
-            System.out.println("copio");
+            //System.out.println("copio");
         }
         catch(Exception e){System.out.println("copio male");;}
         return;

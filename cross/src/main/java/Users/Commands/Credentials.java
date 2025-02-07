@@ -5,7 +5,7 @@ import Communication.Message;
 import JsonMemories.JsonAccessedData;
 import JsonMemories.Userbook;
 import ServerTasks.GenericTask;
-import Users.Commands.CommandBehaviours.CommandBehaviour;
+import Users.Commands.CommandBehaviours.done.CommandBehaviour;
 
 public class Credentials implements UserCommand{
     private String type = "credentials";

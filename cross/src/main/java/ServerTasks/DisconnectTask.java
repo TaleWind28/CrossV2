@@ -2,10 +2,11 @@ package ServerTasks;
 
 import java.net.Socket;
 
+import ClientFactories.Factory.FactoryRegistry;
 import Communication.Message;
 import Communication.Protocol;
+import Communication.ServerMessage;
 import Communication.ServerProtocol;
-import Users.Commands.Factory.FactoryRegistry;
 
 public class DisconnectTask implements Runnable{
     private Protocol protocol;
@@ -30,7 +31,7 @@ public class DisconnectTask implements Runnable{
                 FactoryRegistry.getFactory(0).createUserCommand(cmd).execute(handlerClient);
             }
             //creo il messaggio per comunicare al client la sua disconnessione
-            Message clientMessage = new Message("Timeout di inattività. Disconnessione.",408);
+            Message clientMessage = new ServerMessage("Timeout di inattività. Disconnessione.",408);
             //invio il messaggio al client
             this.protocol.sendMessage(clientMessage);
             //avvio la procedura di disconnessione client sul server per chiudere il socket

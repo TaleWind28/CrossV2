@@ -6,7 +6,7 @@ import JsonMemories.JsonAccessedData;
 import JsonMemories.Orderbook;
 import ServerTasks.GenericTask;
 import Users.User;
-import Users.Commands.CommandBehaviours.CommandBehaviour;
+import Users.Commands.CommandBehaviours.done.CommandBehaviour;
 
 
 public class Order implements UserCommand{

@@ -6,13 +6,13 @@ import java.util.Map;
 import java.util.TreeMap;
 import java.util.concurrent.TimeUnit;
 
+import ClientFactories.Factory.FactoryRegistry;
 import Communication.ServerProtocol;
 import Communication.TCP;
 import JsonMemories.Orderbook;
 import JsonMemories.Userbook;
 import ServerTasks.*;
 import Users.Commands.Order;
-import Users.Commands.Factory.FactoryRegistry;
 
 public class ServerMain extends ServerProtocol{
     private Userbook registeredUsers;
@@ -24,7 +24,9 @@ public class ServerMain extends ServerProtocol{
     }
 
     public static void main(String[] args) throws Exception {
+        System.out.println("mino");
         ServerMain server = new ServerMain(20000,16);
+        
         // Aggiungi uno shutdown hook alla JVM
         Runtime.getRuntime().addShutdownHook(
             new Thread(
