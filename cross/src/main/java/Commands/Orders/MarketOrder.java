@@ -27,6 +27,11 @@ public class MarketOrder implements Values,Order{
         return new ServerMessage("Ordine Correttamente Evaso",100);
     }
 
+    @Override
+    public String toString() {
+        return "Marketorder{ exchangeType="+this.exchangeType+" size="+this.size+" orderID="+this.orderID+"}";    
+    }
+
     public void setOrderID(int orderID) {
         this.orderID = orderID;
     }
