@@ -1,23 +1,26 @@
 package Commands.Orders;
 
+import Commands.Values;
 import Communication.ServerMessage;
-import Communication.Values;
 import JsonMemories.JsonAccessedData;
 import JsonMemories.Orderbook;
 
-public class StopOrder implements Values{
+public class StopOrder implements Values, Order{
     private String exchangeType;
     private int size;
     private int price;
+    private int orderID;
+    private String user;
 
     public StopOrder(String exchangeType,int size, int price){
         this.exchangeType = exchangeType;
         this.size = size;
         this.price = price;
+        
     }
 
     @Override
-    public ServerMessage execute(JsonAccessedData data){
+    public ServerMessage execute(JsonAccessedData data,String user){
         //if(context.onlineUser.equals(""))return new ServerMessage("401: Per effettuare ordini bisogna creare un account o accedervi",401);
         Orderbook orderbook = (Orderbook)data;
         //la faccio semplice per vedere se funziona
@@ -25,6 +28,49 @@ public class StopOrder implements Values{
         orderbook.addData(this, this.exchangeType);
         //System.out.println("fatto");
         return new ServerMessage("Ordine Correttamente Evaso",100);
+    }
+
+    public void setUser(String user) {
+        this.user = user;
+    }
+
+    public void setOrderID(int orderID) {
+        this.orderID = orderID;
+    }
+
+    @Override
+    public String getUser() {
+        return this.user;
+    }
+
+    @Override
+    public String getExchangeType() {
+        return this.exchangeType;    
+    }
+
+    @Override
+    public int getPrice() {
+        return this.price;
+    }
+
+    @Override
+    public int getSize() {
+        return this.size;
+    }
+
+    @Override
+    public int getOrderID() {
+        return this.orderID;
+    }
+
+    @Override
+    public void setUsername(String user) {
+        this.user =user;
+    }
+
+    @Override
+    public String getUsername() {
+        return this.user;    
     }
 
 }

@@ -1,7 +1,7 @@
 package Commands.Credentials;
 
+import Commands.Values;
 import Communication.ServerMessage;
-import Communication.Values;
 import JsonMemories.JsonAccessedData;
 import JsonMemories.Userbook;
 
@@ -12,10 +12,11 @@ public class Logout implements Values{
     }
 
     @Override
-    public ServerMessage execute(JsonAccessedData data){
+    public ServerMessage execute(JsonAccessedData data,String user){
         //codice duplicato -> cambiare -> mettere nel costruttore / chiamata di funzione per inizializzare
         //String[] credentialsInfo = cmd.getInfo();
         Userbook userbook = (Userbook)data;
+        setUsername(user);
         //controllo che esista l'utente
         //if(!context.onlineUser.equals(this.username))return new Message("[401]: Non possiedi le autorizzazioni necessarie",401);
         if(userbook.accessData(this.username) == 404)return new ServerMessage("[404]: Utente non registrato",404);
@@ -27,5 +28,19 @@ public class Logout implements Values{
         userbook.getUserMap().get(this.username).setLogged(false);
         userbook.dataFlush();
         return new ServerMessage("[200]: Disconnessione avenuta con successo!",408);
+    }
+    @Override
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    @Override
+    public String toString() {
+        return "Logout{username= "+this.username+"}";
+    }
+
+    @Override
+    public String getUsername() {
+        return this.username;
     }
 }

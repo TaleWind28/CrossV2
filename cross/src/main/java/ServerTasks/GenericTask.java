@@ -6,12 +6,15 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
+<<<<<<< HEAD
+=======
+import Commands.Credentials.Login;
+>>>>>>> 3e237bfbb9e4fd2228522158d159d02e8e8819eb
 import Communication.ClientMessage;
-import Communication.Message;
 import Communication.Protocol;
 import Communication.ServerMessage;
-import Users.Commands.*;
 import Executables.ServerMain;
+import JsonMemories.JsonAccessedData;
 
 public class GenericTask implements Runnable {
     private Socket client;
@@ -35,17 +38,9 @@ public class GenericTask implements Runnable {
                         "insertmarketorder <ask/bid> <qtà di bitcoin da vendere/comprare> <limitprice> -> inserisce un limitorder\n"+
                         "insertmarketorder <ask/bid> <qtà di bitcoin da vendere/comprare> <stopprice> -> inserisce uno stoporder\n"+
                         "cancelorder <orderID>\n";
+    String currentHelpMessage = "";
     
-    public GenericTask(Socket client_socket,Protocol protocol) throws Exception{
-        super();
-        this.client = client_socket;
-        this.protocol = protocol;
-        protocol.setSender(client_socket);
-        protocol.setReceiver(client_socket);
-        this.timeoutScheduler = Executors.newSingleThreadScheduledExecutor();
-        //this.generatorServer = null; 
-    }
-    //overloading
+    //costruttore
     public GenericTask(Socket client_socket,ServerMain server,Protocol protocol) throws Exception{
         super();
         this.client = client_socket;
@@ -55,15 +50,6 @@ public class GenericTask implements Runnable {
         this.timeoutScheduler = Executors.newSingleThreadScheduledExecutor();
         this.generatorServer = server; 
     }
-    //overloading
-    public GenericTask(Socket client_socket,String delimiter,Protocol protocol) throws Exception{
-        super();
-        this.protocol = protocol;
-        this.client = client_socket;
-        protocol.setSender(client_socket);
-        protocol.setReceiver(client_socket); 
-        this.timeoutScheduler = Executors.newSingleThreadScheduledExecutor();
-    }
 
     public void run(){
         //creo la task di disconnessione
@@ -72,7 +58,6 @@ public class GenericTask implements Runnable {
         protocol.sendMessage(new ServerMessage(welcomeMessage,200));
         try{
             while(!(Thread.currentThread().isInterrupted())){
-                //this.onlineUser = "pippo";
                 //avvio timeout inattività
                 this.timeoutTask = this.timeoutScheduler.schedule(inactivityDisconnection, CONNECTION_TIMEOUT, TimeUnit.SECONDS);
                 //recupero il messaggio del client
@@ -80,6 +65,9 @@ public class GenericTask implements Runnable {
                 //azzero il timeout
                 this.timeoutTask.cancel(false);
                 this.timeoutTask = null;
+                //imposto il messaggio di errore
+                if(this.onlineUser.equals(""))this.currentHelpMessage = nonLoggedUserMessage;
+                else this.currentHelpMessage = loggedUserMessage;
                 //stampa il contenuto del messaggio ricevuto
                 System.out.println("run:"+clientRequest.operation.toString());
                 //reagisci al messaggio
@@ -102,22 +90,34 @@ public class GenericTask implements Runnable {
 
     public void serverReact(ClientMessage clientRequest){
         try{
+            String additionalInfo = null;
             //stampa di debug
-            System.out.println("richiesta factory: "+clientRequest.operation);
-            // //creo il comando richiedendo la factory
-            // UserCommand cmd = FactoryRegistry.getFactory(clientRequest.code).createUserCommand(clientRequest.payload.split(" "));
+            System.out.println("[GenericTask] Operation: "+clientRequest.operation+"\nValues: "+clientRequest.values.toString());
+            //setto l'username per i comandi           
+            clientRequest.values.setUsername(this.onlineUser);
             //stampa di debug
-            System.out.println("Comando fabbricato: "+clientRequest.toString());
-            
-            //if(clientRequest.operation.contains("order"))
+            System.out.println("[GenericTask] Comando fabbricato: "+clientRequest.toString());
+            //dati in formato json per controllare gli utenti
+            JsonAccessedData data = null;
+            //controllo la struttura dati da assegnare al comando
+            if(clientRequest.operation.contains("order"))data = this.generatorServer.getOrderbook();
+            else data = this.generatorServer.getRegisteredUsers();
+            //controllo le informazioni addizionali da passare al comando
+            if(clientRequest.operation.equals("help"))additionalInfo = this.currentHelpMessage;
+            else additionalInfo = this.onlineUser;
             //ottengo la risposta per il client eseguendo il comando creato dalla factory
-            ServerMessage responseMessage = clientRequest.values.execute(null);
+            ServerMessage responseMessage = clientRequest.values.execute(data,additionalInfo);
+            if(responseMessage.response == 200 && this.onlineUser.equals("") && clientRequest.operation.equals("login")){
+                Login log = (Login)clientRequest.values;
+                this.onlineUser = log.getUsername();
+                System.out.println("[GenericTask] Username: "+log.getUsername());
+            }
             //Stampa di debug -> risposta del server
-            System.out.println("Messaggio generato:\nPayload: "+responseMessage.errorMessage+", code: "+responseMessage.response);
+            System.out.println("[GenericTask] Messaggio generato:\nPayload: "+responseMessage.errorMessage+", code: "+responseMessage.response);
             //invio il messaggio al client
             protocol.sendMessage(responseMessage);
             //stampa di debug
-            System.out.println("messaggio inviato");
+            System.out.println("[GenericTask] messaggio inviato");
             return;
         }
         catch(Exception e){

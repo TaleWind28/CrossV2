@@ -1,7 +1,7 @@
 package Commands.Credentials;
 
+import Commands.Values;
 import Communication.ServerMessage;
-import Communication.Values;
 import JsonMemories.JsonAccessedData;
 import JsonMemories.Userbook;
 import Users.User;
@@ -10,8 +10,13 @@ public class Register implements Values{
     private String username;
     private String password;
 
+    public Register(String username, String password){
+        this.username = username;
+        this.password = password;
+    }
+
     @Override
-    public ServerMessage execute(JsonAccessedData data) {
+    public ServerMessage execute(JsonAccessedData data,String user) {
         System.out.println("Primo Controllo");
         Userbook userbook = (Userbook)data;
         //controllare che username non esista già
@@ -22,6 +27,16 @@ public class Register implements Values{
         userbook.addData(new User(username, password));
         //System.out.println("entro");
         return new ServerMessage("[101]: Utente correttamente registrato col nome "+username,101);
+    }
+
+    @Override
+    public void setUsername(String user) {
+        this.username = user;
+    }
+
+    @Override
+    public String getUsername() {
+        return this.username;    
     }
     
 }

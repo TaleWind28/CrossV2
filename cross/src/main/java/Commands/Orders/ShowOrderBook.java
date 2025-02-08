@@ -2,16 +2,15 @@ package Commands.Orders;
 
 import java.util.Map;
 
+import Commands.Values;
 import Communication.ServerMessage;
-import Communication.Values;
 import JsonMemories.JsonAccessedData;
 import JsonMemories.Orderbook;
-import Users.Commands.Order;
 
 
-public class ShowOrderBook implements Values{
+public class ShowOrderBook implements Values {
     @Override
-    public ServerMessage execute(JsonAccessedData data){
+    public ServerMessage execute(JsonAccessedData data,String user){
         Orderbook orderbook = (Orderbook) data;
         String prettyPrintedString = "------------------------------------------------------------------------------------------\n" + //
                         "User\t  ExchangeType\tBitcoin Size\tPrice per Bitcoin\tTotal Price\tOrder ID\n";
@@ -25,13 +24,25 @@ public class ShowOrderBook implements Values{
 
     public String prettyPrinting(Orderbook orderbook, String requestedmap, String prettyPrinting) {
         
-        for(Map.Entry<String,Order> entry: orderbook.getRequestedMap(requestedmap).entrySet()){
+        for(Map.Entry<String,Limitorder> entry: orderbook.getRequestedMap(requestedmap).entrySet()){
             Order ord = entry.getValue();
-            prettyPrinting+=ord.getUser()+"\t\t"+ord.getExchangeType()+"\t \t"+ord.getSize()+"\t \t"+ord.getPrice()+"\t\t    "+ord.getPrice()*ord.getSize()+"\t\t   "+ord.getorderID()+"\n";
+            prettyPrinting+=ord.getUser()+"\t\t"+ord.getExchangeType()+"\t \t"+ord.getSize()+"\t \t"+ord.getPrice()+"\t\t    "+ord.getPrice()*ord.getSize()+"\t\t   "+ord.getOrderID()+"\n";
         }
 
         return prettyPrinting;
         
+    }
+
+
+    @Override
+    public void setUsername(String user) {
+        return;
+    }
+
+
+    @Override
+    public String getUsername() {
+        return "unused";
     }
 
     

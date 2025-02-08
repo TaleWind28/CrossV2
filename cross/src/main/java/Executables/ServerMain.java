@@ -6,17 +6,18 @@ import java.util.Map;
 import java.util.TreeMap;
 import java.util.concurrent.TimeUnit;
 
-import ClientFactories.Factory.FactoryRegistry;
+
+import Commands.Orders.Limitorder;
 import Communication.ServerProtocol;
 import Communication.TCP;
 import JsonMemories.Orderbook;
 import JsonMemories.Userbook;
 import ServerTasks.*;
-import Users.Commands.Order;
 
 public class ServerMain extends ServerProtocol{
-    private Userbook registeredUsers;
-    private Orderbook orderbook;
+    private volatile Userbook registeredUsers;
+    private volatile Orderbook orderbook;
+
     public ServerMain(int port, int numThreads){
         super(port,numThreads);
         this.registeredUsers = new Userbook("cross\\src\\main\\java\\JsonFiles\\Users.json");
@@ -63,6 +64,8 @@ public class ServerMain extends ServerProtocol{
                 while(true){
                     Socket client_Socket = server.accept();
                     //realizzare con factory per miglior versatilità -> inutile in quanto ho solo una task
+                    //TCP protocolToUse = new TCP();
+                    //protocolToUse.setGson(this.gson);
                     GenericTask task = new GenericTask(client_Socket,this,new TCP());
                     addClient(client_Socket);
                     this.pool.execute(task);
@@ -86,9 +89,6 @@ public class ServerMain extends ServerProtocol{
         this.orderbook.loadData();
         int progressiveOrderNumber = findOrderID(orderbook);
         System.out.println("Numero Ordine: "+progressiveOrderNumber);
-        FactoryRegistry.updateFactoryData(0, registeredUsers,"");
-        FactoryRegistry.updateFactoryData(1, orderbook,""+progressiveOrderNumber);
-        FactoryRegistry.getFactory(1);
         return;
     }
 
@@ -99,10 +99,10 @@ public class ServerMain extends ServerProtocol{
     }
 
     public int searchMap(Orderbook orderbook,String requestedMap,int bestId){
-        TreeMap<String,Order> map = orderbook.getRequestedMap(requestedMap);
-        for(Map.Entry<String,Order> entry :map.entrySet()){
-            if((entry.getValue().getorderID()< bestId))continue;
-            bestId = entry.getValue().getorderID();
+        TreeMap<String,Limitorder> map = orderbook.getRequestedMap(requestedMap);
+        for(Map.Entry<String,Limitorder> entry :map.entrySet()){
+            if((entry.getValue().getOrderID()< bestId))continue;
+            bestId = entry.getValue().getOrderID();
         }
         return bestId;
     }

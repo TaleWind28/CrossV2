@@ -11,4 +11,7 @@ public interface Protocol {
     public int sendMessage(Message message);
     //definisco come ricevo i messaggi
     public Message receiveMessage();
+    // public ClientMessage receiveClientMessage();
+
+    // public ServerMessage receiveServerMessage();
 }
