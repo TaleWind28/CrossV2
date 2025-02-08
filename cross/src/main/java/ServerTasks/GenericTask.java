@@ -23,18 +23,22 @@ public class GenericTask implements Runnable {
     private Protocol protocol;
     public volatile String onlineUser = new String();
     public String welcomeMessage = "Per fare trading inserire un ordine di qualunque tipo";
-    private String nonLoggedUserMessage = "Comandi:\n" + 
+    private String nonLoggedUserMessage = "---------------------------------------------------------------------------------------------------\n"+
+                        "Comandi:\n" + 
                         "register<username,password> -> ti permette di registrarti per poter accedere al servizio di trading\n" + 
                         "login<username,password> -> permette di accedere ad un account registrato\n" +
-                        "";
-    private String loggedUserMessage = "Comandi:\n"+
+                        "---------------------------------------------------------------------------------------------------";
+    private String loggedUserMessage = "------------------------------------------------------------------------------------------------------------\n"+
+                        "Comandi:\n"+
                         "updateCredentials<username,currentPasswd,newPasswd> -> permette di aggiornare le credenziali\n"+
                         "logout<username> -> permette di uscire dal servizio di trading\n"+
                         "showorderbook -> fa visualizzare l'orderbook\n"+
                         "insertmarketorder <ask/bid> <qtà di bitcoin da vendere/comprare> -> inserisce un marketorder\n"+
                         "insertmarketorder <ask/bid> <qtà di bitcoin da vendere/comprare> <limitprice> -> inserisce un limitorder\n"+
                         "insertmarketorder <ask/bid> <qtà di bitcoin da vendere/comprare> <stopprice> -> inserisce uno stoporder\n"+
-                        "cancelorder <orderID>\n";
+                        "cancelorder <orderID>\n"+
+                        "------------------------------------------------------------------------------------------------------------";
+
     String currentHelpMessage = "";
     
     //costruttore
