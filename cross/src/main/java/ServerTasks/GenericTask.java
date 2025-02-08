@@ -103,7 +103,9 @@ public class GenericTask implements Runnable {
             if(clientRequest.operation.equals("help"))additionalInfo = this.currentHelpMessage;
             else additionalInfo = this.onlineUser;
             //ottengo la risposta per il client eseguendo il comando creato dalla factory
+            /*ESECUZIONE COMANDO */
             ServerMessage responseMessage = clientRequest.values.execute(data,additionalInfo);
+            /*FINE ESECUZIONE COMANDO */
             if(responseMessage.response == 200 && this.onlineUser.equals("") && clientRequest.operation.equals("login")){
                 Login log = (Login)clientRequest.values;
                 this.onlineUser = log.getUsername();

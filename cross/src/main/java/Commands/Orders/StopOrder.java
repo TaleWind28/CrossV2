@@ -3,7 +3,7 @@ package Commands.Orders;
 import Commands.Values;
 import Communication.ServerMessage;
 import JsonMemories.JsonAccessedData;
-import JsonMemories.Orderbook;
+//import JsonMemories.Orderbook;
 
 public class StopOrder implements Values, Order{
     private String exchangeType;
@@ -22,10 +22,10 @@ public class StopOrder implements Values, Order{
     @Override
     public ServerMessage execute(JsonAccessedData data,String user){
         //if(context.onlineUser.equals(""))return new ServerMessage("401: Per effettuare ordini bisogna creare un account o accedervi",401);
-        Orderbook orderbook = (Orderbook)data;
+        //Orderbook orderbook = (Orderbook)data;
         //la faccio semplice per vedere se funziona
         //non so come funziona l'algoritmo richiesto dalla ricci quindi lo lascio così
-        orderbook.addData(this, this.exchangeType);
+        //orderbook.addData(this, this.exchangeType);
         //System.out.println("fatto");
         return new ServerMessage("Ordine Correttamente Evaso",100);
     }

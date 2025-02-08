@@ -2,13 +2,13 @@
   "askMap": {
     "null:1": {
       "exchangeType": "ask",
-      "size": 11,
+      "size": 10,
       "price": 1,
       "orderID": 0
     },
     "pino:1": {
       "exchangeType": "ask",
-      "size": 30,
+      "size": 31,
       "price": 1,
       "orderID": 5,
       "user": "pino"
@@ -22,7 +22,7 @@
     },
     "pino:5": {
       "exchangeType": "ask",
-      "size": 3,
+      "size": 6,
       "price": 5,
       "orderID": 0,
       "user": "pino"

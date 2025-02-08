@@ -27,7 +27,7 @@
   "pino": {
     "username": "pino",
     "password": "$2a$10$jee0EMmEEjfoQHRdO7Vw6ewhF/eimaC1KtjBn7RKPJe5L3y9TtJ6K",
-    "isLogged": true
+    "isLogged": false
   },
   "p": {
     "username": "p",
