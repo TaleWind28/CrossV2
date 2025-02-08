@@ -22,7 +22,7 @@ public class MarketOrder implements Values,Order{
         Orderbook orderbook = (Orderbook)data;
         //la faccio semplice per vedere se funziona
         //non so come funziona l'algoritmo richiesto dalla ricci quindi lo lascio così
-        orderbook.addData(this, this.exchangeType);
+        //orderbook.addData(this, this.exchangeType);
         //System.out.println("fatto");
         return new ServerMessage("Ordine Correttamente Evaso",100);
     }

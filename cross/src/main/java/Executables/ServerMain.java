@@ -99,8 +99,8 @@ public class ServerMain extends ServerProtocol{
     }
 
     public int searchMap(Orderbook orderbook,String requestedMap,int bestId){
-        TreeMap<String,Limitorder> map = orderbook.getRequestedMap(requestedMap);
-        for(Map.Entry<String,Limitorder> entry :map.entrySet()){
+        TreeMap<Integer,Limitorder> map = orderbook.getRequestedMap(requestedMap);
+        for(Map.Entry<Integer,Limitorder> entry :map.entrySet()){
             if((entry.getValue().getOrderID()< bestId))continue;
             bestId = entry.getValue().getOrderID();
         }
