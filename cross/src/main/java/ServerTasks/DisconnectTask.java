@@ -2,21 +2,11 @@ package ServerTasks;
 
 import java.net.Socket;
 
-<<<<<<< HEAD
-import ClientFactories.OrderFactory;
-import Communication.Message;
-import Communication.Protocol;
-import Communication.ServerMessage;
-import Communication.ServerProtocol;
-import Communication.Values;
-
-=======
 import Commands.CommandFactory;
 import Communication.Message;
 import Communication.Protocol;
 import Communication.ServerMessage;
 import Executables.ServerMain;
->>>>>>> 3e237bfbb9e4fd2228522158d159d02e8e8819eb
 
 public class DisconnectTask implements Runnable{
     private Protocol protocol;
@@ -38,16 +28,9 @@ public class DisconnectTask implements Runnable{
             String[] cmd = {"logout",onlineUser};
             //se esiste effettuo un logout prima di disconnettere il client
             if(!onlineUser.equals("")){
-<<<<<<< HEAD
-                String[] cmd = {"logout",onlineUser};
-                OrderFactory ordf = new OrderFactory();
-                Values command = ordf.createValue(cmd);
-                command.execute(null);             
-=======
                 //devo passare l'userbook
                 new CommandFactory().createValue(cmd).execute(server.getRegisteredUsers(),onlineUser);
                 System.out.println("[DisconnectTask] logout elaborato");
->>>>>>> 3e237bfbb9e4fd2228522158d159d02e8e8819eb
                 //FactoryRegistry.getFactory(0).createUserCommand(cmd).execute(handlerClient);
             }
             //creo il messaggio per comunicare al client la sua disconnessione
