@@ -5,7 +5,7 @@ import Communication.ServerMessage;
 import JsonMemories.JsonAccessedData;
 import JsonMemories.Orderbook;
 
-public class MarketOrder implements Values,Order{
+public class MarketOrder extends Order implements Values {
     private String exchangeType;
     private int size;
     private int orderID;

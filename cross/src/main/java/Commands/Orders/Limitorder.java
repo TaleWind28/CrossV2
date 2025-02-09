@@ -5,7 +5,7 @@ import Communication.ServerMessage;
 import JsonMemories.JsonAccessedData;
 import JsonMemories.Orderbook;
 
-public class Limitorder implements Values,Order{
+public class Limitorder extends Order implements Values{
     private String exchangeType;
     private int size;
     private int price;

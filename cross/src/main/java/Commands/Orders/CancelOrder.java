@@ -8,7 +8,7 @@ import Communication.ServerMessage;
 import JsonMemories.JsonAccessedData;
 import JsonMemories.Orderbook;
 
-public class CancelOrder  implements Values, Order{
+public class CancelOrder  extends Order implements Values{
     private int orderID;
     private String user;
 

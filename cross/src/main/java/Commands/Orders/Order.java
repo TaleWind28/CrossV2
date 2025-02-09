@@ -1,9 +1,11 @@
 package Commands.Orders;
 
-public interface Order {
-    public String getUser();
-    public String getExchangeType();
-    public int getPrice();
-    public int getSize();
-    public int getOrderID();
+public abstract class Order {
+    private String user;
+    private int orderId;
+    public abstract String getUser();
+    public abstract String getExchangeType();
+    public abstract int getPrice();
+    public abstract int getSize();
+    public abstract int getOrderID();
 }

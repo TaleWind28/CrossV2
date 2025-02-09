@@ -81,36 +81,7 @@ public class TCP implements Protocol{
             return null;
         }
     }
-    // public ClientMessage receiveClientMessage(){
-    //     try{
-    //         String line = receiver.readLine();
-    //         if (line!=null){
-    //             //System.out.println(line);
-    //             ClientMessage msg = gson.fromJson(line, ClientMessage.class);
-    //             return msg;
-    //         }
-    //         return null;
-    //     }catch(IOException e){
-    //         //System.out.println("Client: "+e.getMessage());
-    //         return null;
-    //     }
-    // }
-
-    // public ServerMessage receiveServerMessage(){
-    //     try{
-    //         String line = receiver.readLine();
-    //         if (line!=null){
-    //             //System.out.println(line);
-    //             ServerMessage msg = gson.fromJson(line, ServerMessage.class);
-    //             return msg;
-    //         }
-    //         return null;
-    //     }catch(IOException e){
-    //         //System.out.println("Client: "+e.getMessage());
-    //         return null;
-    //     }
-    // }
-
+    
     public int sendMessage(Message message){
         try {
             if (this.sender!=null){
@@ -135,9 +106,5 @@ public class TCP implements Protocol{
     public PrintWriter getSender() {
         return sender;
     }
-
-    // public void setGson(Gson gson) {
-    //     this.gson = gson;
-    // }
 
 }
