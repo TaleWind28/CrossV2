@@ -10,9 +10,10 @@ public class Limitorder extends Order implements Values{
     private int size;
     private int price;
     private int orderID;
-    private String user;
+    //private String user;
 
     public Limitorder(String exchangeType,int size, int price){
+        super();
         this.exchangeType = exchangeType;
         this.size = size;
         this.price = price;
@@ -48,11 +49,6 @@ public class Limitorder extends Order implements Values{
     }
 
     @Override
-    public String getUser() {
-        return this.user;
-    }
-
-    @Override
     public int getPrice() {
         return this.price;    
     }
@@ -67,13 +63,13 @@ public class Limitorder extends Order implements Values{
     }
 
     @Override
-    public void setUsername(String user) {
-        this.user = user;
+    public String getUsername() {
+        return super.getUser();    
     }
 
     @Override
-    public String getUsername() {
-        return this.user;
+    public void setUsername(String user) {
+        super.setUser(user);    
     }
 
 }
