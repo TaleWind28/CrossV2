@@ -1,35 +1,42 @@
 package JsonMemories;
 
-import java.io.BufferedWriter;
-import java.io.FileReader;
-import java.io.FileWriter;
+import java.io.File;
+import java.time.ZonedDateTime;
 import java.util.Map;
 import java.util.TreeMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.stream.JsonReader;
+import com.squareup.moshi.JsonAdapter;
+import com.squareup.moshi.JsonReader;
+import com.squareup.moshi.JsonWriter;
+import com.squareup.moshi.Moshi;
+import com.squareup.moshi.adapters.PolymorphicJsonAdapterFactory;
 
 import Commands.Values;
 import Commands.Orders.Limitorder;
 import Commands.Orders.Order;
 import Commands.Orders.StopOrder;
 import Utils.PriceComparator;
+import okio.Okio;
 
 public class Orderbook implements JsonAccessedData{
     private String jsonFilePath;
-    private Gson gson = new GsonBuilder().setPrettyPrinting().create();
+    //snippet che forse non uso
+    //.add(PolymorphicJsonAdapterFactory.of(Order.class,"Order").withSubtype(Limitorder.class, "Limitorder"))
+    //private Gson gson = new GsonBuilder().setPrettyPrinting().create();
+    private Moshi moshi = new Moshi.Builder().add(PolymorphicJsonAdapterFactory.of(ZonedDateTime.class,"GMT")).add(PolymorphicJsonAdapterFactory.of(Order.class,"Order").withSubtype(Limitorder.class, "Limitorder")).build();
+    private JsonAdapter<OrderClass> adapter = moshi.adapter(OrderClass.class);
     private TreeMap<String, Limitorder> askOrders; // Prezzi crescenti
     private  TreeMap<String, Limitorder> bidOrders; // Prezzi decrescenti
     private  ConcurrentLinkedQueue<StopOrder> stopOrders;//devo ancora capire cosa sono
+    private String currentScope = "[ORDERBOOK]";
         
     public Orderbook(String jsonFilePath){
         this.jsonFilePath = jsonFilePath;
         this.askOrders = new TreeMap<>(new PriceComparator());
         this.bidOrders = new TreeMap<>(new PriceComparator().reversed());
         this.stopOrders = new ConcurrentLinkedQueue<>(); 
-        System.out.println("[ORDERBOOK] Stoporders"+this.stopOrders);
+        System.out.println(this.currentScope+"Stoporders"+this.stopOrders);
     }
     
     @Override
@@ -41,20 +48,20 @@ public class Orderbook implements JsonAccessedData{
     @Override
     public synchronized void loadData() {
         //System.out.println("copio");
-        try (JsonReader reader = new JsonReader(new FileReader(this.jsonFilePath)))  {
-            OrderClass orderData = gson.fromJson(reader,OrderClass.class);
-            this.askOrders = (TreeMap<String,Limitorder>)orderData.askMap;
-            this.bidOrders = (TreeMap<String,Limitorder>)orderData.bidMap;
+        try (JsonReader reader =JsonReader.of(Okio.buffer(Okio.source(new File(this.jsonFilePath)))))  {
+            OrderClass orderData = adapter.fromJson(reader);
+            this.askOrders = new TreeMap<>(orderData.askMap);
+            this.bidOrders = new TreeMap<>(orderData.bidMap);
             //System.out.println("copio");
         }
-        catch(Exception e){System.out.println("copio male");;}
+        catch(Exception e){System.out.println("[ORDERBOOK] LOADDATA: "+e.getMessage()+" "+e.getClass());}
         return;
     }
 
     public synchronized void addData(Values val,String mapType) {
         Limitorder ord = (Limitorder)val;
         String orderbookEntry = ord.getUser()+":"+ord.getPrice();
-        System.out.println("entry:"+orderbookEntry);
+        System.out.println(this.currentScope+"entry:"+orderbookEntry);
         TreeMap<String,Limitorder> ordermap = this.getRequestedMap(mapType);
         if(ordermap.containsKey(orderbookEntry))ordermap.get(orderbookEntry).addSize(ord.getSize());
         else ordermap.put(orderbookEntry, ord);
@@ -69,8 +76,9 @@ public class Orderbook implements JsonAccessedData{
 
     public synchronized void dataFlush(){
         OrderClass oc = new OrderClass(this.askOrders, this.bidOrders);
-        try (BufferedWriter writer = new BufferedWriter((new FileWriter(this.jsonFilePath)))) {
-            writer.write(this.gson.toJson(oc));
+        try (JsonWriter writer = JsonWriter.of(Okio.buffer(Okio.sink(new File(this.jsonFilePath))))) {
+            writer.setIndent(" ");
+            adapter.toJson(writer, oc);
             //System.out.println("scritto");
         } catch (Exception e) {
             System.out.println("Aiuto");

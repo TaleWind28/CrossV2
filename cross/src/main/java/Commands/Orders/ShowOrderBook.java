@@ -6,11 +6,12 @@ import Commands.Values;
 import Communication.ServerMessage;
 import JsonMemories.JsonAccessedData;
 import JsonMemories.Orderbook;
+import ServerTasks.GenericTask;
 
 
 public class ShowOrderBook implements Values {
     @Override
-    public ServerMessage execute(JsonAccessedData data,String user){
+    public ServerMessage execute(JsonAccessedData data,String user,GenericTask task){
         Orderbook orderbook = (Orderbook) data;
         String prettyPrintedString = "------------------------------------------------------------------------------------------\n" + //
                         "User\t  ExchangeType\tBitcoin Size\tPrice per Bitcoin\tTotal Price\tOrder ID\n";
@@ -30,7 +31,7 @@ public class ShowOrderBook implements Values {
         
         for(Map.Entry<String,Limitorder> entry: orderbook.getRequestedMap(requestedmap).entrySet()){
             Order ord = entry.getValue();
-            prettyPrinting+=ord.getUser()+"\t\t"+ord.getExchangeType()+"\t \t"+ord.getSize()+"\t \t"+ord.getPrice()+"\t\t    "+ord.getPrice()*ord.getSize()+"\t\t   "+ord.getOrderID()+"\n";
+            prettyPrinting+=ord.getUser()+"\t\t"+ord.getExchangeType()+"\t \t"+ord.getSize()+"\t \t"+ord.getPrice()+"\t\t    "+ord.getPrice()*ord.getSize()+"\t\t   "+ord.getOrderId()+"\n";
         }
 
         return prettyPrinting;

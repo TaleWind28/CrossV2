@@ -91,7 +91,7 @@ public class GenericTask implements Runnable {
 
     public void serverReact(ClientMessage clientRequest){
         try{
-            String additionalInfo = null;
+            String additionalInfo = this.onlineUser;
             //stampa di debug
             System.out.println("[GenericTask] Operation: "+clientRequest.operation+"\nValues: "+clientRequest.values.toString());
             //setto l'username per i comandi           
@@ -99,22 +99,26 @@ public class GenericTask implements Runnable {
             //stampa di debug
             System.out.println("[GenericTask] Comando fabbricato: "+clientRequest.toString());
             //dati in formato json per controllare gli utenti
-            JsonAccessedData data = null;
+            JsonAccessedData data = this.generatorServer.getRegisteredUsers();
             //controllo la struttura dati da assegnare al comando
             if(clientRequest.operation.contains("order"))data = this.generatorServer.getOrderbook();
-            else data = this.generatorServer.getRegisteredUsers();
+            
             //controllo le informazioni addizionali da passare al comando
             if(clientRequest.operation.equals("help"))additionalInfo = this.currentHelpMessage;
-            else additionalInfo = this.onlineUser;
-            //ottengo la risposta per il client eseguendo il comando creato dalla factory
+            
             /*ESECUZIONE COMANDO */
-            ServerMessage responseMessage = clientRequest.values.execute(data,additionalInfo);
+
+            //ottengo la risposta per il client eseguendo il comando creato dalla factory
+            ServerMessage responseMessage = clientRequest.values.execute(data,additionalInfo,this);
+            
             /*FINE ESECUZIONE COMANDO */
+            
             if(responseMessage.response == 200 && this.onlineUser.equals("") && clientRequest.operation.equals("login")){
                 Login log = (Login)clientRequest.values;
                 this.onlineUser = log.getUsername();
                 System.out.println("[GenericTask] Username: "+log.getUsername());
             }
+
             //Stampa di debug -> risposta del server
             System.out.println("[GenericTask] Messaggio generato:\nPayload: "+responseMessage.errorMessage+", code: "+responseMessage.response);
             //invio il messaggio al client
@@ -130,6 +134,14 @@ public class GenericTask implements Runnable {
 
     public synchronized String getOnlineUser(){
         return this.onlineUser;
+    }
+
+    public synchronized int getProgressiveOrderNumber(){
+        return this.generatorServer.getProgressiveOrderNumber();
+    }
+
+    public synchronized void increaseProgressiveOrderNumber(){
+        this.generatorServer.increaseProgressiveOrderNumber();
     }
 }
 

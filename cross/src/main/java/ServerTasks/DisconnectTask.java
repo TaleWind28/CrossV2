@@ -29,7 +29,7 @@ public class DisconnectTask implements Runnable{
             //se esiste effettuo un logout prima di disconnettere il client
             if(!onlineUser.equals("")){
                 //devo passare l'userbook
-                new CommandFactory().createValue(cmd).execute(server.getRegisteredUsers(),onlineUser);
+                new CommandFactory().createValue(cmd).execute(server.getRegisteredUsers(),onlineUser,this.handlerClient);
                 System.out.println("[DisconnectTask] logout elaborato");
                 //FactoryRegistry.getFactory(0).createUserCommand(cmd).execute(handlerClient);
             }

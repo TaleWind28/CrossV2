@@ -58,6 +58,12 @@
             <version>1.14.0</version>
         </dependency>
 
+        <!-- Okio -->
+        <dependency>
+            <groupId>com.squareup.okio</groupId>
+            <artifactId>okio</artifactId>
+            <version>3.8.0</version>
+        </dependency>
     
     </dependencies>
 

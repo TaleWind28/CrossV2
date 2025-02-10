@@ -4,6 +4,7 @@ import Commands.Values;
 import Communication.ServerMessage;
 import JsonMemories.JsonAccessedData;
 import JsonMemories.Userbook;
+import ServerTasks.GenericTask;
 import Users.User;
 
 public class UpdateCredentials implements Values{
@@ -18,7 +19,7 @@ public class UpdateCredentials implements Values{
     }
 
     @Override
-    public ServerMessage execute(JsonAccessedData data,String user){
+    public ServerMessage execute(JsonAccessedData data,String user,GenericTask task){
         Userbook userbook = (Userbook)data;
         //Userbook userbook = (Userbook)cmd.getJsonAccessedData();
         if(!this.username.equals(user))return new ServerMessage("[401]: Autorizzazione richiesta!",401);

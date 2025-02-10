@@ -3,6 +3,7 @@ package Commands.Credentials;
 import Commands.Values;
 import Communication.ServerMessage;
 import JsonMemories.JsonAccessedData;
+import ServerTasks.GenericTask;
 
 public class Disconnect implements Values{
     private String username;
@@ -12,7 +13,7 @@ public class Disconnect implements Values{
     }
 
     @Override
-    public ServerMessage execute(JsonAccessedData data, String user) {
+    public ServerMessage execute(JsonAccessedData data, String user,GenericTask task) {
         return new ServerMessage("Disconnessione avvenuta con successo",408);    
     }
 

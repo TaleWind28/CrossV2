@@ -4,6 +4,7 @@ import Commands.Values;
 import Communication.ServerMessage;
 import JsonMemories.JsonAccessedData;
 import JsonMemories.Userbook;
+import ServerTasks.GenericTask;
 import Users.User;
 
 public class Register implements Values{
@@ -16,7 +17,7 @@ public class Register implements Values{
     }
 
     @Override
-    public ServerMessage execute(JsonAccessedData data,String user) {
+    public ServerMessage execute(JsonAccessedData data,String user,GenericTask task) {
         System.out.println("Primo Controllo");
         Userbook userbook = (Userbook)data;
         //controllare che username non esista già

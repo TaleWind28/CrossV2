@@ -4,6 +4,7 @@ import Commands.Values;
 import Communication.ServerMessage;
 import JsonMemories.JsonAccessedData;
 import JsonMemories.Orderbook;
+import ServerTasks.GenericTask;
 
 public class MarketOrder extends Order implements Values {
     private String exchangeType;
@@ -17,7 +18,7 @@ public class MarketOrder extends Order implements Values {
     }
     
     @Override
-    public ServerMessage execute(JsonAccessedData data,String user){
+    public ServerMessage execute(JsonAccessedData data,String user,GenericTask task){
         if(user.equals(""))return new ServerMessage("401: Per effettuare ordini bisogna creare un account o accedervi",401);
         Orderbook orderbook = (Orderbook)data;
         //controllo che l'utente sia autenticato
@@ -92,10 +93,6 @@ public class MarketOrder extends Order implements Values {
         return this.size;
     }
 
-    @Override
-    public int getOrderID() {
-        return this.orderID;
-    }
 
     @Override
     public void setUsername(String user) {

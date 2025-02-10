@@ -4,6 +4,7 @@ import Commands.Values;
 import Communication.ServerMessage;
 import JsonMemories.JsonAccessedData;
 import JsonMemories.Userbook;
+import ServerTasks.GenericTask;
 
 public class Logout implements Values{
     private String username;
@@ -12,7 +13,7 @@ public class Logout implements Values{
     }
 
     @Override
-    public ServerMessage execute(JsonAccessedData data,String user){
+    public ServerMessage execute(JsonAccessedData data,String user,GenericTask task){
         //codice duplicato -> cambiare -> mettere nel costruttore / chiamata di funzione per inizializzare
         //String[] credentialsInfo = cmd.getInfo();
         Userbook userbook = (Userbook)data;

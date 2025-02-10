@@ -7,6 +7,7 @@ import Commands.Values;
 import Communication.ServerMessage;
 import JsonMemories.JsonAccessedData;
 import JsonMemories.Orderbook;
+import ServerTasks.GenericTask;
 
 public class CancelOrder  extends Order implements Values{
     private int orderID;
@@ -18,7 +19,7 @@ public class CancelOrder  extends Order implements Values{
     }
     
     @Override
-    public ServerMessage execute(JsonAccessedData data,String utente){
+    public ServerMessage execute(JsonAccessedData data,String utente,GenericTask task){
         //Order order = (Order)cmd;
         this.setUsername(utente);
         String user = super.getUser();
@@ -35,7 +36,7 @@ public class CancelOrder  extends Order implements Values{
     public boolean searchMap(Orderbook orderbook,String requestedMap,int Id, String user){
         TreeMap<String,Limitorder> map = orderbook.getRequestedMap(requestedMap);
         for(Map.Entry<String,Limitorder> entry :map.entrySet()){
-            if(!(entry.getValue().getOrderID()== Id))continue;
+            if(!(entry.getValue().getOrderId()== Id))continue;
             if(!entry.getValue().getUser().equals(user))return false;//controllare eccezione
             orderbook.removeData("ask",entry.getKey());
             return true;
@@ -43,9 +44,6 @@ public class CancelOrder  extends Order implements Values{
         return false;
     }
 
-    // public void setUser(String user) {
-    //     this.user = user;
-    // }
 
     // @Override
     // public String getUser() {

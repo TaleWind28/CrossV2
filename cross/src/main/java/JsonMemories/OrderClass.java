@@ -1,14 +1,14 @@
 package JsonMemories;
 
-import java.util.TreeMap;
+import java.util.Map;
 
 import Commands.Orders.Limitorder;
 
 
 public class OrderClass {
-    TreeMap<String,Limitorder> askMap;
-    TreeMap<String,Limitorder>bidMap;
-    public OrderClass(TreeMap<String,Limitorder> askMap, TreeMap<String,Limitorder>bidMap){
+    Map<String,Limitorder> askMap;
+    Map<String,Limitorder>bidMap;
+    public OrderClass(Map<String,Limitorder> askMap, Map<String,Limitorder>bidMap){
         this.askMap = askMap;
         this.bidMap = bidMap;
     }

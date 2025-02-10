@@ -1,6 +1,7 @@
 package Communication;
 import java.io.PrintWriter;
 import java.net.Socket;
+import java.time.ZonedDateTime;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -42,8 +43,8 @@ public class TCP implements Protocol{
         .withSubtype(UpdateCredentials.class, "updatecredentials")
         .withSubtype(Help.class, "help")
         .withSubtype(ErrorMessage.class, "errormessage")
-        .withSubtype(Disconnect.class, "disconnect")
-        )
+        .withSubtype(Disconnect.class, "disconnect"))
+        .add(PolymorphicJsonAdapterFactory.of(ZonedDateTime.class, "GMT"))
         .build();
 
     protected JsonAdapter<Message>adapter = moshi.adapter(Message.class);

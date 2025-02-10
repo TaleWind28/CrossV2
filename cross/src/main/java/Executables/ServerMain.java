@@ -17,6 +17,7 @@ import ServerTasks.*;
 public class ServerMain extends ServerProtocol{
     private volatile Userbook registeredUsers;
     private volatile Orderbook orderbook;
+    private volatile int progressiveOrderNumber;
 
     public ServerMain(int port, int numThreads){
         super(port,numThreads);
@@ -87,7 +88,7 @@ public class ServerMain extends ServerProtocol{
         //carico in memoria
         this.registeredUsers.loadData();
         this.orderbook.loadData();
-        int progressiveOrderNumber = findOrderID(orderbook);
+        progressiveOrderNumber = findOrderID(orderbook)+1;
         System.out.println("Numero Ordine: "+progressiveOrderNumber);
         return;
     }
@@ -101,9 +102,18 @@ public class ServerMain extends ServerProtocol{
     public int searchMap(Orderbook orderbook,String requestedMap,int bestId){
         TreeMap<String,Limitorder> map = orderbook.getRequestedMap(requestedMap);
         for(Map.Entry<String,Limitorder> entry :map.entrySet()){
-            if((entry.getValue().getOrderID()< bestId))continue;
-            bestId = entry.getValue().getOrderID();
+            if((entry.getValue().getOrderId()< bestId))continue;
+            bestId = entry.getValue().getOrderId();
         }
         return bestId;
+    }
+
+    public synchronized int getProgressiveOrderNumber() {
+        return progressiveOrderNumber;
+    }
+
+    public synchronized void increaseProgressiveOrderNumber(){
+        this.progressiveOrderNumber++;
+        return;
     }
 }

@@ -4,6 +4,7 @@ import Commands.Values;
 import Communication.ServerMessage;
 import JsonMemories.JsonAccessedData;
 import JsonMemories.Userbook;
+import ServerTasks.GenericTask;
 import Users.User;
 
 public class Login implements Values{
@@ -16,7 +17,7 @@ public class Login implements Values{
     }
 
     @Override
-    public ServerMessage execute(JsonAccessedData data,String user){
+    public ServerMessage execute(JsonAccessedData data,String user,GenericTask task){
         Userbook userbook = (Userbook)data;
         System.out.println("[Login]"+this.toString());
         // if(userbook.getUserMap().containsKey(this.onlineUser))

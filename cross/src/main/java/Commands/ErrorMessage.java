@@ -2,6 +2,7 @@ package Commands;
 
 import Communication.ServerMessage;
 import JsonMemories.JsonAccessedData;
+import ServerTasks.GenericTask;
 
 public class ErrorMessage implements Values{
     private String message;
@@ -9,7 +10,7 @@ public class ErrorMessage implements Values{
         this.message = message;
     }
     @Override
-    public ServerMessage execute(JsonAccessedData data,String user) {
+    public ServerMessage execute(JsonAccessedData data,String user,GenericTask task) {
         return new ServerMessage(this.message, 104);
     }
     @Override

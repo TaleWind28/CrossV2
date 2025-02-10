@@ -2,6 +2,7 @@ package Commands;
 
 import Communication.ServerMessage;
 import JsonMemories.JsonAccessedData;
+import ServerTasks.GenericTask;
 
 
 public class Help implements Values{
@@ -17,7 +18,7 @@ public class Help implements Values{
     }
 
     @Override
-    public ServerMessage execute(JsonAccessedData data,String user) {
+    public ServerMessage execute(JsonAccessedData data,String user,GenericTask task) {
         //sfrutto l'utente passato come parametro dall'implementazione del metodo dell'interfaccia per avere il messaggio d'errore
         setHelpMessage(user);
         return new ServerMessage(this.helpMessage,200);

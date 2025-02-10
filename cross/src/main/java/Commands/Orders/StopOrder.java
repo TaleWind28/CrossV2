@@ -4,12 +4,12 @@ import Commands.Values;
 import Communication.ServerMessage;
 import JsonMemories.JsonAccessedData;
 //import JsonMemories.Orderbook;
+import ServerTasks.GenericTask;
 
 public class StopOrder extends Order implements Values {
     private String exchangeType;
     private int size;
     private int price;
-    private int orderID;
     //private String user;
 
     public StopOrder(String exchangeType,int size, int price){
@@ -20,7 +20,7 @@ public class StopOrder extends Order implements Values {
     }
 
     @Override
-    public ServerMessage execute(JsonAccessedData data,String user){
+    public ServerMessage execute(JsonAccessedData data,String user,GenericTask task){
         //if(context.onlineUser.equals(""))return new ServerMessage("401: Per effettuare ordini bisogna creare un account o accedervi",401);
         //Orderbook orderbook = (Orderbook)data;
         //la faccio semplice per vedere se funziona
@@ -33,10 +33,6 @@ public class StopOrder extends Order implements Values {
     // public void setUser(String user) {
     //     super.setUser(user);
     // }
-
-    public void setOrderID(int orderID) {
-        this.orderID = orderID;
-    }
 
     // @Override
     // public String getUser() {
@@ -56,11 +52,6 @@ public class StopOrder extends Order implements Values {
     @Override
     public int getSize() {
         return this.size;
-    }
-
-    @Override
-    public int getOrderID() {
-        return this.orderID;
     }
 
     @Override
