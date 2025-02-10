@@ -9,7 +9,7 @@ public class MarketOrder extends Order implements Values {
     private String exchangeType;
     private int size;
     private int orderID;
-    private String user;
+    //private String user;
 
     public MarketOrder(String exchangeType,int size){
         this.exchangeType = exchangeType;
@@ -72,10 +72,10 @@ public class MarketOrder extends Order implements Values {
         this.orderID = orderID;
     }
 
-    @Override
-    public String getUser() {
-        return this.user;
-    }
+    // @Override
+    // public String getUser() {
+    //     return super.user;
+    // }
 
     @Override
     public String getExchangeType() {
@@ -99,11 +99,11 @@ public class MarketOrder extends Order implements Values {
 
     @Override
     public void setUsername(String user) {
-        this.user = user;    
+        super.setUser(user);    
     }
 
     @Override
     public String getUsername() {
-        return this.user;    
+        return super.getUser();    
     }
 }

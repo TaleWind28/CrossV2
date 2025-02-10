@@ -15,8 +15,12 @@ public class ShowOrderBook implements Values {
         String prettyPrintedString = "------------------------------------------------------------------------------------------\n" + //
                         "User\t  ExchangeType\tBitcoin Size\tPrice per Bitcoin\tTotal Price\tOrder ID\n";
         //sta cosa mi fa schifo, dovrei usare strategy ma non so se ne ho voglia -> spoiler non ne ho voglia
-        prettyPrintedString = prettyPrinting(orderbook, "ask", prettyPrintedString);
-        prettyPrintedString = prettyPrinting(orderbook, "bid", prettyPrintedString);
+        if(orderbook.mapLen()!= 0){        
+            prettyPrintedString = prettyPrinting(orderbook, "ask", prettyPrintedString);
+            prettyPrintedString = prettyPrinting(orderbook, "bid", prettyPrintedString);
+        }else{
+            prettyPrintedString +="\t\t------------ NO ORDER AVAILABLE! -------------\n";    
+        }
         prettyPrintedString +="----------------------------------------------------------------------------------------";
         return new ServerMessage(prettyPrintedString, 100);
     }

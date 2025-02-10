@@ -10,7 +10,7 @@ public class StopOrder extends Order implements Values {
     private int size;
     private int price;
     private int orderID;
-    private String user;
+    //private String user;
 
     public StopOrder(String exchangeType,int size, int price){
         this.exchangeType = exchangeType;
@@ -30,18 +30,18 @@ public class StopOrder extends Order implements Values {
         return new ServerMessage("Ordine Correttamente Evaso",100);
     }
 
-    public void setUser(String user) {
-        this.user = user;
-    }
+    // public void setUser(String user) {
+    //     super.setUser(user);
+    // }
 
     public void setOrderID(int orderID) {
         this.orderID = orderID;
     }
 
-    @Override
-    public String getUser() {
-        return this.user;
-    }
+    // @Override
+    // public String getUser() {
+    //     return this.user;
+    // }
 
     @Override
     public String getExchangeType() {
@@ -65,12 +65,12 @@ public class StopOrder extends Order implements Values {
 
     @Override
     public void setUsername(String user) {
-        this.user =user;
+        super.setUser(user);
     }
 
     @Override
     public String getUsername() {
-        return this.user;    
+        return super.getUser();   
     }
 
 }

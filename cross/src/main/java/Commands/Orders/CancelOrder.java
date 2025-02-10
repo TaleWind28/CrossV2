@@ -10,23 +10,24 @@ import JsonMemories.Orderbook;
 
 public class CancelOrder  extends Order implements Values{
     private int orderID;
-    private String user;
+    //private String user;
 
     public CancelOrder(int orderID, String user){
         this.orderID = orderID;
-        this.user = user;
+        super.setUser(user);
     }
     
     @Override
-    public ServerMessage execute(JsonAccessedData data,String user){
+    public ServerMessage execute(JsonAccessedData data,String utente){
         //Order order = (Order)cmd;
-        this.setUsername(user);
-        if(this.user.equals(""))return new ServerMessage("Devi effettuare l'accesso per piazzare ordini", 104);
+        this.setUsername(utente);
+        String user = super.getUser();
+        if(user.equals(""))return new ServerMessage("Devi effettuare l'accesso per piazzare ordini", 104);
         Orderbook orderbook = (Orderbook)data;//order.getOrderbook();
         
-        if(searchMap(orderbook, "ask", this.orderID, this.user))return new ServerMessage("[100] Ordine correttamente Cancellato",100);
+        if(searchMap(orderbook, "ask", this.orderID, user))return new ServerMessage("[100] Ordine correttamente Cancellato",100);
         
-        else if(searchMap(orderbook, "bid", this.orderID, this.user))return new ServerMessage("[100] Ordine correttamente Cancellato",100);
+        else if(searchMap(orderbook, "bid", this.orderID, user))return new ServerMessage("[100] Ordine correttamente Cancellato",100);
         
         else return new ServerMessage("[104] Non è stato possibile cancellare l'ordine richiesto",104);
     }
@@ -42,14 +43,14 @@ public class CancelOrder  extends Order implements Values{
         return false;
     }
 
-    public void setUser(String user) {
-        this.user = user;
-    }
+    // public void setUser(String user) {
+    //     this.user = user;
+    // }
 
-    @Override
-    public String getUser() {
-        return this.user;
-    }
+    // @Override
+    // public String getUser() {
+    //     return this.user;
+    // }
     @Override
     public String getExchangeType() {
         return null;
@@ -68,11 +69,11 @@ public class CancelOrder  extends Order implements Values{
 
     @Override
     public void setUsername(String user) {
-        this.user = user;
+        super.setUser(user);
     }
 
     @Override
     public String getUsername() {
-        return this.user;
+        return super.getUser();
     }
 }
