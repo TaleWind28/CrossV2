@@ -1,7 +1,8 @@
-package Commands;
+package Commands.Internal;
 
+import Commands.Values;
 import Communication.ServerMessage;
-import JsonMemories.JsonAccessedData;
+import JsonUtils.JsonAccessedData;
 import ServerTasks.GenericTask;
 
 

@@ -1,4 +1,4 @@
-package Communication;
+package Communication.Protocols;
 import java.io.PrintWriter;
 import java.net.Socket;
 import java.time.ZonedDateTime;
@@ -8,19 +8,22 @@ import java.io.InputStreamReader;
 import com.squareup.moshi.JsonAdapter;
 import com.squareup.moshi.adapters.PolymorphicJsonAdapterFactory;
 
-import Commands.ErrorMessage;
-import Commands.Help;
 import Commands.Values;
 import Commands.Credentials.Disconnect;
 import Commands.Credentials.Login;
 import Commands.Credentials.Logout;
 import Commands.Credentials.Register;
 import Commands.Credentials.UpdateCredentials;
+import Commands.Internal.ErrorMessage;
+import Commands.Internal.Help;
 import Commands.Orders.CancelOrder;
 import Commands.Orders.Limitorder;
 import Commands.Orders.MarketOrder;
 import Commands.Orders.ShowOrderBook;
 import Commands.Orders.StopOrder;
+import Communication.ClientMessage;
+import Communication.Message;
+import Communication.ServerMessage;
 
 import com.squareup.moshi.Moshi;
 

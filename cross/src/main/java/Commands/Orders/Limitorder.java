@@ -4,8 +4,8 @@ import java.time.ZonedDateTime;
 
 import Commands.Values;
 import Communication.ServerMessage;
-import JsonMemories.JsonAccessedData;
-import JsonMemories.Orderbook;
+import JsonUtils.JsonAccessedData;
+import JsonUtils.Orderbook;
 import ServerTasks.GenericTask;
 
 public class Limitorder extends Order implements Values{

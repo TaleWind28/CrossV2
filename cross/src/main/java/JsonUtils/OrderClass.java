@@ -1,4 +1,4 @@
-package JsonMemories;
+package JsonUtils;
 
 import java.util.Map;
 

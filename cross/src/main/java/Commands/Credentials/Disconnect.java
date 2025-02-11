@@ -2,7 +2,8 @@ package Commands.Credentials;
 
 import Commands.Values;
 import Communication.ServerMessage;
-import JsonMemories.JsonAccessedData;
+import JsonUtils.JsonAccessedData;
+import JsonUtils.Userbook;
 import ServerTasks.GenericTask;
 
 public class Disconnect implements Values{
@@ -14,7 +15,11 @@ public class Disconnect implements Values{
 
     @Override
     public ServerMessage execute(JsonAccessedData data, String user,GenericTask task) {
-        return new ServerMessage("Disconnessione avvenuta con successo",408);    
+        if(task.onlineUser.equals(""))return new ServerMessage("Disconnessione avvenuta con successo",408);    
+        Userbook userbook = (Userbook)data;
+        userbook.getUserMap().get(task.onlineUser).setLogged(false);
+        userbook.dataFlush();
+        return new ServerMessage("[Server]Disconnessione avvenuta con successo", 408);
     }
 
     @Override

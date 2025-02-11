@@ -2,8 +2,8 @@ package Commands.Orders;
 
 import Commands.Values;
 import Communication.ServerMessage;
-import JsonMemories.JsonAccessedData;
-import JsonMemories.Orderbook;
+import JsonUtils.JsonAccessedData;
+import JsonUtils.Orderbook;
 import ServerTasks.GenericTask;
 import Utils.OrderCache;
 import Utils.OrderSorting;
@@ -28,21 +28,21 @@ public class MarketOrder extends Order implements Values {
         //
         String exchangetype = null;
         //ha senso preparare il responsemessege adesse perchè se compro compro tutto dal solito utente, il quale verrà aggiunto successivamente al messaggio
-        String responseMessage = null;
+        String responseMessage = "[Server] Hai comprato: \n";
         //preparo le stringhe per stampa e richiesta userbook
         switch (this.exchangeType) {
             case "ask":
                 exchangetype = "bid";
-                responseMessage = "[200]: OrderCode[" + this.orderID+"] n°"+this.size+" bitcoin venduti all'utente ";
+                //responseMessage = "[200]: OrderCode[" + this.orderID+"] n°"+this.size+" bitcoin venduti all'utente ";
                 break;
             case "bid":
                 exchangetype = "ask";
-                responseMessage = "[200]: OrderCode[" +this.orderID +"] n°"+this.size+" bitcoin comprati dall'utente ";
+                //responseMessage = "[200]: OrderCode[" +this.orderID +"] n°"+this.size+" bitcoin comprati dall'utente ";
                 break;
         }
         
         OrderCache cache = new OrderCache();
-        System.out.println("bella pe voi");
+        //System.out.println("bella pe voi");
         int resp_code = 200;
         while(this.size>0){
             responseMessage = evadeOrder(exchangetype, user, orderbook, cache, responseMessage);
@@ -63,24 +63,27 @@ public class MarketOrder extends Order implements Values {
         //cerco il miglior prezzo per la qtà di bitcoin che voglio comprare
         OrderSorting orderbookEntry = orderbook.getBestPriceAvailable(exchangetype,user);
         //controllo che esista una entry per il mio ordine
-        if(orderbookEntry == null)return "[104] Non sono stati trovati ordini per le tue esigenze";
+        if(orderbookEntry == null){System.out.println("[Marketorder]mamma");return "[104] Non sono stati trovati ordini per le tue esigenze";}
         //rimuovo l'ordine dall'orderbook
         Limitorder evadedOrder = (Limitorder)orderbook.removeData(exchangetype,orderbookEntry);
+        //salvo l'ordine rimosso dall'ordebook in caso non si possa evadere completamente il marketorder
         cache.addOrder(evadedOrder);
         //controllo che l'ordine sia stato evaso
         if(evadedOrder == null){
             System.out.println("[Marketorder]ordine inevdibile");
             return "[104] Non sono stati trovati ordini per le tue esigenze";
         }
-            //controllo quanti btc sono stati comprati
+        int bitcoinBought = evadedOrder.getSize();
+        //controllo quanti btc sono stati comprati
         if(evadedOrder.getSize()>this.size){
+            bitcoinBought = this.size;
             //sottraggo la taglia di bitcoin comprata
             evadedOrder.addSize(-(this.size));
             //rimetto l'offerta sul mercato
             orderbook.addData(evadedOrder, exchangetype);
             this.size = 0;
         }
-        responseMessage+=evadedOrder.getUser()+" pagando "+(evadedOrder.getPrice()*this.size)+"$";
+        responseMessage+="#"+bitcoinBought+" bitcoin dall'utente "+evadedOrder.getUser()+" pagando "+(evadedOrder.getPrice()*bitcoinBought)+"$\n";
         System.out.println("[Marketorder]evadedOrder size="+evadedOrder.getSize());
         this.size -= evadedOrder.getSize();
         System.out.println("[Marketorder]myorder size="+this.size);

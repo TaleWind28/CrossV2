@@ -1,4 +1,4 @@
-package Users;
+package JsonUtils;
 public class User {
     private String username;
     private String password;

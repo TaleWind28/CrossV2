@@ -1,4 +1,4 @@
-package Communication;
+package Communication.Protocols;
 
 import java.util.concurrent.*;
 import java.util.*;

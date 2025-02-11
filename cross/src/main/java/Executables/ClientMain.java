@@ -7,9 +7,9 @@ import java.util.NoSuchElementException;
 import Commands.CommandFactory;
 import Commands.Credentials.Disconnect;
 import Communication.ClientMessage;
-import Communication.ClientProtocol;
 import Communication.ServerMessage;
-import Communication.TCP;
+import Communication.Protocols.ClientProtocol;
+import Communication.Protocols.TCP;
 
 
 public class ClientMain extends ClientProtocol{

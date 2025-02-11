@@ -1,9 +1,8 @@
-package JsonMemories;
+package JsonUtils;
 
 import java.io.EOFException;
 import java.io.File;
 import java.time.ZonedDateTime;
-import java.util.Map;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.ConcurrentSkipListMap;
 
@@ -88,48 +87,28 @@ public class Orderbook implements JsonAccessedData{
     public synchronized Order removeData(String mapType, OrderSorting orderbookEntry){
         Order ord = null;
         ConcurrentSkipListMap<OrderSorting, Limitorder> requestedMap = getRequestedMap(mapType);
-        System.out.println(this.currentScope+"[RemoveData] entry "+orderbookEntry);
+        //System.out.println(this.currentScope+"[RemoveData] entry "+orderbookEntry);
         ord = requestedMap.remove(orderbookEntry);
         dataFlush();
         return ord;
     }
 
-    public synchronized OrderSorting getBestPriceAvailable(String tradeType, String myUsername){
+    public OrderSorting getBestPriceAvailable(String tradeType, String myUsername){
         ConcurrentSkipListMap<OrderSorting, Limitorder> requestedMap = getRequestedMap(tradeType);
-        return requestedMap.firstEntry().getKey();
+        if(requestedMap.isEmpty())return null;
+        else return requestedMap.firstEntry().getKey();
     }
 
-    public synchronized  ConcurrentSkipListMap<OrderSorting, Limitorder> getAskOrders() {
+    public ConcurrentSkipListMap<OrderSorting, Limitorder> getAskOrders() {
         return askOrders;
     }
 
-    public synchronized  ConcurrentSkipListMap<OrderSorting, Limitorder> getBidOrders() {
+    public ConcurrentSkipListMap<OrderSorting, Limitorder> getBidOrders() {
         return bidOrders;
     }
     
-    public synchronized int mapLen() {
+    public int mapLen() {
         return this.askOrders.size() +this.bidOrders.size();
-    }
-
-    public String pretty() {
-        //System.out.println(this.askOrders.toString());
-        
-        String prettyPrinting = "   ExchangeType\t  Bitcoin Size\t Price per Bitcoin\n";
-        prettyPrinting = prettyPrinting(this,"ask",prettyPrinting);
-        prettyPrinting = prettyPrinting(this,"bid",prettyPrinting);
-        return prettyPrinting;
-        
-    }
-
-    public String prettyPrinting(Orderbook orderbook, String requestedmap, String prettyPrinting) {
-        
-        for(Map.Entry<OrderSorting,Limitorder> entry: orderbook.getRequestedMap(requestedmap).entrySet()){
-            Order ord = entry.getValue();
-            prettyPrinting+="\t"+ord.getExchangeType()+"\t \t"+ord.getSize()+"\t \t"+ord.getPrice()+"\n";
-        }
-
-        return prettyPrinting;
-        
     }
 
 }

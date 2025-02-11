@@ -8,10 +8,10 @@ import java.util.concurrent.ConcurrentSkipListMap;
 import java.util.concurrent.TimeUnit;
 
 import Commands.Orders.Limitorder;
-import Communication.ServerProtocol;
-import Communication.TCP;
-import JsonMemories.Orderbook;
-import JsonMemories.Userbook;
+import Communication.Protocols.ServerProtocol;
+import Communication.Protocols.TCP;
+import JsonUtils.Orderbook;
+import JsonUtils.Userbook;
 import ServerTasks.*;
 import Utils.OrderSorting;
 
@@ -22,8 +22,8 @@ public class ServerMain extends ServerProtocol{
 
     public ServerMain(int port, int numThreads){
         super(port,numThreads);
-        this.registeredUsers = new Userbook("cross\\src\\main\\java\\JsonFiles\\Users.json");
-        this.orderbook = new Orderbook("cross\\src\\main\\java\\JsonFiles\\OrderBook.json");
+        this.registeredUsers = new Userbook("cross\\src\\main\\java\\JsonUtils\\JsonFiles\\Users.json");
+        this.orderbook = new Orderbook("cross\\src\\main\\java\\JsonUtils\\JsonFiles\\OrderBook.json");
     }
 
     public static void main(String[] args) throws Exception {

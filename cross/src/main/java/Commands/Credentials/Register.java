@@ -2,10 +2,10 @@ package Commands.Credentials;
 
 import Commands.Values;
 import Communication.ServerMessage;
-import JsonMemories.JsonAccessedData;
-import JsonMemories.Userbook;
+import JsonUtils.JsonAccessedData;
+import JsonUtils.User;
+import JsonUtils.Userbook;
 import ServerTasks.GenericTask;
-import Users.User;
 
 public class Register implements Values{
     private String username;

@@ -1,6 +1,8 @@
-package Communication;
+package Communication.Protocols;
 
 import java.net.Socket;
+
+import Communication.Message;
 
 public interface Protocol {
     //istanzio lo stream per la ricezione dei messaggi

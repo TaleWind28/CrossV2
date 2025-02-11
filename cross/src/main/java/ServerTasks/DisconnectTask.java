@@ -4,8 +4,8 @@ import java.net.Socket;
 
 import Commands.CommandFactory;
 import Communication.Message;
-import Communication.Protocol;
 import Communication.ServerMessage;
+import Communication.Protocols.Protocol;
 import Executables.ServerMain;
 
 public class DisconnectTask implements Runnable{

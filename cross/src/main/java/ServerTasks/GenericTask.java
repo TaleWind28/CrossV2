@@ -8,10 +8,10 @@ import java.util.concurrent.TimeUnit;
 
 import Commands.Credentials.Login;
 import Communication.ClientMessage;
-import Communication.Protocol;
 import Communication.ServerMessage;
+import Communication.Protocols.Protocol;
 import Executables.ServerMain;
-import JsonMemories.JsonAccessedData;
+import JsonUtils.JsonAccessedData;
 
 public class GenericTask implements Runnable {
     private Socket client;

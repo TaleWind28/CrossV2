@@ -1,4 +1,4 @@
-package JsonMemories;
+package JsonUtils;
 public interface JsonAccessedData {
     public int accessData(String keyword);
     public void loadData();

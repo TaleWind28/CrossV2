@@ -1,4 +1,4 @@
-package JsonMemories;
+package JsonUtils;
 
 import java.io.BufferedWriter;
 import java.io.EOFException;
@@ -11,8 +11,6 @@ import org.springframework.security.crypto.bcrypt.BCrypt;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.stream.JsonReader;
-
-import Users.User;
 
 public class Userbook implements JsonAccessedData{
     protected ConcurrentHashMap<String,User> userMap = new ConcurrentHashMap<>();
