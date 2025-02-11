@@ -25,24 +25,21 @@ public class MarketOrder extends Order implements Values {
         if(user.equals(""))return new ServerMessage("401: Per effettuare ordini bisogna creare un account o accedervi",401);
         //recupero l'orderbook
         Orderbook orderbook = (Orderbook)data;
-        //
+        //preparo string per richieder ela mappa
         String exchangetype = null;
-        //ha senso preparare il responsemessege adesse perchè se compro compro tutto dal solito utente, il quale verrà aggiunto successivamente al messaggio
-        String responseMessage = "[Server] Hai comprato: \n";
-        //preparo le stringhe per stampa e richiesta userbook
+        //preparo le stringhe per richiesta mappa Orderbook
         switch (this.exchangeType) {
             case "ask":
                 exchangetype = "bid";
-                //responseMessage = "[200]: OrderCode[" + this.orderID+"] n°"+this.size+" bitcoin venduti all'utente ";
                 break;
             case "bid":
                 exchangetype = "ask";
-                //responseMessage = "[200]: OrderCode[" +this.orderID +"] n°"+this.size+" bitcoin comprati dall'utente ";
                 break;
         }
-        
+        //ha senso preparare il responsemessege adesse perchè se compro compro tutto dal solito utente, il quale verrà aggiunto successivamente al messaggio
+        String responseMessage = "[Server] Hai comprato: \n";
         OrderCache cache = new OrderCache();
-        //System.out.println("bella pe voi");
+
         int resp_code = 200;
         while(this.size>0){
             responseMessage = evadeOrder(exchangetype, user, orderbook, cache, responseMessage);
@@ -53,9 +50,8 @@ public class MarketOrder extends Order implements Values {
                 break;
             }
         }
-        
-        return new ServerMessage(responseMessage,resp_code);
-        //return new ServerMessage("Ordine Correttamente Evaso",100);
+        responseMessage = responseMessage.stripTrailing();
+        return new ServerMessage(responseMessage,resp_code);    
     }
 
     public String evadeOrder(String exchangetype,String user,Orderbook orderbook, OrderCache cache,String responseMessage){
@@ -84,9 +80,9 @@ public class MarketOrder extends Order implements Values {
             this.size = 0;
         }
         responseMessage+="#"+bitcoinBought+" bitcoin dall'utente "+evadedOrder.getUser()+" pagando "+(evadedOrder.getPrice()*bitcoinBought)+"$\n";
-        System.out.println("[Marketorder]evadedOrder size="+evadedOrder.getSize());
+        //System.out.println("[Marketorder]evadedOrder size="+evadedOrder.getSize());
         this.size -= evadedOrder.getSize();
-        System.out.println("[Marketorder]myorder size="+this.size);
+        //System.out.println("[Marketorder]myorder size="+this.size);
         return responseMessage;
     }
 

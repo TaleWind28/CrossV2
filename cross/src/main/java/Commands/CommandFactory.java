@@ -5,6 +5,8 @@ import Commands.Credentials.Login;
 import Commands.Credentials.Logout;
 import Commands.Credentials.Register;
 import Commands.Credentials.UpdateCredentials;
+import Commands.Internal.ErrorMessage;
+import Commands.Internal.Help;
 import Commands.Orders.CancelOrder;
 import Commands.Orders.Limitorder;
 import Commands.Orders.MarketOrder;
