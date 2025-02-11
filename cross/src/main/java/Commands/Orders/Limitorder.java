@@ -12,8 +12,6 @@ public class Limitorder extends Order implements Values{
     private String exchangeType;
     private int size;
     private int price;
-    //private int orderID;
-    //private String user;
 
     public Limitorder(String exchangeType,int size, int price){
         super();

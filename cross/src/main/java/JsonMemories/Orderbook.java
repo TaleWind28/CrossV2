@@ -52,7 +52,6 @@ public class Orderbook implements JsonAccessedData{
             OrderClass orderData = adapter.fromJson(reader);
             this.askOrders = new TreeMap<>(orderData.askMap);
             this.bidOrders = new TreeMap<>(orderData.bidMap);
-            //System.out.println("copio");
         }
         catch(Exception e){System.out.println("[ORDERBOOK] LOADDATA: "+e.getMessage()+" "+e.getClass());}
         return;

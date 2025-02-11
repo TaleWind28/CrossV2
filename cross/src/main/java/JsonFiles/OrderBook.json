@@ -1,5 +1,13 @@
 {
  "askMap": {
+  "pino:5": {
+   "exchangeType": "ask",
+   "gmt": "2025-02-11T09:02:42.2858184+01:00[Europe/Rome]",
+   "orderId": 8,
+   "price": 5,
+   "size": 1,
+   "user": "pino"
+  },
   "pino:6": {
    "exchangeType": "ask",
    "gmt": "2025-02-10T12:31:31.4039874+01:00[Europe/Rome]",
