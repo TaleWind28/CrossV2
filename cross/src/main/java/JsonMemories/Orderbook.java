@@ -5,6 +5,7 @@ import java.time.ZonedDateTime;
 import java.util.Map;
 import java.util.TreeMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.ConcurrentSkipListMap;
 
 import com.squareup.moshi.JsonAdapter;
 import com.squareup.moshi.JsonReader;
@@ -16,6 +17,7 @@ import Commands.Values;
 import Commands.Orders.Limitorder;
 import Commands.Orders.Order;
 import Commands.Orders.StopOrder;
+import Utils.OrderSorting;
 import Utils.PriceComparator;
 import okio.Okio;
 
@@ -26,15 +28,15 @@ public class Orderbook implements JsonAccessedData{
     //private Gson gson = new GsonBuilder().setPrettyPrinting().create();
     private Moshi moshi = new Moshi.Builder().add(PolymorphicJsonAdapterFactory.of(ZonedDateTime.class,"GMT")).add(PolymorphicJsonAdapterFactory.of(Order.class,"Order").withSubtype(Limitorder.class, "Limitorder")).build();
     private JsonAdapter<OrderClass> adapter = moshi.adapter(OrderClass.class);
-    private TreeMap<String, Limitorder> askOrders; // Prezzi crescenti
-    private  TreeMap<String, Limitorder> bidOrders; // Prezzi decrescenti
-    private  ConcurrentLinkedQueue<StopOrder> stopOrders;//devo ancora capire cosa sono
+    private ConcurrentSkipListMap<OrderSorting, Limitorder> askOrders; // Prezzi crescenti
+    private ConcurrentSkipListMap<OrderSorting, Limitorder> bidOrders; // Prezzi decrescenti
+    private ConcurrentLinkedQueue<StopOrder> stopOrders;//devo ancora capire cosa sono
     private String currentScope = "[ORDERBOOK]";
         
     public Orderbook(String jsonFilePath){
         this.jsonFilePath = jsonFilePath;
-        this.askOrders = new TreeMap<>(new PriceComparator());
-        this.bidOrders = new TreeMap<>(new PriceComparator().reversed());
+        this.askOrders = new ConcurrentSkipListMap<>();
+        this.bidOrders = new ConcurrentSkipListMap<>();
         this.stopOrders = new ConcurrentLinkedQueue<>(); 
         System.out.println(this.currentScope+"Stoporders"+this.stopOrders);
     }
@@ -50,8 +52,8 @@ public class Orderbook implements JsonAccessedData{
         //System.out.println("copio");
         try (JsonReader reader =JsonReader.of(Okio.buffer(Okio.source(new File(this.jsonFilePath)))))  {
             OrderClass orderData = adapter.fromJson(reader);
-            this.askOrders = new TreeMap<>(orderData.askMap);
-            this.bidOrders = new TreeMap<>(orderData.bidMap);
+            this.askOrders = new ConcurrentSkipListMap<>(orderData.askMap);
+            this.bidOrders = new ConcurrentSkipListMap<>(orderData.bidMap);
         }
         catch(Exception e){System.out.println("[ORDERBOOK] LOADDATA: "+e.getMessage()+" "+e.getClass());}
         return;
@@ -61,14 +63,14 @@ public class Orderbook implements JsonAccessedData{
         Limitorder ord = (Limitorder)val;
         String orderbookEntry = ord.getUser()+":"+ord.getPrice();
         System.out.println(this.currentScope+"entry:"+orderbookEntry);
-        TreeMap<String,Limitorder> ordermap = this.getRequestedMap(mapType);
-        if(ordermap.containsKey(orderbookEntry))ordermap.get(orderbookEntry).addSize(ord.getSize());
-        else ordermap.put(orderbookEntry, ord);
+        ConcurrentSkipListMap<OrderSorting, Limitorder> ordermap = this.getRequestedMap(mapType);
+        //if(ordermap.containsKey(orderbookEntry))ordermap.get(orderbookEntry).addSize(ord.getSize());
+        /*else*/ ordermap.put(new OrderSorting(ord.getGmt(),ord.getPrice(),ord.getOrderId()), ord);
         this.dataFlush();
         return;
     }
 
-    public TreeMap<String,Limitorder> getRequestedMap(String request){
+    public ConcurrentSkipListMap<OrderSorting, Limitorder> getRequestedMap(String request){
         if(request.equals("ask"))return this.askOrders;
         else return this.bidOrders;
     }
@@ -85,30 +87,25 @@ public class Orderbook implements JsonAccessedData{
         return;
     }
 
-    public synchronized Order removeData(String mapType, String orderbookEntry){
+    public synchronized Order removeData(String mapType, OrderSorting orderbookEntry){
         Order ord = null;
-        TreeMap<String,Limitorder> requestedMap = getRequestedMap(mapType);
+        ConcurrentSkipListMap<OrderSorting, Limitorder> requestedMap = getRequestedMap(mapType);
         System.out.println("entry "+orderbookEntry);
-        ord = requestedMap.remove(orderbookEntry);
+        //ord = requestedMap.remove(orderbookEntry);
         dataFlush();
         return ord;
     }
 
-    public synchronized String getBestPriceAvailable(int size,String tradeType, String myUsername){
-        TreeMap<String,Limitorder> requestedMap = getRequestedMap(tradeType);
-        for(String key: requestedMap.keySet()){
-            if(key.split(":")[0].equals(myUsername))continue;
-            if(requestedMap.get(key).getSize()<size)continue;
-            else return key;
-        }
-        return null;
+    public synchronized OrderSorting getBestPriceAvailable(int size,String tradeType, String myUsername){
+        ConcurrentSkipListMap<OrderSorting, Limitorder> requestedMap = getRequestedMap(tradeType);
+        return requestedMap.firstEntry().getKey();
     }
 
-    public synchronized TreeMap<String, Limitorder> getAskOrders() {
+    public synchronized  ConcurrentSkipListMap<OrderSorting, Limitorder> getAskOrders() {
         return askOrders;
     }
 
-    public synchronized TreeMap<String, Limitorder> getBidOrders() {
+    public synchronized  ConcurrentSkipListMap<OrderSorting, Limitorder> getBidOrders() {
         return bidOrders;
     }
     
@@ -128,7 +125,7 @@ public class Orderbook implements JsonAccessedData{
 
     public String prettyPrinting(Orderbook orderbook, String requestedmap, String prettyPrinting) {
         
-        for(Map.Entry<String,Limitorder> entry: orderbook.getRequestedMap(requestedmap).entrySet()){
+        for(Map.Entry<OrderSorting,Limitorder> entry: orderbook.getRequestedMap(requestedmap).entrySet()){
             Order ord = entry.getValue();
             prettyPrinting+="\t"+ord.getExchangeType()+"\t \t"+ord.getSize()+"\t \t"+ord.getPrice()+"\n";
         }

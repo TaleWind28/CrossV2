@@ -6,7 +6,6 @@ import java.net.Socket;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Map;
-import java.util.TreeMap;
 import java.util.concurrent.ConcurrentSkipListMap;
 import java.util.concurrent.TimeUnit;
 
@@ -24,7 +23,6 @@ import JsonMemories.OrderClass;
 import JsonMemories.Orderbook;
 import JsonMemories.Userbook;
 import ServerTasks.*;
-import Utils.OrderSortTst;
 import Utils.OrderSorting;
 import Utils.OrderSortingAdapter;
 import okio.Okio;
@@ -123,18 +121,17 @@ public class ServerMain extends ServerProtocol{
         ordList.put(new OrderSorting(ZonedDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME), ord2.getPrice(),ord2.getOrderId()), ord2);
         ordList.put(new OrderSorting(ZonedDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME), ord3.getPrice(),ord3.getOrderId()), ord3);
         ordList.put(new OrderSorting(ZonedDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME), ord4.getPrice(),ord4.getOrderId()), ord4);
-        OrderSortTst ordToPrint = new OrderSortTst(ordList);
         
-        Moshi moshi = new Moshi.Builder().add(new OrderSortingAdapter()).add(PolymorphicJsonAdapterFactory.of(ZonedDateTime.class,"GMT")).add(PolymorphicJsonAdapterFactory.of(Order.class,"Order").withSubtype(Limitorder.class, "Limitorder")).build();
-        //JsonAdapter<Map<OrderSorting,Limitorder>> adapter = moshi.adapter(Types.newParameterizedType(Map.class, OrderSorting.class, Limitorder.class));
-        JsonAdapter<OrderSortTst> adapter = moshi.adapter(OrderSortTst.class);
-        try (JsonWriter writer = JsonWriter.of(Okio.buffer(Okio.sink(new File("cross\\src\\main\\java\\Utils\\try.json"))))) {
-            writer.setIndent(" ");
-            adapter.toJson(writer, ordToPrint);
-        } catch (Exception e) {
-            System.out.println("[SERVERMAIN] Test"+e.getMessage()+"\n"+e.getCause()+"\n"+e.getClass()+"\n");
-            System.exit(0);
-        }
+        // Moshi moshi = new Moshi.Builder().add(new OrderSortingAdapter()).add(PolymorphicJsonAdapterFactory.of(ZonedDateTime.class,"GMT")).add(PolymorphicJsonAdapterFactory.of(Order.class,"Order").withSubtype(Limitorder.class, "Limitorder")).build();
+        // //JsonAdapter<Map<OrderSorting,Limitorder>> adapter = moshi.adapter(Types.newParameterizedType(Map.class, OrderSorting.class, Limitorder.class));
+        // JsonAdapter<OrderSortTst> adapter = moshi.adapter(OrderSortTst.class);
+        // try (JsonWriter writer = JsonWriter.of(Okio.buffer(Okio.sink(new File("cross\\src\\main\\java\\Utils\\try.json"))))) {
+        //     writer.setIndent(" ");
+        //     adapter.toJson(writer, ordToPrint);
+        // } catch (Exception e) {
+        //     System.out.println("[SERVERMAIN] Test"+e.getMessage()+"\n"+e.getCause()+"\n"+e.getClass()+"\n");
+        //     System.exit(0);
+        // }
 
         return;
     }
@@ -146,8 +143,8 @@ public class ServerMain extends ServerProtocol{
     }
 
     public int searchMap(Orderbook orderbook,String requestedMap,int bestId){
-        TreeMap<String,Limitorder> map = orderbook.getRequestedMap(requestedMap);
-        for(Map.Entry<String,Limitorder> entry :map.entrySet()){
+        ConcurrentSkipListMap<OrderSorting, Limitorder> map = orderbook.getRequestedMap(requestedMap);
+        for(Map.Entry<OrderSorting,Limitorder> entry :map.entrySet()){
             if((entry.getValue().getOrderId()< bestId))continue;
             bestId = entry.getValue().getOrderId();
         }

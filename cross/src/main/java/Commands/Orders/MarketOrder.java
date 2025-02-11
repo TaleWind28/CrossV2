@@ -5,6 +5,7 @@ import Communication.ServerMessage;
 import JsonMemories.JsonAccessedData;
 import JsonMemories.Orderbook;
 import ServerTasks.GenericTask;
+import Utils.OrderSorting;
 
 public class MarketOrder extends Order implements Values {
     private String exchangeType;
@@ -44,14 +45,13 @@ public class MarketOrder extends Order implements Values {
                 break;
         }
         //cerco il miglior prezzo per la qtà di bitcoin che voglio comprare
-        String orderbookEntry = orderbook.getBestPriceAvailable(this.size, exchangetype,user);
+        OrderSorting orderbookEntry = orderbook.getBestPriceAvailable(this.size, exchangetype,user);
         //controllo che esista una entry per il mio ordine
         if(orderbookEntry == null)return new ServerMessage("[404] Non sono stati trovati ordini per le tue esigenze",-1);
         //rimuovo l'ordine dall'orderbook
         Limitorder evadedOrder = (Limitorder)orderbook.removeData(exchangetype,orderbookEntry);
         //controllo che l'ordine sia stato evaso
         if(evadedOrder == null)return new ServerMessage("[404] Non sono stati trovati ordini per le tue esigenze",-1);
-        //System.out.println("taglia ordine utente:"+ord.getSize()+", taglia ordine mercato:"+evadedOrder.getSize());
         //controllo quanti btc sono stati comprati
         if(evadedOrder.getSize()>this.size){
             //sottraggo la taglia di bitcoin comprata

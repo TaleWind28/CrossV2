@@ -94,8 +94,8 @@ public class GenericTask implements Runnable {
             String additionalInfo = this.onlineUser;
             //stampa di debug
             System.out.println("[GenericTask] Operation: "+clientRequest.operation+"\nValues: "+clientRequest.values.toString());
-            //setto l'username per i comandi           
-            clientRequest.values.setUsername(this.onlineUser);
+            // //setto l'username per i comandi           
+            if(clientRequest.operation.toLowerCase().contains("order"))clientRequest.values.setUsername(this.onlineUser);
             //stampa di debug
             System.out.println("[GenericTask] Comando fabbricato: "+clientRequest.toString());
             //dati in formato json per controllare gli utenti

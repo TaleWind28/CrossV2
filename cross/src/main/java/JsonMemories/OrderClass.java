@@ -3,12 +3,13 @@ package JsonMemories;
 import java.util.Map;
 
 import Commands.Orders.Limitorder;
+import Utils.OrderSorting;
 
 
 public class OrderClass {
-    Map<String,Limitorder> askMap;
-    Map<String,Limitorder>bidMap;
-    public OrderClass(Map<String,Limitorder> askMap, Map<String,Limitorder>bidMap){
+    Map<OrderSorting,Limitorder> askMap;
+    Map<OrderSorting,Limitorder>bidMap;
+    public OrderClass(Map<OrderSorting,Limitorder> askMap, Map<OrderSorting,Limitorder>bidMap){
         this.askMap = askMap;
         this.bidMap = bidMap;
     }

@@ -97,6 +97,7 @@ public class ClientMain extends ClientProtocol{
                     System.out.println("[CLIENTMAIN]"+userMessage.toString());
                     //System.out.println("[CLIENTMAIN]"+userMessage.values.toString());
                     this.protocol.sendMessage(userMessage);
+                    
                     this.canSend = false;
                 }
             }

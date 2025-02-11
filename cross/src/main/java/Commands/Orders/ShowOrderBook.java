@@ -7,6 +7,7 @@ import Communication.ServerMessage;
 import JsonMemories.JsonAccessedData;
 import JsonMemories.Orderbook;
 import ServerTasks.GenericTask;
+import Utils.OrderSorting;
 
 
 public class ShowOrderBook implements Values {
@@ -29,7 +30,7 @@ public class ShowOrderBook implements Values {
 
     public String prettyPrinting(Orderbook orderbook, String requestedmap, String prettyPrinting) {
         
-        for(Map.Entry<String,Limitorder> entry: orderbook.getRequestedMap(requestedmap).entrySet()){
+        for(Map.Entry<OrderSorting,Limitorder> entry: orderbook.getRequestedMap(requestedmap).entrySet()){
             Order ord = entry.getValue();
             prettyPrinting+=ord.getUser()+"\t\t"+ord.getExchangeType()+"\t \t"+ord.getSize()+"\t \t"+ord.getPrice()+"\t\t    "+ord.getPrice()*ord.getSize()+"\t\t   "+ord.getOrderId()+"\n";
         }

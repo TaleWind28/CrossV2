@@ -2,12 +2,14 @@ package Commands.Orders;
 
 import java.util.Map;
 import java.util.TreeMap;
+import java.util.concurrent.ConcurrentSkipListMap;
 
 import Commands.Values;
 import Communication.ServerMessage;
 import JsonMemories.JsonAccessedData;
 import JsonMemories.Orderbook;
 import ServerTasks.GenericTask;
+import Utils.OrderSorting;
 
 public class CancelOrder  extends Order implements Values{
     private int orderID;
@@ -34,11 +36,11 @@ public class CancelOrder  extends Order implements Values{
     }
 
     public boolean searchMap(Orderbook orderbook,String requestedMap,int Id, String user){
-        TreeMap<String,Limitorder> map = orderbook.getRequestedMap(requestedMap);
-        for(Map.Entry<String,Limitorder> entry :map.entrySet()){
+        ConcurrentSkipListMap<OrderSorting, Limitorder> map = orderbook.getRequestedMap(requestedMap);
+        for(Map.Entry<OrderSorting,Limitorder> entry :map.entrySet()){
             if(!(entry.getValue().getOrderId()== Id))continue;
             if(!entry.getValue().getUser().equals(user))return false;//controllare eccezione
-            orderbook.removeData("ask",entry.getKey());
+            //orderbook.removeData("ask",entry.getKey());
             return true;
         }
         return false;

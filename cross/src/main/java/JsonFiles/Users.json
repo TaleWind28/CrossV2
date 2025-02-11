@@ -1,1 +1,52 @@
-{}
+{
+  "mimmo": {
+    "username": "mimmo",
+    "password": "$2a$10$ByJ.8itNQYgPok7.2qIz8.A2wUnX6UpDvPcNznnG7WvDQKj1pOFeS",
+    "isLogged": false
+  },
+  "pinoi": {
+    "username": "pinoi",
+    "password": "$2a$10$bnrVWqrJAq1cfe4jol/XGOi7HFzIanEXJvtsJbkHq33HgHgd.AiNu",
+    "isLogged": false
+  },
+  "pin": {
+    "username": "pin",
+    "password": "$2a$10$tjxw6DsZhTmqKKopF26dTe59nLTySRzVcKdAZunKdT3yk2bxrpTsW",
+    "isLogged": false
+  },
+  "Cydonia": {
+    "username": "Cydonia",
+    "password": "$2a$10$41tqYhp.0dN8g0tbfx4I/u/CU3OjPg764lMBVyWPZoYZnTjxIEG3e",
+    "isLogged": false
+  },
+  "pnoi": {
+    "username": "pnoi",
+    "password": "$2a$10$Kgscx1pK4oZ6b1RAwhoWMOaiNdN2oxhwitK.P3dqXww8h0S9eqqla",
+    "isLogged": false
+  },
+  "TaleWind": {
+    "username": "TaleWind",
+    "password": "$2a$10$reYx0tmh9XUmizv0SUJHKOahimZaclLKZ8mjCiCB2bxOOZaJw2.62",
+    "isLogged": false
+  },
+  "pinotto": {
+    "username": "pinotto",
+    "password": "$2a$10$rtr2YRUhXYyJc9YojBD8guTab/mb4KbmZxWxS6plJQxHrAr9JZ6ZS",
+    "isLogged": false
+  },
+  "pippo": {
+    "username": "pippo",
+    "password": "$2a$10$IKo05duGZ5mRTBo5jupHGOqs93TtWr35.2xgC1UgTgQ1Zvdt6JT/2",
+    "isLogged": false
+  },
+  "lorenzo": {
+    "username": "lorenzo",
+    "password": "$2a$10$Cc12etsMTVx1tu287ag5YOS/yrki43w4jIVrLGqFJY92.Wq9Nl0yK",
+    "isLogged": false
+  },
+  "pino": {
+    "username": "pino",
+    "password": "$2a$10$MMmf2UzAjQEi9jRUfw2wGeHoQaYrazK/b6mC5.fozYF9hbv8vQus2",
+    "isLogged": false
+  }
+}
