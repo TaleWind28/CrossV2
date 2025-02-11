@@ -1,6 +1,7 @@
 package Utils;
 
 import java.time.ZonedDateTime;
+import java.util.Comparator;
 
 public class OrderSorting implements Comparable<OrderSorting>{
     private String timestamp;
@@ -34,7 +35,7 @@ public class OrderSorting implements Comparable<OrderSorting>{
     @Override
     public String toString() {
         // Converte l'oggetto OrderSorting in una rappresentazione stringa, per esempio
-        return "Price: " + this.price + ", Timestamp: " + this.timestamp;
+        return "Price: " + this.price + ", Timestamp: " + this.timestamp+ ", OrderId: " +this.orderId;
     }
     public int getOrderId() {
         return orderId;
@@ -42,5 +43,14 @@ public class OrderSorting implements Comparable<OrderSorting>{
     public void setOrderId(int orderId) {
         this.orderId = orderId;
     }
+
+    public static final Comparator<OrderSorting> PRICE_DESCENDING = Comparator
+            .comparing(OrderSorting::getPrice, Comparator.reverseOrder()) // Prezzo decrescente
+            .thenComparing(o -> ZonedDateTime.parse(o.getTimestamp()));  // Timestamp crescente
+
+    public static final Comparator<OrderSorting> PRICE_ASCENDING = Comparator
+            .comparing(OrderSorting::getPrice) // Prezzo crescente
+            .thenComparing(o -> ZonedDateTime.parse(o.getTimestamp()));  // Timestamp crescente
+
 
 }

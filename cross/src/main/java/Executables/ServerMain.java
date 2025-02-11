@@ -1,31 +1,19 @@
 package Executables;
-import java.io.File;
+
 import java.net.InetSocketAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.time.ZonedDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.Map;
 import java.util.concurrent.ConcurrentSkipListMap;
 import java.util.concurrent.TimeUnit;
 
-import com.squareup.moshi.JsonAdapter;
-import com.squareup.moshi.JsonWriter;
-import com.squareup.moshi.Moshi;
-import com.squareup.moshi.Types;
-import com.squareup.moshi.adapters.PolymorphicJsonAdapterFactory;
-
 import Commands.Orders.Limitorder;
-import Commands.Orders.Order;
 import Communication.ServerProtocol;
 import Communication.TCP;
-import JsonMemories.OrderClass;
 import JsonMemories.Orderbook;
 import JsonMemories.Userbook;
 import ServerTasks.*;
 import Utils.OrderSorting;
-import Utils.OrderSortingAdapter;
-import okio.Okio;
 
 public class ServerMain extends ServerProtocol{
     private volatile Userbook registeredUsers;
@@ -104,23 +92,23 @@ public class ServerMain extends ServerProtocol{
         progressiveOrderNumber = findOrderID(orderbook)+1;
         System.out.println("Numero Ordine: "+progressiveOrderNumber);
 
-        ConcurrentSkipListMap<OrderSorting,Limitorder> ordList = new ConcurrentSkipListMap<>();
-        Limitorder ord0 = new Limitorder("ask", 3, 0);
-        Limitorder ord1 = new Limitorder("ask", 12, 0);
-        Limitorder ord2 = new Limitorder("ask", 22, 5);
-        Limitorder ord3 = new Limitorder("ask", 6, 0);
-        Limitorder ord4 = new Limitorder("ask", 1, 4);
-        //ord0.setOrderId(0);
-        ord0.setOrderId(2);
-        ord1.setOrderId(3);
-        ord2.setOrderId(4);
-        ord3.setOrderId(5);
-        ord4.setOrderId(6);
-        ordList.put(new OrderSorting(ZonedDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME), ord0.getPrice(),ord0.getOrderId()), ord0);
-        ordList.put(new OrderSorting(ZonedDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME), ord1.getPrice(),ord1.getOrderId()), ord1);
-        ordList.put(new OrderSorting(ZonedDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME), ord2.getPrice(),ord2.getOrderId()), ord2);
-        ordList.put(new OrderSorting(ZonedDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME), ord3.getPrice(),ord3.getOrderId()), ord3);
-        ordList.put(new OrderSorting(ZonedDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME), ord4.getPrice(),ord4.getOrderId()), ord4);
+        // ConcurrentSkipListMap<OrderSorting,Limitorder> ordList = new ConcurrentSkipListMap<>();
+        // Limitorder ord0 = new Limitorder("ask", 3, 0);
+        // Limitorder ord1 = new Limitorder("ask", 12, 0);
+        // Limitorder ord2 = new Limitorder("ask", 22, 5);
+        // Limitorder ord3 = new Limitorder("ask", 6, 0);
+        // Limitorder ord4 = new Limitorder("ask", 1, 4);
+        // //ord0.setOrderId(0);
+        // ord0.setOrderId(2);
+        // ord1.setOrderId(3);
+        // ord2.setOrderId(4);
+        // ord3.setOrderId(5);
+        // ord4.setOrderId(6);
+        // ordList.put(new OrderSorting(ZonedDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME), ord0.getPrice(),ord0.getOrderId()), ord0);
+        // ordList.put(new OrderSorting(ZonedDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME), ord1.getPrice(),ord1.getOrderId()), ord1);
+        // ordList.put(new OrderSorting(ZonedDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME), ord2.getPrice(),ord2.getOrderId()), ord2);
+        // ordList.put(new OrderSorting(ZonedDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME), ord3.getPrice(),ord3.getOrderId()), ord3);
+        // ordList.put(new OrderSorting(ZonedDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME), ord4.getPrice(),ord4.getOrderId()), ord4);
         
         // Moshi moshi = new Moshi.Builder().add(new OrderSortingAdapter()).add(PolymorphicJsonAdapterFactory.of(ZonedDateTime.class,"GMT")).add(PolymorphicJsonAdapterFactory.of(Order.class,"Order").withSubtype(Limitorder.class, "Limitorder")).build();
         // //JsonAdapter<Map<OrderSorting,Limitorder>> adapter = moshi.adapter(Types.newParameterizedType(Map.class, OrderSorting.class, Limitorder.class));

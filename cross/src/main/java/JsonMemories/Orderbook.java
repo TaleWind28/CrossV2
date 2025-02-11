@@ -1,9 +1,9 @@
 package JsonMemories;
 
+import java.io.EOFException;
 import java.io.File;
 import java.time.ZonedDateTime;
 import java.util.Map;
-import java.util.TreeMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.ConcurrentSkipListMap;
 
@@ -18,7 +18,7 @@ import Commands.Orders.Limitorder;
 import Commands.Orders.Order;
 import Commands.Orders.StopOrder;
 import Utils.OrderSorting;
-import Utils.PriceComparator;
+import Utils.OrderSortingAdapter;
 import okio.Okio;
 
 public class Orderbook implements JsonAccessedData{
@@ -26,19 +26,16 @@ public class Orderbook implements JsonAccessedData{
     //snippet che forse non uso
     //.add(PolymorphicJsonAdapterFactory.of(Order.class,"Order").withSubtype(Limitorder.class, "Limitorder"))
     //private Gson gson = new GsonBuilder().setPrettyPrinting().create();
-    private Moshi moshi = new Moshi.Builder().add(PolymorphicJsonAdapterFactory.of(ZonedDateTime.class,"GMT")).add(PolymorphicJsonAdapterFactory.of(Order.class,"Order").withSubtype(Limitorder.class, "Limitorder")).build();
+    private Moshi moshi = new Moshi.Builder().add(new OrderSortingAdapter()).add(PolymorphicJsonAdapterFactory.of(ZonedDateTime.class,"GMT")).add(PolymorphicJsonAdapterFactory.of(Order.class,"Order").withSubtype(Limitorder.class, "Limitorder")).build();
     private JsonAdapter<OrderClass> adapter = moshi.adapter(OrderClass.class);
-    private ConcurrentSkipListMap<OrderSorting, Limitorder> askOrders; // Prezzi crescenti
-    private ConcurrentSkipListMap<OrderSorting, Limitorder> bidOrders; // Prezzi decrescenti
+    private ConcurrentSkipListMap<OrderSorting, Limitorder> askOrders = new ConcurrentSkipListMap<>(OrderSorting.PRICE_ASCENDING); // Prezzi crescenti
+    private ConcurrentSkipListMap<OrderSorting, Limitorder> bidOrders = new ConcurrentSkipListMap<>(OrderSorting.PRICE_DESCENDING); // Prezzi decrescenti
     private ConcurrentLinkedQueue<StopOrder> stopOrders;//devo ancora capire cosa sono
     private String currentScope = "[ORDERBOOK]";
         
     public Orderbook(String jsonFilePath){
         this.jsonFilePath = jsonFilePath;
-        this.askOrders = new ConcurrentSkipListMap<>();
-        this.bidOrders = new ConcurrentSkipListMap<>();
-        this.stopOrders = new ConcurrentLinkedQueue<>(); 
-        System.out.println(this.currentScope+"Stoporders"+this.stopOrders);
+        System.out.println(this.currentScope+"Stoporders "+this.stopOrders);
     }
     
     @Override
@@ -49,14 +46,17 @@ public class Orderbook implements JsonAccessedData{
     
     @Override
     public synchronized void loadData() {
-        //System.out.println("copio");
         try (JsonReader reader =JsonReader.of(Okio.buffer(Okio.source(new File(this.jsonFilePath)))))  {
             OrderClass orderData = adapter.fromJson(reader);
-            this.askOrders = new ConcurrentSkipListMap<>(orderData.askMap);
-            this.bidOrders = new ConcurrentSkipListMap<>(orderData.bidMap);
+            this.askOrders.putAll(orderData.askMap);
+            this.bidOrders.putAll(orderData.bidMap);
         }
-        catch(Exception e){System.out.println("[ORDERBOOK] LOADDATA: "+e.getMessage()+" "+e.getClass());}
-        return;
+        catch(EOFException e){
+            System.out.println(this.currentScope+"NO AVAILABLE ORDERS!");
+        }
+        catch(Exception e){
+            System.out.println("[ORDERBOOK] LOADDATA: "+e.getMessage()+" "+e.getClass());
+        }
     }
 
     public synchronized void addData(Values val,String mapType) {
@@ -64,8 +64,7 @@ public class Orderbook implements JsonAccessedData{
         String orderbookEntry = ord.getUser()+":"+ord.getPrice();
         System.out.println(this.currentScope+"entry:"+orderbookEntry);
         ConcurrentSkipListMap<OrderSorting, Limitorder> ordermap = this.getRequestedMap(mapType);
-        //if(ordermap.containsKey(orderbookEntry))ordermap.get(orderbookEntry).addSize(ord.getSize());
-        /*else*/ ordermap.put(new OrderSorting(ord.getGmt(),ord.getPrice(),ord.getOrderId()), ord);
+        ordermap.put(new OrderSorting(ord.getGmt(),ord.getPrice(),ord.getOrderId()), ord);
         this.dataFlush();
         return;
     }
@@ -80,7 +79,6 @@ public class Orderbook implements JsonAccessedData{
         try (JsonWriter writer = JsonWriter.of(Okio.buffer(Okio.sink(new File(this.jsonFilePath))))) {
             writer.setIndent(" ");
             adapter.toJson(writer, oc);
-            //System.out.println("scritto");
         } catch (Exception e) {
             System.out.println("Aiuto");
         }
@@ -90,13 +88,13 @@ public class Orderbook implements JsonAccessedData{
     public synchronized Order removeData(String mapType, OrderSorting orderbookEntry){
         Order ord = null;
         ConcurrentSkipListMap<OrderSorting, Limitorder> requestedMap = getRequestedMap(mapType);
-        System.out.println("entry "+orderbookEntry);
-        //ord = requestedMap.remove(orderbookEntry);
+        System.out.println(this.currentScope+"[RemoveData] entry "+orderbookEntry);
+        ord = requestedMap.remove(orderbookEntry);
         dataFlush();
         return ord;
     }
 
-    public synchronized OrderSorting getBestPriceAvailable(int size,String tradeType, String myUsername){
+    public synchronized OrderSorting getBestPriceAvailable(String tradeType, String myUsername){
         ConcurrentSkipListMap<OrderSorting, Limitorder> requestedMap = getRequestedMap(tradeType);
         return requestedMap.firstEntry().getKey();
     }
