@@ -12,10 +12,10 @@ import com.squareup.moshi.JsonWriter;
 import com.squareup.moshi.Moshi;
 import com.squareup.moshi.adapters.PolymorphicJsonAdapterFactory;
 
-import Commands.Values;
 import Commands.Orders.Limitorder;
 import Commands.Orders.Order;
 import Commands.Orders.StopOrder;
+import Communication.Values;
 import Utils.OrderSorting;
 import Utils.OrderSortingAdapter;
 import okio.Okio;

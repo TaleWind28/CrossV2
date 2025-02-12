@@ -1,4 +1,4 @@
-package Communication;
+package Communication.Messages;
 
 public class ServerMessage implements Message{
     public String errorMessage;

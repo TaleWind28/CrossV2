@@ -7,8 +7,8 @@ import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
 import Commands.Credentials.Login;
-import Communication.ClientMessage;
-import Communication.ServerMessage;
+import Communication.Messages.ClientMessage;
+import Communication.Messages.ServerMessage;
 import Communication.Protocols.Protocol;
 import Executables.ServerMain;
 import JsonUtils.JsonAccessedData;
@@ -56,6 +56,7 @@ public class GenericTask implements Runnable {
         //creo la task di disconnessione
         DisconnectTask inactivityDisconnection = new DisconnectTask(this.protocol,this.client,this.generatorServer,this);
         //invio il messaggio di benvenuto
+        protocol.sendMessage(new ServerMessage(this.generatorServer.getUDPListner().toString(),999));
         protocol.sendMessage(new ServerMessage(welcomeMessage,200));
         try{
             while(!(Thread.currentThread().isInterrupted())){

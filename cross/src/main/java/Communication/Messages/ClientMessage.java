@@ -1,6 +1,6 @@
-package Communication;
+package Communication.Messages;
 
-import Commands.Values;
+import Communication.Values;
 
 public class ClientMessage implements Message{
     public String operation;

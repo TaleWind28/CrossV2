@@ -6,10 +6,11 @@ import java.util.NoSuchElementException;
 
 import Commands.CommandFactory;
 import Commands.Credentials.Disconnect;
-import Communication.ClientMessage;
-import Communication.ServerMessage;
+import Communication.Messages.ClientMessage;
+import Communication.Messages.ServerMessage;
 import Communication.Protocols.ClientProtocol;
 import Communication.Protocols.TCP;
+import Communication.Protocols.UDP;
 
 
 public class ClientMain extends ClientProtocol{
@@ -17,6 +18,7 @@ public class ClientMain extends ClientProtocol{
     public Socket sock = null;
     public String helpMessage = "Comandi:\nregister<username,password> -> ti permette di registrarti per poter accedere al servizio di trading\nlogin<username,password> -> permette di accedere ad un account registrato\nupdateCredentials<username,currentPasswd,newPasswd> -> permette di aggiornare le credenziali\nlogout<username> -> permette di uscire dal servizio di trading";
     public CommandFactory factory;
+    public UDP UDPUpdater;
     //public CountDownLatch latch = new CountDownLatch(1);
     private volatile boolean sigintTermination = false;
     public ClientMain(String IP, int PORT){
@@ -51,6 +53,23 @@ public class ClientMain extends ClientProtocol{
                 //System.out.println("risposta: "+serverAnswer.errorMessage);
                 //controllo risposta server
                 switch (serverAnswer.response) {
+                    case 999://configurazione interna al server dell'UDPListner
+                        System.out.println("[ClientMain]"+serverAnswer.errorMessage);
+                        this.UDPUpdater = UDP.buildFromString(serverAnswer.errorMessage);
+                        // String group = serverAnswer.errorMessage.split("'")[1];       // '230.0.0.1'
+                        // int port = Integer.parseInt(serverAnswer.errorMessage.split("'")[3]);  // '5000'
+                        // String networkInterface = serverAnswer.errorMessage.split("'")[5];
+                        // System.out.println(networkInterface);
+                        // String[]pino = group.split("/");
+                        // System.out.println("[ClientMain] "+pino[1]);
+                        // String[]mino = networkInterface.split(" ");
+                        // System.out.println("[ClientMain] "+port);
+                        // mino = mino[0].split(":");
+                        // System.out.println("[ClientMain] "+mino[1]);
+                        
+
+                        //this.UDPUpdater = new UDP(pino[1], port, mino[1]);
+                        System.out.println(this.UDPUpdater.toString());
                     //richiesta eseguita correttamente
                     case 200:
                         if (serverAnswer.errorMessage.equals("FIN")){

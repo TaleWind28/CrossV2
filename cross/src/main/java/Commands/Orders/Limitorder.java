@@ -2,8 +2,8 @@ package Commands.Orders;
 
 import java.time.ZonedDateTime;
 
-import Commands.Values;
-import Communication.ServerMessage;
+import Communication.Values;
+import Communication.Messages.ServerMessage;
 import JsonUtils.JsonAccessedData;
 import JsonUtils.Orderbook;
 import ServerTasks.GenericTask;

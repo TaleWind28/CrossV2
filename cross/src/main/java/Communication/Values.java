@@ -1,6 +1,6 @@
-package Commands;
+package Communication;
 
-import Communication.ServerMessage;
+import Communication.Messages.ServerMessage;
 import JsonUtils.JsonAccessedData;
 import ServerTasks.GenericTask;
 

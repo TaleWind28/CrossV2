@@ -8,7 +8,6 @@ import java.io.InputStreamReader;
 import com.squareup.moshi.JsonAdapter;
 import com.squareup.moshi.adapters.PolymorphicJsonAdapterFactory;
 
-import Commands.Values;
 import Commands.Credentials.Disconnect;
 import Commands.Credentials.Login;
 import Commands.Credentials.Logout;
@@ -21,9 +20,10 @@ import Commands.Orders.Limitorder;
 import Commands.Orders.MarketOrder;
 import Commands.Orders.ShowOrderBook;
 import Commands.Orders.StopOrder;
-import Communication.ClientMessage;
-import Communication.Message;
-import Communication.ServerMessage;
+import Communication.Values;
+import Communication.Messages.ClientMessage;
+import Communication.Messages.Message;
+import Communication.Messages.ServerMessage;
 
 import com.squareup.moshi.Moshi;
 

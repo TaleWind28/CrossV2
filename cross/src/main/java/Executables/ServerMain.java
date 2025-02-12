@@ -1,8 +1,12 @@
 package Executables;
 
+import java.net.Inet4Address;
+import java.net.InetAddress;
 import java.net.InetSocketAddress;
+import java.net.NetworkInterface;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.Enumeration;
 import java.util.Map;
 import java.util.concurrent.ConcurrentSkipListMap;
 import java.util.concurrent.TimeUnit;
@@ -10,6 +14,7 @@ import java.util.concurrent.TimeUnit;
 import Commands.Orders.Limitorder;
 import Communication.Protocols.ServerProtocol;
 import Communication.Protocols.TCP;
+import Communication.Protocols.UDP;
 import JsonUtils.Orderbook;
 import JsonUtils.Userbook;
 import ServerTasks.*;
@@ -19,17 +24,38 @@ public class ServerMain extends ServerProtocol{
     private volatile Userbook registeredUsers;
     private volatile Orderbook orderbook;
     private volatile int progressiveOrderNumber;
+    private UDP UDPListner;
 
-    public ServerMain(int port, int numThreads){
+    public ServerMain(int port, int numThreads,String netIF,int UDPport, String UDPaddress){
         super(port,numThreads);
         this.registeredUsers = new Userbook("cross\\src\\main\\java\\JsonUtils\\JsonFiles\\Users.json");
         this.orderbook = new Orderbook("cross\\src\\main\\java\\JsonUtils\\JsonFiles\\OrderBook.json");
+        try {
+            Enumeration<NetworkInterface> interfaces = NetworkInterface.getNetworkInterfaces();
+            while (interfaces.hasMoreElements()) {
+                NetworkInterface netIf = interfaces.nextElement();
+                if (netIf.isUp() && !netIf.isLoopback() && netIf.supportsMulticast()) {
+                    Enumeration<InetAddress> addresses = netIf.getInetAddresses();
+                    while (addresses.hasMoreElements()) {
+                        InetAddress addr = addresses.nextElement();
+                        if (addr instanceof Inet4Address) {
+                            System.out.println("Interfaccia valida: " + netIf.getName() + " - IP: " + addr.getHostAddress());
+                        }
+                    }
+                }
+            }
+            this.UDPListner = new UDP(UDPaddress,UDPport,netIF);
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
     }
 
     public static void main(String[] args) throws Exception {
         System.out.println("mino");
-        ServerMain server = new ServerMain(20000,16);
-        
+        ServerMain server = new ServerMain(20000,16,"wlan2",5000,"230.0.0.1");
+        System.out.println(server.UDPListner.toString());
+        //UDP UDPListner = new UDP(server.UDPaddress, server.UDPport, server.netIF);
+
         // Aggiungi uno shutdown hook alla JVM
         Runtime.getRuntime().addShutdownHook(
             new Thread(
@@ -146,5 +172,9 @@ public class ServerMain extends ServerProtocol{
     public synchronized void increaseProgressiveOrderNumber(){
         this.progressiveOrderNumber++;
         return;
+    }
+
+    public UDP getUDPListner() {
+        return UDPListner;
     }
 }

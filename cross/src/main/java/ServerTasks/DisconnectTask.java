@@ -3,8 +3,8 @@ package ServerTasks;
 import java.net.Socket;
 
 import Commands.CommandFactory;
-import Communication.Message;
-import Communication.ServerMessage;
+import Communication.Messages.Message;
+import Communication.Messages.ServerMessage;
 import Communication.Protocols.Protocol;
 import Executables.ServerMain;
 
