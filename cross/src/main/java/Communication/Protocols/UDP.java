@@ -9,13 +9,17 @@ import java.io.IOException;
 public class UDP implements Protocol {
     private MulticastSocket socket;
     private InetAddress group;
+    private String groupId;
     private int port;
     private NetworkInterface networkInterface;
+    private String netIF;
 
     public UDP(String multicastAddress, int port, String networkInterfaceName) throws IOException {
         this.port = port;
+        this.groupId = multicastAddress;
         this.group = InetAddress.getByName(multicastAddress);
         this.socket = new MulticastSocket(port);
+        this.netIF = networkInterfaceName;
 
         // Ottieni l'interfaccia di rete
         this.networkInterface = NetworkInterface.getByName(networkInterfaceName);
@@ -40,10 +44,12 @@ public class UDP implements Protocol {
     @Override
     public int sendMessage(Message mess) {
         try {
+            System.out.println("Minosse");
             UDPMessage message = (UDPMessage)mess;
-            byte[] data = message.getData().getBytes();
+            byte[] data = message.getFullMessage().getBytes();
             DatagramPacket packet = new DatagramPacket(data, data.length, group, port);
             socket.send(packet);
+            System.out.println("[UDP] invio messaggio= "+message.toString());
             return data.length;
         } catch (IOException e) {
             e.printStackTrace();
@@ -57,7 +63,10 @@ public class UDP implements Protocol {
             byte[] buffer = new byte[1024];
             DatagramPacket packet = new DatagramPacket(buffer, buffer.length);
             socket.receive(packet);
-            return new UDPMessage(new String(packet.getData(), 0, packet.getLength()));
+            
+            UDPMessage message = new UDPMessage(netIF, groupId).buildFromPackage(packet);;
+            //System.out.println("[UDP]received message: "+packet.getData());
+            return message;
         } catch (IOException e) {
             e.printStackTrace();
             return null;
@@ -74,20 +83,12 @@ public class UDP implements Protocol {
     }
 
     public static UDP buildFromString(String udpString){
-        System.out.println(udpString);
-        // Estrazione dei campi
-        String group = udpString.split("'")[1];       // '230.0.0.1'
-                        int port = Integer.parseInt(udpString.split("'")[3]);  // '5000'
-                        String networkInterface = udpString.split("'")[5];
-                        System.out.println(networkInterface);
-                        String[]pino = group.split("/");
-                        System.out.println("[ClientMain] "+pino[1]);
-                        String[]mino = networkInterface.split(" ");
-                        System.out.println("[ClientMain] "+port);
-                        mino = mino[0].split(":");
-                        System.out.println("[ClientMain] "+mino[1]);
+        String[] fields = udpString.split(":");
+        String group = fields[0];       // '230.0.0.1'
+        int port = Integer.parseInt(fields[1]);
+        String networkInterface = fields[2];
         try {
-            return new UDP(pino[1], port, mino[1]);    
+            return new UDP(group, port, networkInterface);    
         } catch (Exception e) {
             System.out.println("[UDP]"+e.getMessage());
             return null;
@@ -96,7 +97,11 @@ public class UDP implements Protocol {
     }
     @Override
     public String toString() {
-        return "UDP{group='"+this.group+"', port='"+this.port+"',networkInterface='"+this.networkInterface+"}";    
+        return "UDP{group='"+this.groupId+"', port='"+this.port+"',networkInterface='"+this.netIF+"'}";    
+    }
+
+    public String toBuilderString(){
+        return this.groupId+":"+this.port+":"+this.netIF;
     }
 
 }

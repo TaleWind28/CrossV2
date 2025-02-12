@@ -8,10 +8,10 @@ import Commands.CommandFactory;
 import Commands.Credentials.Disconnect;
 import Communication.Messages.ClientMessage;
 import Communication.Messages.ServerMessage;
+import Communication.Messages.UDPMessage;
 import Communication.Protocols.ClientProtocol;
 import Communication.Protocols.TCP;
 import Communication.Protocols.UDP;
-
 
 public class ClientMain extends ClientProtocol{
     public volatile boolean canSend = true;
@@ -19,12 +19,26 @@ public class ClientMain extends ClientProtocol{
     public String helpMessage = "Comandi:\nregister<username,password> -> ti permette di registrarti per poter accedere al servizio di trading\nlogin<username,password> -> permette di accedere ad un account registrato\nupdateCredentials<username,currentPasswd,newPasswd> -> permette di aggiornare le credenziali\nlogout<username> -> permette di uscire dal servizio di trading";
     public CommandFactory factory;
     public UDP UDPUpdater;
+    public Thread UDPReceiver;
+    public String onlineUser = "";
+    public String cmdSent = "";
     //public CountDownLatch latch = new CountDownLatch(1);
     private volatile boolean sigintTermination = false;
     public ClientMain(String IP, int PORT){
         super(IP,PORT);
         this.canSend = false;   
         this.factory = new CommandFactory();
+        this.UDPReceiver = new Thread(() -> {
+            while(true){
+                //System.out.println("[ReceiverUDP] onlineUser="+this.onlineUser);
+                UDPMessage message = (UDPMessage)this.UDPUpdater.receiveMessage();
+                System.out.println("[ReceiverUDP] messaggio per:"+message.getInterestedUser());
+                if(this.onlineUser.equals(""))continue;
+                else if(!message.getInterestedUser().equals(this.onlineUser))continue;
+                else System.out.println("[ReceiverUDP] Received:\n"+message.toString());
+                  
+            }
+         });;
     }
         
     public static void main(String args[]) throws Exception{
@@ -40,7 +54,7 @@ public class ClientMain extends ClientProtocol{
                     //ho bisogno di shutdownhook solo per controllare il logout dell'utente dal server nel caso di sigint
                     if (this.sigintTermination == false)return;
                     try {
-                        System.out.println(this.protocol.receiveMessage().toString());
+                        System.out.println("[TerminationThread] "+this.protocol.receiveMessage().toString());
                     } catch (Exception e) {;}
                 }
             )
@@ -48,36 +62,21 @@ public class ClientMain extends ClientProtocol{
         
         try{
             while(true){
-                //System.out.println("Attendo messaggio...");
                 ServerMessage serverAnswer = (ServerMessage)this.protocol.receiveMessage();
-                //System.out.println("risposta: "+serverAnswer.errorMessage);
                 //controllo risposta server
                 switch (serverAnswer.response) {
                     case 999://configurazione interna al server dell'UDPListner
-                        System.out.println("[ClientMain]"+serverAnswer.errorMessage);
                         this.UDPUpdater = UDP.buildFromString(serverAnswer.errorMessage);
-                        // String group = serverAnswer.errorMessage.split("'")[1];       // '230.0.0.1'
-                        // int port = Integer.parseInt(serverAnswer.errorMessage.split("'")[3]);  // '5000'
-                        // String networkInterface = serverAnswer.errorMessage.split("'")[5];
-                        // System.out.println(networkInterface);
-                        // String[]pino = group.split("/");
-                        // System.out.println("[ClientMain] "+pino[1]);
-                        // String[]mino = networkInterface.split(" ");
-                        // System.out.println("[ClientMain] "+port);
-                        // mino = mino[0].split(":");
-                        // System.out.println("[ClientMain] "+mino[1]);
-                        
-
-                        //this.UDPUpdater = new UDP(pino[1], port, mino[1]);
-                        System.out.println(this.UDPUpdater.toString());
-                    //richiesta eseguita correttamente
+                        this.UDPReceiver.start();
+                        continue;
                     case 200:
                         if (serverAnswer.errorMessage.equals("FIN")){
                             System.out.println("Chiusura Connessione");
                             this.sock.close();
                             System.exit(0);
                         }
-                        System.out.print(serverAnswer.errorMessage+"\n>>");
+                        System.out.print("[Received]"+serverAnswer.errorMessage+"\n>>");
+                        
                         this.canSend = true;
                         continue;
                     //disconnessione
@@ -87,6 +86,7 @@ public class ClientMain extends ClientProtocol{
                         return;
                     //default
                     default:
+                        if(this.cmdSent.equals("login"))this.onlineUser = "";
                         System.out.print(serverAnswer.errorMessage+"\n >>");
                         this.canSend = true;
                         continue;
@@ -114,7 +114,7 @@ public class ClientMain extends ClientProtocol{
                     ClientMessage userMessage = new ClientMessage(clientRequest[0],this.factory.createValue(clientRequest));
                     if(userMessage.operation.equals(""))userMessage.operation = "help";
                     System.out.println("[CLIENTMAIN]"+userMessage.toString());
-                    //System.out.println("[CLIENTMAIN]"+userMessage.values.toString());
+                    if(userMessage.operation.equals("login"))this.onlineUser = userMessage.values.getUsername();
                     this.protocol.sendMessage(userMessage);
                     
                     this.canSend = false;
@@ -134,12 +134,10 @@ public class ClientMain extends ClientProtocol{
                 this.protocol.setReceiver(sock);
                 this.protocol.setSender(sock);
                 this.setReceiverThread();
-                //System.out.println("mino");
                 //attivo il thread di ricezione
                 this.receiverThread.start();
                 //faccio eseguire il comportamento di invio dal main thread
                 this.sendBehaviour();
-                //System.out.println("mino");
             }
             //disconnessione accidentale
             catch (SocketException e) {

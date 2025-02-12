@@ -44,7 +44,7 @@ public class ServerMain extends ServerProtocol{
                     }
                 }
             }
-            this.UDPListner = new UDP(UDPaddress,UDPport,netIF);
+            this.UDPListner =   UDP.buildFromString(UDPaddress+":"+UDPport+":"+netIF);
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }
@@ -52,7 +52,7 @@ public class ServerMain extends ServerProtocol{
 
     public static void main(String[] args) throws Exception {
         System.out.println("mino");
-        ServerMain server = new ServerMain(20000,16,"wlan2",5000,"230.0.0.1");
+        ServerMain server = new ServerMain(20000,16,"eth2",5000,"230.0.0.1");
         System.out.println(server.UDPListner.toString());
         //UDP UDPListner = new UDP(server.UDPaddress, server.UDPport, server.netIF);
 
@@ -117,36 +117,6 @@ public class ServerMain extends ServerProtocol{
         this.orderbook.loadData();
         progressiveOrderNumber = findOrderID(orderbook)+1;
         System.out.println("Numero Ordine: "+progressiveOrderNumber);
-
-        // ConcurrentSkipListMap<OrderSorting,Limitorder> ordList = new ConcurrentSkipListMap<>();
-        // Limitorder ord0 = new Limitorder("ask", 3, 0);
-        // Limitorder ord1 = new Limitorder("ask", 12, 0);
-        // Limitorder ord2 = new Limitorder("ask", 22, 5);
-        // Limitorder ord3 = new Limitorder("ask", 6, 0);
-        // Limitorder ord4 = new Limitorder("ask", 1, 4);
-        // //ord0.setOrderId(0);
-        // ord0.setOrderId(2);
-        // ord1.setOrderId(3);
-        // ord2.setOrderId(4);
-        // ord3.setOrderId(5);
-        // ord4.setOrderId(6);
-        // ordList.put(new OrderSorting(ZonedDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME), ord0.getPrice(),ord0.getOrderId()), ord0);
-        // ordList.put(new OrderSorting(ZonedDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME), ord1.getPrice(),ord1.getOrderId()), ord1);
-        // ordList.put(new OrderSorting(ZonedDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME), ord2.getPrice(),ord2.getOrderId()), ord2);
-        // ordList.put(new OrderSorting(ZonedDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME), ord3.getPrice(),ord3.getOrderId()), ord3);
-        // ordList.put(new OrderSorting(ZonedDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME), ord4.getPrice(),ord4.getOrderId()), ord4);
-        
-        // Moshi moshi = new Moshi.Builder().add(new OrderSortingAdapter()).add(PolymorphicJsonAdapterFactory.of(ZonedDateTime.class,"GMT")).add(PolymorphicJsonAdapterFactory.of(Order.class,"Order").withSubtype(Limitorder.class, "Limitorder")).build();
-        // //JsonAdapter<Map<OrderSorting,Limitorder>> adapter = moshi.adapter(Types.newParameterizedType(Map.class, OrderSorting.class, Limitorder.class));
-        // JsonAdapter<OrderSortTst> adapter = moshi.adapter(OrderSortTst.class);
-        // try (JsonWriter writer = JsonWriter.of(Okio.buffer(Okio.sink(new File("cross\\src\\main\\java\\Utils\\try.json"))))) {
-        //     writer.setIndent(" ");
-        //     adapter.toJson(writer, ordToPrint);
-        // } catch (Exception e) {
-        //     System.out.println("[SERVERMAIN] Test"+e.getMessage()+"\n"+e.getCause()+"\n"+e.getClass()+"\n");
-        //     System.exit(0);
-        // }
-
         return;
     }
 

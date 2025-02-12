@@ -1,4 +1,69 @@
 {
- "askMap": {},
+ "askMap": {
+  "Price: 2, Timestamp: 2025-02-12T12:06:11.6239121+01:00[Europe/Rome], OrderId: 0": {
+   "exchangeType": "ask",
+   "gmt": "2025-02-12T12:06:11.6239121+01:00[Europe/Rome]",
+   "orderId": 0,
+   "price": 2,
+   "size": 1,
+   "user": "pino"
+  },
+  "Price: 2, Timestamp: 2025-02-12T12:06:27.2670772+01:00[Europe/Rome], OrderId: 1": {
+   "exchangeType": "ask",
+   "gmt": "2025-02-12T12:06:27.2670772+01:00[Europe/Rome]",
+   "orderId": 1,
+   "price": 2,
+   "size": 1,
+   "user": "pino"
+  },
+  "Price: 2, Timestamp: 2025-02-12T12:06:28.3132455+01:00[Europe/Rome], OrderId: 2": {
+   "exchangeType": "ask",
+   "gmt": "2025-02-12T12:06:28.3132455+01:00[Europe/Rome]",
+   "orderId": 2,
+   "price": 2,
+   "size": 1,
+   "user": "pino"
+  },
+  "Price: 2, Timestamp: 2025-02-12T12:06:28.7782678+01:00[Europe/Rome], OrderId: 3": {
+   "exchangeType": "ask",
+   "gmt": "2025-02-12T12:06:28.7782678+01:00[Europe/Rome]",
+   "orderId": 3,
+   "price": 2,
+   "size": 1,
+   "user": "pino"
+  },
+  "Price: 2, Timestamp: 2025-02-12T12:06:29.137176+01:00[Europe/Rome], OrderId: 4": {
+   "exchangeType": "ask",
+   "gmt": "2025-02-12T12:06:29.137176+01:00[Europe/Rome]",
+   "orderId": 4,
+   "price": 2,
+   "size": 1,
+   "user": "pino"
+  },
+  "Price: 2, Timestamp: 2025-02-12T12:06:29.4813375+01:00[Europe/Rome], OrderId: 5": {
+   "exchangeType": "ask",
+   "gmt": "2025-02-12T12:06:29.4813375+01:00[Europe/Rome]",
+   "orderId": 5,
+   "price": 2,
+   "size": 1,
+   "user": "pino"
+  },
+  "Price: 2, Timestamp: 2025-02-12T12:06:30.4415963+01:00[Europe/Rome], OrderId: 6": {
+   "exchangeType": "ask",
+   "gmt": "2025-02-12T12:06:30.4415963+01:00[Europe/Rome]",
+   "orderId": 6,
+   "price": 2,
+   "size": 1,
+   "user": "pino"
+  },
+  "Price: 5, Timestamp: 2025-02-12T12:21:00.6498733+01:00[Europe/Rome], OrderId: 7": {
+   "exchangeType": "ask",
+   "gmt": "2025-02-12T12:21:00.6498733+01:00[Europe/Rome]",
+   "orderId": 7,
+   "price": 5,
+   "size": 4,
+   "user": "pino"
+  }
+ },
  "bidMap": {}
 }

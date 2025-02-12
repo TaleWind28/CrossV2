@@ -9,7 +9,9 @@ import java.util.concurrent.TimeUnit;
 import Commands.Credentials.Login;
 import Communication.Messages.ClientMessage;
 import Communication.Messages.ServerMessage;
+import Communication.Messages.UDPMessage;
 import Communication.Protocols.Protocol;
+import Communication.Protocols.UDP;
 import Executables.ServerMain;
 import JsonUtils.JsonAccessedData;
 
@@ -56,8 +58,11 @@ public class GenericTask implements Runnable {
         //creo la task di disconnessione
         DisconnectTask inactivityDisconnection = new DisconnectTask(this.protocol,this.client,this.generatorServer,this);
         //invio il messaggio di benvenuto
-        protocol.sendMessage(new ServerMessage(this.generatorServer.getUDPListner().toString(),999));
+        UDP UDPListner = this.generatorServer.getUDPListner();
+        protocol.sendMessage(new ServerMessage(UDPListner.toBuilderString(),999));
+        
         protocol.sendMessage(new ServerMessage(welcomeMessage,200));
+        UDPListner.sendMessage(new UDPMessage("Prova Multicast",this.onlineUser));
         try{
             while(!(Thread.currentThread().isInterrupted())){
                 //avvio timeout inattività
@@ -72,6 +77,7 @@ public class GenericTask implements Runnable {
                 else this.currentHelpMessage = loggedUserMessage;
                 //stampa il contenuto del messaggio ricevuto
                 System.out.println("run:"+clientRequest.operation.toString());
+                UDPListner.sendMessage(new UDPMessage("Prova Multicast",this.onlineUser));
                 //reagisci al messaggio
                 this.serverReact(clientRequest);
             }
@@ -93,6 +99,8 @@ public class GenericTask implements Runnable {
     public void serverReact(ClientMessage clientRequest){
         try{
             String additionalInfo = this.onlineUser;
+            System.out.println("[GenericTask] SendUDP");
+            //this.generatorServer.getUDPListner().sendMessage(new ServerMessage("Prova Multicast", getProgressiveOrderNumber()));
             //stampa di debug
             System.out.println("[GenericTask] Operation: "+clientRequest.operation+"\nValues: "+clientRequest.values.toString());
             // //setto l'username per i comandi           
