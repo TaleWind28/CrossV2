@@ -1,22 +1,28 @@
 package JsonUtils;
 
-import java.io.BufferedWriter;
 import java.io.EOFException;
-import java.io.FileReader;
-import java.io.FileWriter;
+import java.io.File;
+import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.springframework.security.crypto.bcrypt.BCrypt;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.stream.JsonReader;
+import com.squareup.moshi.JsonAdapter;
+import com.squareup.moshi.JsonReader;
+import com.squareup.moshi.JsonWriter;
+import com.squareup.moshi.Moshi;
+import com.squareup.moshi.Types;
+import com.squareup.moshi.adapters.PolymorphicJsonAdapterFactory;
+
+import okio.Okio;
+
 
 public class Userbook implements JsonAccessedData{
     protected ConcurrentHashMap<String,User> userMap = new ConcurrentHashMap<>();
     private String jsonFilePath;
-    private Gson gson = new GsonBuilder().setPrettyPrinting().create();
-    
+    private Moshi moshi = new Moshi.Builder().build();
+    private JsonAdapter<UserMap> adapter = moshi.adapter(UserMap.class);
     public Userbook(String jsonFilePath){
         this.jsonFilePath = jsonFilePath;
     }
@@ -41,40 +47,6 @@ public class Userbook implements JsonAccessedData{
         // if(!user.getPassword().equals(usr.getPassword()))return 400;
         return 200;
     }
-
-    //carico la mappa in una struttura dati
-    @Override
-    public void loadData() {
-        //creo un JsonReader per leggere dal Json
-        try (JsonReader reader = new JsonReader(new FileReader(this.jsonFilePath)))  {
-            //inizio la lettura
-            reader.beginObject();
-            //System.out.println("oggetto iniziato");
-            //ciclo su tutti gli elementi del Json
-            while(reader.hasNext()){
-                //consumo la key della hasmap
-                reader.nextName();
-                //creo l'utente da inserire
-                User us = this.gson.fromJson(reader,User.class);
-                ////stampa di debug
-                //System.out.println(us.getPassword());
-                //carico l'utente nella mappa
-                this.userMap.put(us.getUsername(), us);
-            }
-            //this.printConcurrentHashMap(this.userMap);
-            
-        }
-        catch(EOFException e){
-            System.out.println("File utenti vuoto");
-            //this.printConcurrentHashMap(this.userMap);
-            return;
-        }
-        catch (Exception e) {
-            System.out.println(e.getClass());
-            System.exit(0);
-        }
-    }
-
     //aggiungo dati alla struttura dati ed al file Json
     public void addData(User user){
         //inserisco nella mappa
@@ -86,11 +58,41 @@ public class Userbook implements JsonAccessedData{
         return;
     }
 
+    //carico la mappa in una struttura dati
+    @Override
+    public void loadData() {
+        //creo un JsonReader per leggere dal Json
+        try (JsonReader reader = JsonReader.of(Okio.buffer(Okio.source(new File(this.jsonFilePath))))){
+            UserMap loadedMap = adapter.fromJson(reader);
+            this.userMap.putAll(loadedMap.usermap);
+            //inizio la lettura
+            // try (JsonReader reader =JsonReader.of(Okio.buffer(Okio.source(new File(this.jsonFilePath)))))  {
+            //     OrderClass orderData = adapter.fromJson(reader);
+            //     this.askOrders.putAll(orderData.askMap);
+            //     this.bidOrders.putAll(orderData.bidMap);
+            // }
+            //JsonAdapter<UserMap> adaptee = moshi.adapter(UserMap.class);
+            
+            //dataFlush();
+        }
+        catch(EOFException e){
+            System.out.println("[UserBook-loadData] File utenti vuoto");
+            //this.printConcurrentHashMap(this.userMap);
+            return;
+        }
+        catch (Exception e) {
+            System.out.println("[UserBook-loadData]"+e.getClass()+e.getMessage()+e.getCause());
+            System.exit(0);
+        }
+    }
+
     public void dataFlush(){
-        try(BufferedWriter writer = new BufferedWriter(new FileWriter(this.jsonFilePath))){
-            writer.write(this.gson.toJson(this.userMap));
+        UserMap mappa = new UserMap(this.userMap);
+        try(JsonWriter writer = JsonWriter.of(Okio.buffer(Okio.sink(new File(this.jsonFilePath))))){
+            writer.setIndent(" ");
+            this.adapter.toJson(writer,mappa);
         }catch(Exception e){
-            System.out.println(e.getClass()+ "," + e.getCause());
+            System.out.println("[UserBook-dataFlush]"+e.getClass()+ "," + e.getCause());
             System.exit(0);
         }
     }

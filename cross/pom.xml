@@ -16,12 +16,6 @@
     <packaging>jar</packaging>
 
     <dependencies>
-        <!-- Gson -->
-        <dependency>
-            <groupId>com.google.code.gson</groupId>
-            <artifactId>gson</artifactId>
-            <version>2.10.1</version>
-        </dependency>
 
         <!-- Apache Commons Lang -->
         <dependency>

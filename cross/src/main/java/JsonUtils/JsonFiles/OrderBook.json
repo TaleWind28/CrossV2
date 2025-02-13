@@ -72,6 +72,14 @@
    "size": 5,
    "user": "pino"
   },
+  "Price: 4, Timestamp: 2025-02-13T14:22:21.9782114+01:00[Europe/Rome], OrderId: 11": {
+   "exchangeType": "ask",
+   "gmt": "2025-02-13T14:22:21.9782114+01:00[Europe/Rome]",
+   "orderId": 11,
+   "price": 4,
+   "size": 3,
+   "user": "pino"
+  },
   "Price: 5, Timestamp: 2025-02-12T12:21:00.6498733+01:00[Europe/Rome], OrderId: 7": {
    "exchangeType": "ask",
    "gmt": "2025-02-12T12:21:00.6498733+01:00[Europe/Rome]",

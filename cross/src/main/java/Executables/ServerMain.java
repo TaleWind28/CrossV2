@@ -1,11 +1,15 @@
 package Executables;
 
+import java.io.File;
 import java.net.InetSocketAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.Map;
 import java.util.concurrent.ConcurrentSkipListMap;
-import java.util.concurrent.TimeUnit;
+
+import com.squareup.moshi.JsonAdapter;
+import com.squareup.moshi.JsonReader;
+import com.squareup.moshi.Moshi;
 
 import Commands.Orders.Limitorder;
 import Communication.Protocols.ServerProtocol;
@@ -15,6 +19,7 @@ import JsonUtils.Orderbook;
 import JsonUtils.Userbook;
 import ServerTasks.*;
 import Utils.OrderSorting;
+import okio.Okio;
 
 public class ServerMain extends ServerProtocol{
     private volatile Userbook registeredUsers;
@@ -25,6 +30,7 @@ public class ServerMain extends ServerProtocol{
     public ServerMain(int port, int numThreads,String netIF,int UDPport, String UDPaddress){
         super(port,numThreads);
         this.registeredUsers = new Userbook("cross\\src\\main\\java\\JsonUtils\\JsonFiles\\Users.json");
+        
         this.orderbook = new Orderbook("cross\\src\\main\\java\\JsonUtils\\JsonFiles\\OrderBook.json");
         try{
             this.UDPListner =   new UDP(UDPaddress,UDPport,null);
@@ -34,38 +40,25 @@ public class ServerMain extends ServerProtocol{
     }
 
     public static void main(String[] args) throws Exception {
-        System.out.println("mino");
-        ServerMain server = new ServerMain(20000,16,"wlan2",5000,"230.0.0.1");
-        System.out.println(server.UDPListner.toString());
-        //UDP UDPListner = new UDP(server.UDPaddress, server.UDPport, server.netIF);
-
-        // Aggiungi uno shutdown hook alla JVM
-        Runtime.getRuntime().addShutdownHook(
-            new Thread(
-                () -> {
-                    System.out.println("Ctrl+C rilevato -> chiusura server in corso...");
-                    //Arresta il thread pool
-                    server.pool.shutdown();
-                    try {
-                        //Attende la terminazione dei thread attivi
-                        if (!server.pool.awaitTermination(10, TimeUnit.MILLISECONDS)) {
-                            System.out.println("[Server] Interruzione forzata dei thread attivi...");
-                            server.pool.shutdownNow();
-                        }
-                    } catch (InterruptedException e) {
-                        //Forza l'arresto in caso di interruzione
-                        server.pool.shutdownNow();
-                    }
-                    System.out.println("[Server] Threadpool terminato");
-                    server.registeredUsers.getUserMap().forEach((username, user)-> user.setLogged(false));
-                    server.registeredUsers.dataFlush();
-                    System.out.println("[Server] Utenti correttamente sloggati");
-                }
-            )
-        );
+        ServerConfig configuration = getServerConfig();
+        ServerMain server = new ServerMain(configuration.getTCPport(),Runtime.getRuntime().availableProcessors(),null,configuration.getUDPport(),configuration.getUDPaddres());
+        //System.out.println(server.UDPListner.toString());
+        //Aggiungi uno shutdown hook alla JVM
+        Runtime.getRuntime().addShutdownHook(new Thread(new ClosingTask(server)));
         server.initialConfig();
         server.dial();
         return;
+    }
+    
+    public static ServerConfig getServerConfig(){
+        try(JsonReader reader = JsonReader.of(Okio.buffer(Okio.source(new File("cross\\src\\main\\java\\Config\\ServerConfig.json"))))){
+            JsonAdapter<ServerConfig> jsonAdapter = new Moshi.Builder().build().adapter(ServerConfig.class);
+            return jsonAdapter.fromJson(reader);
+        }
+        catch(Exception e){
+            System.out.println("no");
+        }
+        return null;
     }
     
     public void dial(){
@@ -86,6 +79,7 @@ public class ServerMain extends ServerProtocol{
                 System.exit(0);
             }
     }
+    
     public Userbook getRegisteredUsers() {
         return registeredUsers;
     }
@@ -97,9 +91,10 @@ public class ServerMain extends ServerProtocol{
     public void initialConfig(){
         //carico in memoria
         this.registeredUsers.loadData();
+        
         this.orderbook.loadData();
         progressiveOrderNumber = findOrderID(orderbook)+1;
-        System.out.println("Numero Ordine: "+progressiveOrderNumber);
+        System.out.println("[ServerMain-initialConfig] Numero Ordine: "+progressiveOrderNumber);
         return;
     }
 
