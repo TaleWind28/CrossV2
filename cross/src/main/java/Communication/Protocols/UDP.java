@@ -1,5 +1,6 @@
 package Communication.Protocols;
 import java.net.*;
+import java.util.Enumeration;
 
 import Communication.Messages.Message;
 import Communication.Messages.UDPMessage;
@@ -9,26 +10,49 @@ import java.io.IOException;
 public class UDP implements Protocol {
     private MulticastSocket socket;
     private InetAddress group;
-    private String groupId;
     private int port;
     private NetworkInterface networkInterface;
-    private String netIF;
 
     public UDP(String multicastAddress, int port, String networkInterfaceName) throws IOException {
         this.port = port;
-        this.groupId = multicastAddress;
         this.group = InetAddress.getByName(multicastAddress);
+        System.out.println("[UDP-Constructor] "+this.group.getHostAddress());
         this.socket = new MulticastSocket(port);
-        this.netIF = networkInterfaceName;
+
+        if(networkInterfaceName == null )this.networkInterface = this.findNetworkInterface();
+        else this.networkInterface = NetworkInterface.getByName(networkInterfaceName);
 
         // Ottieni l'interfaccia di rete
-        this.networkInterface = NetworkInterface.getByName(networkInterfaceName);
         if (this.networkInterface == null) {
             throw new IOException("Interfaccia di rete non trovata: " + networkInterfaceName);
         }
 
         // Unirsi al gruppo multicast utilizzando l'interfaccia specificata
         socket.joinGroup(new InetSocketAddress(group, port), networkInterface);
+    }
+
+    public NetworkInterface findNetworkInterface(){
+        try{
+            Enumeration<NetworkInterface> interfaces = NetworkInterface.getNetworkInterfaces();
+            while (interfaces.hasMoreElements()) {
+                NetworkInterface ni = interfaces.nextElement();
+                if (ni.isUp() && !ni.isLoopback() && ni.supportsMulticast()) {
+                    System.out.println("[UDP-findNetIf] Interfaccia di rete "+ni.toString());
+                    return ni;
+                    //return ni; // Restituisce la prima interfaccia valida
+                }
+            }
+        }
+        catch (Exception e) {
+            System.out.println("mino");    
+        }
+        return null;
+    }
+
+    public String makeParameterString(NetworkInterface netIf){
+        System.out.println("[UDP-makeParamString] Interfaccia di rete "+netIf.getName());
+        
+        return null;
     }
 
     @Override
@@ -64,7 +88,7 @@ public class UDP implements Protocol {
             DatagramPacket packet = new DatagramPacket(buffer, buffer.length);
             socket.receive(packet);
             
-            UDPMessage message = new UDPMessage(netIF, groupId).buildFromPackage(packet);;
+            UDPMessage message = new UDPMessage().buildFromPackage(packet);;
             //System.out.println("[UDP]received message: "+packet.getData());
             return message;
         } catch (IOException e) {
@@ -97,11 +121,11 @@ public class UDP implements Protocol {
     }
     @Override
     public String toString() {
-        return "UDP{group='"+this.groupId+"', port='"+this.port+"',networkInterface='"+this.netIF+"'}";    
+        return "UDP{group='"+this.group+"', port='"+this.port+"',networkInterface='"+this.networkInterface+"'}";    
     }
 
     public String toBuilderString(){
-        return this.groupId+":"+this.port+":"+this.netIF;
+        return this.group.getHostAddress()+":"+this.port+":"+this.networkInterface.getName();
     }
 
 }

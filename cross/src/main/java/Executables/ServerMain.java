@@ -1,12 +1,8 @@
 package Executables;
 
-import java.net.Inet4Address;
-import java.net.InetAddress;
 import java.net.InetSocketAddress;
-import java.net.NetworkInterface;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.util.Enumeration;
 import java.util.Map;
 import java.util.concurrent.ConcurrentSkipListMap;
 import java.util.concurrent.TimeUnit;
@@ -30,21 +26,8 @@ public class ServerMain extends ServerProtocol{
         super(port,numThreads);
         this.registeredUsers = new Userbook("cross\\src\\main\\java\\JsonUtils\\JsonFiles\\Users.json");
         this.orderbook = new Orderbook("cross\\src\\main\\java\\JsonUtils\\JsonFiles\\OrderBook.json");
-        try {
-            Enumeration<NetworkInterface> interfaces = NetworkInterface.getNetworkInterfaces();
-            while (interfaces.hasMoreElements()) {
-                NetworkInterface netIf = interfaces.nextElement();
-                if (netIf.isUp() && !netIf.isLoopback() && netIf.supportsMulticast()) {
-                    Enumeration<InetAddress> addresses = netIf.getInetAddresses();
-                    while (addresses.hasMoreElements()) {
-                        InetAddress addr = addresses.nextElement();
-                        if (addr instanceof Inet4Address) {
-                            System.out.println("Interfaccia valida: " + netIf.getName() + " - IP: " + addr.getHostAddress());
-                        }
-                    }
-                }
-            }
-            this.UDPListner =   UDP.buildFromString(UDPaddress+":"+UDPport+":"+netIF);
+        try{
+            this.UDPListner =   new UDP(UDPaddress,UDPport,null);
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }
@@ -52,7 +35,7 @@ public class ServerMain extends ServerProtocol{
 
     public static void main(String[] args) throws Exception {
         System.out.println("mino");
-        ServerMain server = new ServerMain(20000,16,"eth2",5000,"230.0.0.1");
+        ServerMain server = new ServerMain(20000,16,"wlan2",5000,"230.0.0.1");
         System.out.println(server.UDPListner.toString());
         //UDP UDPListner = new UDP(server.UDPaddress, server.UDPport, server.netIF);
 

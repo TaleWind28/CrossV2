@@ -5,10 +5,16 @@ import java.net.DatagramPacket;
 public class UDPMessage implements Message{
     private String data;
     private String interestedUser;
+    
+    public UDPMessage(){
+
+    }
+    
     public UDPMessage(String data,String interestedUser){
         this.data = data;
         this.interestedUser = interestedUser;
     }
+    
     public String getData() {
         return data;
     }
