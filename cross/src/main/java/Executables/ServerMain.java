@@ -27,13 +27,13 @@ public class ServerMain extends ServerProtocol{
     private volatile int progressiveOrderNumber;
     private UDP UDPListner;
 
-    public ServerMain(int port, int numThreads,String netIF,int UDPport, String UDPaddress){
-        super(port,numThreads);
-        this.registeredUsers = new Userbook("cross\\src\\main\\java\\JsonUtils\\JsonFiles\\Users.json");
+    public ServerMain(ServerConfig config){
+        super(config.getTCPport(),Runtime.getRuntime().availableProcessors());
+        this.registeredUsers = new Userbook(config.getUserbook());
         
-        this.orderbook = new Orderbook("cross\\src\\main\\java\\JsonUtils\\JsonFiles\\OrderBook.json");
+        this.orderbook = new Orderbook(config.getOrderBook());
         try{
-            this.UDPListner =   new UDP(UDPaddress,UDPport,null);
+            this.UDPListner =   new UDP(config.getUDPaddress(),config.getUDPport(),null);
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }
@@ -41,7 +41,7 @@ public class ServerMain extends ServerProtocol{
 
     public static void main(String[] args) throws Exception {
         ServerConfig configuration = getServerConfig();
-        ServerMain server = new ServerMain(configuration.getTCPport(),Runtime.getRuntime().availableProcessors(),null,configuration.getUDPport(),configuration.getUDPaddres());
+        ServerMain server = new ServerMain(configuration);
         //System.out.println(server.UDPListner.toString());
         //Aggiungi uno shutdown hook alla JVM
         Runtime.getRuntime().addShutdownHook(new Thread(new ClosingTask(server)));
