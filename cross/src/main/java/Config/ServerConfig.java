@@ -1,4 +1,4 @@
-package Executables;
+package Config;
 
 public class ServerConfig {
     private int TCPport;
@@ -6,6 +6,7 @@ public class ServerConfig {
     private String UDPaddress;
     private String Userbook;
     private String OrderBook;
+    private String TCPaddress;
     
     public ServerConfig(){
 
@@ -55,4 +56,7 @@ public class ServerConfig {
         return Userbook;
     }
 
+    public String getTCPaddress() {
+        return TCPaddress;
+    }
 }

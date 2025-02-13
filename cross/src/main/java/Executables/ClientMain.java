@@ -1,8 +1,13 @@
 package Executables;
+import java.io.File;
 import java.io.IOException;
 import java.net.Socket;
 import java.net.SocketException;
 import java.util.NoSuchElementException;
+
+import com.squareup.moshi.JsonAdapter;
+import com.squareup.moshi.JsonReader;
+import com.squareup.moshi.Moshi;
 
 import Commands.CommandFactory;
 import Commands.Credentials.Disconnect;
@@ -12,6 +17,9 @@ import Communication.Messages.UDPMessage;
 import Communication.Protocols.ClientProtocol;
 import Communication.Protocols.TCP;
 import Communication.Protocols.UDP;
+import Config.ClientConfig;
+import Config.ServerConfig;
+import okio.Okio;
 
 public class ClientMain extends ClientProtocol{
     public volatile boolean canSend = true;
@@ -42,10 +50,22 @@ public class ClientMain extends ClientProtocol{
     }
         
     public static void main(String args[]) throws Exception{
-        ClientMain client = new ClientMain("127.0.0.1", 20000);
+        ClientConfig config = getClientConfig();
+        ClientMain client = new ClientMain(config.getTCPaddress(),config.getTCPport());
         client.multiDial();
     }
     
+    public static ClientConfig getClientConfig(){
+        try(JsonReader reader = JsonReader.of(Okio.buffer(Okio.source(new File("cross\\src\\main\\java\\Config\\ClientConfig.json"))))){
+            JsonAdapter<ClientConfig> jsonAdapter = new Moshi.Builder().build().adapter(ClientConfig.class);
+            return jsonAdapter.fromJson(reader);
+        }
+        catch(Exception e){
+            System.out.println("no");
+        }
+        return null;
+    }
+
     public void receiveBehaviour(){
         // Aggiungi uno shutdown hook alla JVM
         Runtime.getRuntime().addShutdownHook(

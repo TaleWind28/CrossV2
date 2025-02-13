@@ -15,6 +15,7 @@ import Commands.Orders.Limitorder;
 import Communication.Protocols.ServerProtocol;
 import Communication.Protocols.TCP;
 import Communication.Protocols.UDP;
+import Config.ServerConfig;
 import JsonUtils.Orderbook;
 import JsonUtils.Userbook;
 import ServerTasks.*;
@@ -25,10 +26,12 @@ public class ServerMain extends ServerProtocol{
     private volatile Userbook registeredUsers;
     private volatile Orderbook orderbook;
     private volatile int progressiveOrderNumber;
+    private String bindAddress;
     private UDP UDPListner;
 
     public ServerMain(ServerConfig config){
         super(config.getTCPport(),Runtime.getRuntime().availableProcessors());
+        this.bindAddress = config.getTCPaddress();
         this.registeredUsers = new Userbook(config.getUserbook());
         
         this.orderbook = new Orderbook(config.getOrderBook());
@@ -63,8 +66,8 @@ public class ServerMain extends ServerProtocol{
     
     public void dial(){
             try (ServerSocket server = new ServerSocket()) {
-                String bindAddress = "0.0.0.0"; // Ascolta su tutte le interfacce di rete
-                server.bind(new InetSocketAddress(bindAddress,this.PORT));
+                //String bindAddress = "0.0.0.0"; // Ascolta su tutte le interfacce di rete
+                server.bind(new InetSocketAddress(this.bindAddress,this.PORT));
                 while(true){
                     Socket client_Socket = server.accept();
                     //realizzare con factory per miglior versatilità -> inutile in quanto ho solo una task
