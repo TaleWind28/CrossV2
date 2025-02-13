@@ -42,7 +42,7 @@ public class MarketOrder extends Order implements Values {
                 break;
         }
         //ha senso preparare il responsemessege adesse perchè se compro compro tutto dal solito utente, il quale verrà aggiunto successivamente al messaggio
-        String responseMessage = "[Server] Hai comprato: \n";
+        String responseMessage = "";
         OrderCache cache = new OrderCache();
 
         int resp_code = 200;
@@ -56,6 +56,7 @@ public class MarketOrder extends Order implements Values {
                 break;
             }
         }
+        //memorizzo le transazioni per poi mandarle
         List<String> tradeNotify = new ArrayList<>();
         //mando messaggio UDP
         while(cache.getSize()!=0){
@@ -67,8 +68,6 @@ public class MarketOrder extends Order implements Values {
         }
 
         if(tradeNotify.size()!=0){
-            //tolgo il \n dalla stringa per stampare bene a schermo
-            //tradeNotify.set(tradeNotify.size()-1,tradeNotify.get(size-1).stripTrailing());
             //invio il messaggio
             task.UDPsender.sendMessage(new UDPMessage("Prova Multicast",task.onlineUser,"closedTrades",tradeNotify.toArray(new String[0])));
         }
@@ -93,7 +92,6 @@ public class MarketOrder extends Order implements Values {
             System.out.println("[Marketorder]ordine inevdibile");
             return "[104] Non sono stati trovati ordini per le tue esigenze";
         }
-        //int bitcoinBought = evadedOrder.getSize();
         //controllo quanti btc sono stati comprati
         if(evadedOrder.getSize()>this.size){
             //bitcoinBought = this.size;
@@ -103,7 +101,6 @@ public class MarketOrder extends Order implements Values {
             orderbook.addData(evadedOrder, exchangetype);
             this.size = 0;
         }
-        //responseMessage+="#"+bitcoinBought+" bitcoin dall'utente "+evadedOrder.getUser()+" pagando "+(evadedOrder.getPrice()*bitcoinBought)+"$\n";
         //System.out.println("[Marketorder]evadedOrder size="+evadedOrder.getSize());
         this.size -= evadedOrder.getSize();
         //System.out.println("[Marketorder]myorder size="+this.size);

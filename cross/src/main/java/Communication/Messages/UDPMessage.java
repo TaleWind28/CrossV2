@@ -46,7 +46,7 @@ public class UDPMessage implements Message{
     }
 
     public String tradesString(){
-        String tradeString = new String();
+        String tradeString = "";
         for(String trade: this.trades){
             tradeString+=trade;
         }

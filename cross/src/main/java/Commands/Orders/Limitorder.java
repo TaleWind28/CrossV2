@@ -36,7 +36,14 @@ public class Limitorder extends Order implements Values{
 
     @Override
     public String toString() {
-        return "Limitorder{ exchangeType="+this.exchangeType+" size="+this.size+" price="+this.price+" orderID="+super.getOrderId()+"}";    
+        return "Limitorder{" +
+        "\nexchangeType="+this.exchangeType
+        +"\n size="+this.size+
+        "\n price="+this.price+
+        "\n orderID="+super.getOrderId()+
+        "\n Utente="+super.getUser()+
+        "\n timestamp="+super.getGmt()+
+        "\n}";    
     }
 
     @Override
