@@ -18,7 +18,6 @@ import Communication.Protocols.ClientProtocol;
 import Communication.Protocols.TCP;
 import Communication.Protocols.UDP;
 import Config.ClientConfig;
-import Config.ServerConfig;
 import okio.Okio;
 
 public class ClientMain extends ClientProtocol{
@@ -40,10 +39,11 @@ public class ClientMain extends ClientProtocol{
             while(true){
                 //System.out.println("[ReceiverUDP] onlineUser="+this.onlineUser);
                 UDPMessage message = (UDPMessage)this.UDPUpdater.receiveMessage();
-                System.out.println("[ReceiverUDP] messaggio per:"+message.getInterestedUser());
+                //stampa di debug
+                //System.out.println("[ReceiverUDP] messaggio per:"+message.getInterestedUser());
                 if(this.onlineUser.equals(""))continue;
                 else if(!message.getInterestedUser().equals(this.onlineUser))continue;
-                else System.out.println("[ReceiverUDP] Received:\n"+message.toString());
+                else System.out.println("[ReceiverUDP] Received:\n"+message.tradeNotification());
                   
             }
          });;
@@ -95,7 +95,7 @@ public class ClientMain extends ClientProtocol{
                             this.sock.close();
                             System.exit(0);
                         }
-                        System.out.print("[Received]"+serverAnswer.errorMessage+"\n>>");
+                        System.out.print("[TCPReceiver]"+serverAnswer.toString()+"\n>>");
                         
                         this.canSend = true;
                         continue;

@@ -9,7 +9,6 @@ import java.util.concurrent.TimeUnit;
 import Commands.Credentials.Login;
 import Communication.Messages.ClientMessage;
 import Communication.Messages.ServerMessage;
-import Communication.Messages.UDPMessage;
 import Communication.Protocols.Protocol;
 import Communication.Protocols.UDP;
 import Executables.ServerMain;
@@ -24,6 +23,7 @@ public class GenericTask implements Runnable {
     private ScheduledFuture<?> timeoutTask;
     private Protocol protocol;
     public volatile String onlineUser = new String();
+    public UDP UDPsender;
     public String welcomeMessage = "Per fare trading inserire un ordine di qualunque tipo";
     private String nonLoggedUserMessage = "---------------------------------------------------------------------------------------------------\n"+
                         "Comandi:\n" + 
@@ -51,18 +51,19 @@ public class GenericTask implements Runnable {
         this.protocol.setSender(client_socket);
         this.protocol.setReceiver(client_socket);
         this.timeoutScheduler = Executors.newSingleThreadScheduledExecutor();
-        this.generatorServer = server; 
+        this.generatorServer = server;
+        this.UDPsender = this.generatorServer.getUDPListner();
     }
 
     public void run(){
         //creo la task di disconnessione
         DisconnectTask inactivityDisconnection = new DisconnectTask(this.protocol,this.client,this.generatorServer,this);
         //invio il messaggio di benvenuto
-        UDP UDPListner = this.generatorServer.getUDPListner();
-        protocol.sendMessage(new ServerMessage(UDPListner.toBuilderString(),999));
+        //UDP UDPListner = this.generatorServer.getUDPListner();
+        protocol.sendMessage(new ServerMessage(UDPsender.toBuilderString(),999));
         
         protocol.sendMessage(new ServerMessage(welcomeMessage,200));
-        UDPListner.sendMessage(new UDPMessage("Prova Multicast",this.onlineUser));
+        //UDPListner.sendMessage(new UDPMessage("Prova Multicast",this.onlineUser));
         try{
             while(!(Thread.currentThread().isInterrupted())){
                 //avvio timeout inattività
@@ -77,7 +78,6 @@ public class GenericTask implements Runnable {
                 else this.currentHelpMessage = loggedUserMessage;
                 //stampa il contenuto del messaggio ricevuto
                 System.out.println("run:"+clientRequest.operation.toString());
-                UDPListner.sendMessage(new UDPMessage("Prova Multicast",this.onlineUser));
                 //reagisci al messaggio
                 this.serverReact(clientRequest);
             }

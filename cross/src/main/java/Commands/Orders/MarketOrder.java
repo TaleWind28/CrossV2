@@ -1,7 +1,11 @@
 package Commands.Orders;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import Communication.Values;
 import Communication.Messages.ServerMessage;
+import Communication.Messages.UDPMessage;
 import JsonUtils.JsonAccessedData;
 import JsonUtils.Orderbook;
 import ServerTasks.GenericTask;
@@ -23,6 +27,7 @@ public class MarketOrder extends Order implements Values {
     public ServerMessage execute(JsonAccessedData data,String user,GenericTask task){
         //controllo che l'utente sia autenticato
         if(user.equals(""))return new ServerMessage("401: Per effettuare ordini bisogna creare un account o accedervi",401);
+        super.setOrderId(task.getProgressiveOrderNumber());
         //recupero l'orderbook
         Orderbook orderbook = (Orderbook)data;
         //preparo string per richieder ela mappa
@@ -44,14 +49,33 @@ public class MarketOrder extends Order implements Values {
         while(this.size>0){
             responseMessage = evadeOrder(exchangetype, user, orderbook, cache, responseMessage);
             if (responseMessage.contains("[104]")){
-                restoreOrders(cache,orderbook);
+                this.restoreOrders(cache,orderbook);
+                this.setOrderId(-1);
                 responseMessage = "[104] Non sono stati trovati ordini per le tue esigenze";
                 resp_code = 104;
                 break;
             }
         }
-        responseMessage = responseMessage.stripTrailing();
-        return new ServerMessage(responseMessage,resp_code);    
+        List<String> tradeNotify = new ArrayList<>();
+        //mando messaggio UDP
+        while(cache.getSize()!=0){
+            //rimuovo l'ordine dalla cache
+            Limitorder order = cache.removeOrder();
+            tradeNotify.add(order.toString()+"\n");
+            String[] trades= {order.toString()};
+            task.UDPsender.sendMessage(new UDPMessage("Prova Multicast",order.getUsername(),"closedTrades",trades));
+        }
+
+        if(tradeNotify.size()!=0){
+            //tolgo il \n dalla stringa per stampare bene a schermo
+            //tradeNotify.set(tradeNotify.size()-1,tradeNotify.get(size-1).stripTrailing());
+            //invio il messaggio
+            task.UDPsender.sendMessage(new UDPMessage("Prova Multicast",task.onlineUser,"closedTrades",tradeNotify.toArray(new String[0])));
+        }
+        
+        responseMessage = ""+this.orderID;
+        //responseMessage = responseMessage.stripTrailing();
+        return new ServerMessage(responseMessage,resp_code);
     }
 
     public String evadeOrder(String exchangetype,String user,Orderbook orderbook, OrderCache cache,String responseMessage){
@@ -69,17 +93,17 @@ public class MarketOrder extends Order implements Values {
             System.out.println("[Marketorder]ordine inevdibile");
             return "[104] Non sono stati trovati ordini per le tue esigenze";
         }
-        int bitcoinBought = evadedOrder.getSize();
+        //int bitcoinBought = evadedOrder.getSize();
         //controllo quanti btc sono stati comprati
         if(evadedOrder.getSize()>this.size){
-            bitcoinBought = this.size;
+            //bitcoinBought = this.size;
             //sottraggo la taglia di bitcoin comprata
             evadedOrder.addSize(-(this.size));
             //rimetto l'offerta sul mercato
             orderbook.addData(evadedOrder, exchangetype);
             this.size = 0;
         }
-        responseMessage+="#"+bitcoinBought+" bitcoin dall'utente "+evadedOrder.getUser()+" pagando "+(evadedOrder.getPrice()*bitcoinBought)+"$\n";
+        //responseMessage+="#"+bitcoinBought+" bitcoin dall'utente "+evadedOrder.getUser()+" pagando "+(evadedOrder.getPrice()*bitcoinBought)+"$\n";
         //System.out.println("[Marketorder]evadedOrder size="+evadedOrder.getSize());
         this.size -= evadedOrder.getSize();
         //System.out.println("[Marketorder]myorder size="+this.size);
@@ -87,10 +111,11 @@ public class MarketOrder extends Order implements Values {
     }
 
     public void restoreOrders(OrderCache cache, Orderbook orderbook){
-        for(int i = 0;i<cache.getSize();i++){
+        while(cache.getSize()!=0){
             Limitorder ord = cache.removeOrder();
             orderbook.addData(ord, ord.getExchangeType());
         }
+        
     }
 
     @Override

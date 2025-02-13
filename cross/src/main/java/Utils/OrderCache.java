@@ -17,9 +17,12 @@ public class OrderCache {
         this.size++;
         return;
     }
+    
 
     public Limitorder removeOrder(){
+        this.size--;
         return this.orderCache.remove(0);
+
     }
     public int getSize() {
         return size;
