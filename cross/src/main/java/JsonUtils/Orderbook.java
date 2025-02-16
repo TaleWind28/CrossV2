@@ -16,6 +16,7 @@ import Commands.Orders.Limitorder;
 import Commands.Orders.Order;
 import Commands.Orders.StopOrder;
 import Communication.Values;
+import Utils.OrderCache;
 import Utils.OrderSorting;
 import Utils.OrderSortingAdapter;
 import okio.Okio;
@@ -93,10 +94,19 @@ public class Orderbook implements JsonAccessedData{
         return ord;
     }
 
+    public void restoreOrders(OrderCache cache, Orderbook orderbook){
+        while(cache.getSize()!=0){
+            Limitorder ord = cache.removeOrder();
+            orderbook.addData(ord, ord.getExchangeType());
+        }
+    }
+    
     public OrderSorting getBestPriceAvailable(String tradeType, String myUsername){
         ConcurrentSkipListMap<OrderSorting, Limitorder> requestedMap = getRequestedMap(tradeType);
         if(requestedMap.isEmpty())return null;
+        if(requestedMap.firstEntry().getValue().getUser().equals(myUsername))return null;
         else return requestedMap.firstEntry().getKey();
+        //else return requestedMap.firstEntry().getKey();
     }
 
     public ConcurrentSkipListMap<OrderSorting, Limitorder> getAskOrders() {

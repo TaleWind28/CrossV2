@@ -1,11 +1,7 @@
 package Commands.Orders;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import Communication.Values;
 import Communication.Messages.ServerMessage;
-import Communication.Messages.UDPMessage;
 import JsonUtils.JsonAccessedData;
 import JsonUtils.Orderbook;
 import ServerTasks.GenericTask;
@@ -15,7 +11,6 @@ import Utils.OrderSorting;
 public class MarketOrder extends Order implements Values {
     private String exchangeType;
     private int size;
-    private int orderID;
     //private String user;
 
     public MarketOrder(String exchangeType,int size){
@@ -30,49 +25,32 @@ public class MarketOrder extends Order implements Values {
         super.setOrderId(task.getProgressiveOrderNumber());
         //recupero l'orderbook
         Orderbook orderbook = (Orderbook)data;
-        //preparo string per richieder ela mappa
-        String exchangetype = null;
         //preparo le stringhe per richiesta mappa Orderbook
-        switch (this.exchangeType) {
-            case "ask":
-                exchangetype = "bid";
-                break;
-            case "bid":
-                exchangetype = "ask";
-                break;
-        }
+        String exchangetype = super.findOppositeMap(this.getExchangeType());
         //ha senso preparare il responsemessege adesse perchè se compro compro tutto dal solito utente, il quale verrà aggiunto successivamente al messaggio
         String responseMessage = "";
+        //creo una cache per memorizzare gli ordini
         OrderCache cache = new OrderCache();
-
+        //predispongo un codice di risposta di default
         int resp_code = 200;
+        //ciclo finchè non esaurisco l'irdine
         while(this.size>0){
+            //invoco evadeORder per evadere l'ordine
             responseMessage = evadeOrder(exchangetype, user, orderbook, cache, responseMessage);
+            //controllo il risultato dell'evadeORder
             if (responseMessage.contains("[104]")){
-                this.restoreOrders(cache,orderbook);
-                this.setOrderId(-1);
-                responseMessage = "[104] Non sono stati trovati ordini per le tue esigenze";
-                resp_code = 104;
+                //ripristino l'orderbook
+                orderbook.restoreOrders(cache,orderbook);
+                //imposto orderId a -1 per indicare il fallimento
+                super.setOrderId(-1);
+                System.out.println("[Marketorder]--"+super.getOrderId());
+                responseMessage = super.getOrderId()+": Order not fully Executed!";
+                resp_code = -1;
                 break;
             }
         }
-        //memorizzo le transazioni per poi mandarle
-        List<String> tradeNotify = new ArrayList<>();
-        //mando messaggio UDP
-        while(cache.getSize()!=0){
-            //rimuovo l'ordine dalla cache
-            Limitorder order = cache.removeOrder();
-            tradeNotify.add(order.toString()+"\n");
-            String[] trades= {order.toString()};
-            task.UDPsender.sendMessage(new UDPMessage("Prova Multicast",order.getUsername(),"closedTrades",trades));
-        }
-
-        if(tradeNotify.size()!=0){
-            //invio il messaggio
-            task.UDPsender.sendMessage(new UDPMessage("Prova Multicast",task.onlineUser,"closedTrades",tradeNotify.toArray(new String[0])));
-        }
-        
-        responseMessage = ""+this.orderID;
+        //System.out.println("[Marketorder]-"+responseMessage);
+        super.notifySuccessfullTrades(cache, task.UDPsender, super.getOrderId(), this.getUser());
         //responseMessage = responseMessage.stripTrailing();
         return new ServerMessage(responseMessage,resp_code);
     }
@@ -107,22 +85,11 @@ public class MarketOrder extends Order implements Values {
         return responseMessage;
     }
 
-    public void restoreOrders(OrderCache cache, Orderbook orderbook){
-        while(cache.getSize()!=0){
-            Limitorder ord = cache.removeOrder();
-            orderbook.addData(ord, ord.getExchangeType());
-        }
-        
-    }
-
     @Override
     public String toString() {
-        return "Marketorder{ exchangeType="+this.exchangeType+" size="+this.size+" orderID="+this.orderID+"}";    
+        return "Marketorder{ exchangeType="+this.exchangeType+" size="+this.size+" orderId="+super.getOrderId()+"}";    
     }
 
-    public void setOrderID(int orderID) {
-        this.orderID = orderID;
-    }
 
     @Override
     public String getExchangeType() {

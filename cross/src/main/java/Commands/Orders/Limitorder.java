@@ -7,6 +7,7 @@ import Communication.Messages.ServerMessage;
 import JsonUtils.JsonAccessedData;
 import JsonUtils.Orderbook;
 import ServerTasks.GenericTask;
+import Utils.OrderCache;
 
 public class Limitorder extends Order implements Values{
     private String exchangeType;
@@ -28,7 +29,13 @@ public class Limitorder extends Order implements Values{
         Orderbook orderbook = (Orderbook)data;
         //la faccio semplice per vedere se funziona
         super.setGmt(ZonedDateTime.now());
-        //non so come funziona l'algoritmo richiesto dalla ricci quindi lo lascio così
+        String result = "";
+        String reverseType = "";
+        OrderCache cache = new OrderCache();
+        while(!result.equals("[104] Non sono stati trovati ordini per le tue esigenze")){
+            result = new MarketOrder(user, size).evadeOrder(reverseType, user, orderbook, cache,"");
+        }
+         //non so come funziona l'algoritmo richiesto dalla ricci quindi lo lascio così
         orderbook.addData(this, this.exchangeType);
         //System.out.println("fatto");
         return new ServerMessage("Ordine Correttamente Evaso",100);
@@ -50,7 +57,6 @@ public class Limitorder extends Order implements Values{
     public String getExchangeType() {
         return this.exchangeType;
     }
-
 
     @Override
     public int getPrice() {
