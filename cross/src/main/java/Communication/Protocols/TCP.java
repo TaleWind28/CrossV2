@@ -83,7 +83,7 @@ public class TCP implements Protocol{
             }
             return null;
         }catch(IOException e){
-                    //System.out.println("Client: "+e.getMessage());
+            System.out.println("[Message]Unable to receive a message");
             return null;
         }
     }

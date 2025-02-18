@@ -1,4 +1,165 @@
 {
- "askMap": {},
+ "askMap": {
+  "Price: -1, Timestamp: 2025-02-18T09:14:41.7068271+01:00[Europe/Rome], OrderId: 19": {
+   "exchangeType": "ask",
+   "gmt": "2025-02-18T09:14:41.7068271+01:00[Europe/Rome]",
+   "orderId": 19,
+   "price": -1,
+   "size": 1,
+   "user": "pippo"
+  },
+  "Price: 1, Timestamp: 2025-02-18T09:13:54.5488933+01:00[Europe/Rome], OrderId: 0": {
+   "exchangeType": "ask",
+   "gmt": "2025-02-18T09:13:54.5488933+01:00[Europe/Rome]",
+   "orderId": 0,
+   "price": 1,
+   "size": 1,
+   "user": "pino"
+  },
+  "Price: 1, Timestamp: 2025-02-18T09:13:56.72548+01:00[Europe/Rome], OrderId: 1": {
+   "exchangeType": "ask",
+   "gmt": "2025-02-18T09:13:56.72548+01:00[Europe/Rome]",
+   "orderId": 1,
+   "price": 1,
+   "size": 1,
+   "user": "pino"
+  },
+  "Price: 1, Timestamp: 2025-02-18T09:13:57.4109181+01:00[Europe/Rome], OrderId: 2": {
+   "exchangeType": "ask",
+   "gmt": "2025-02-18T09:13:57.4109181+01:00[Europe/Rome]",
+   "orderId": 2,
+   "price": 1,
+   "size": 1,
+   "user": "pino"
+  },
+  "Price: 1, Timestamp: 2025-02-18T09:13:57.8717355+01:00[Europe/Rome], OrderId: 3": {
+   "exchangeType": "ask",
+   "gmt": "2025-02-18T09:13:57.8717355+01:00[Europe/Rome]",
+   "orderId": 3,
+   "price": 1,
+   "size": 1,
+   "user": "pino"
+  },
+  "Price: 1, Timestamp: 2025-02-18T09:13:58.1877046+01:00[Europe/Rome], OrderId: 4": {
+   "exchangeType": "ask",
+   "gmt": "2025-02-18T09:13:58.1877046+01:00[Europe/Rome]",
+   "orderId": 4,
+   "price": 1,
+   "size": 1,
+   "user": "pino"
+  },
+  "Price: 1, Timestamp: 2025-02-18T09:13:58.4364053+01:00[Europe/Rome], OrderId: 5": {
+   "exchangeType": "ask",
+   "gmt": "2025-02-18T09:13:58.4364053+01:00[Europe/Rome]",
+   "orderId": 5,
+   "price": 1,
+   "size": 1,
+   "user": "pino"
+  },
+  "Price: 1, Timestamp: 2025-02-18T09:13:58.6941696+01:00[Europe/Rome], OrderId: 6": {
+   "exchangeType": "ask",
+   "gmt": "2025-02-18T09:13:58.6941696+01:00[Europe/Rome]",
+   "orderId": 6,
+   "price": 1,
+   "size": 1,
+   "user": "pino"
+  },
+  "Price: 1, Timestamp: 2025-02-18T09:13:58.942052+01:00[Europe/Rome], OrderId: 7": {
+   "exchangeType": "ask",
+   "gmt": "2025-02-18T09:13:58.942052+01:00[Europe/Rome]",
+   "orderId": 7,
+   "price": 1,
+   "size": 1,
+   "user": "pino"
+  },
+  "Price: 1, Timestamp: 2025-02-18T09:13:59.1964631+01:00[Europe/Rome], OrderId: 8": {
+   "exchangeType": "ask",
+   "gmt": "2025-02-18T09:13:59.1964631+01:00[Europe/Rome]",
+   "orderId": 8,
+   "price": 1,
+   "size": 1,
+   "user": "pino"
+  },
+  "Price: 1, Timestamp: 2025-02-18T09:13:59.4564367+01:00[Europe/Rome], OrderId: 9": {
+   "exchangeType": "ask",
+   "gmt": "2025-02-18T09:13:59.4564367+01:00[Europe/Rome]",
+   "orderId": 9,
+   "price": 1,
+   "size": 1,
+   "user": "pino"
+  },
+  "Price: 1, Timestamp: 2025-02-18T09:13:59.7172563+01:00[Europe/Rome], OrderId: 10": {
+   "exchangeType": "ask",
+   "gmt": "2025-02-18T09:13:59.7172563+01:00[Europe/Rome]",
+   "orderId": 10,
+   "price": 1,
+   "size": 1,
+   "user": "pino"
+  },
+  "Price: 1, Timestamp: 2025-02-18T09:13:59.9674294+01:00[Europe/Rome], OrderId: 11": {
+   "exchangeType": "ask",
+   "gmt": "2025-02-18T09:13:59.9674294+01:00[Europe/Rome]",
+   "orderId": 11,
+   "price": 1,
+   "size": 1,
+   "user": "pino"
+  },
+  "Price: 1, Timestamp: 2025-02-18T09:14:00.2075722+01:00[Europe/Rome], OrderId: 12": {
+   "exchangeType": "ask",
+   "gmt": "2025-02-18T09:14:00.2075722+01:00[Europe/Rome]",
+   "orderId": 12,
+   "price": 1,
+   "size": 1,
+   "user": "pino"
+  },
+  "Price: 1, Timestamp: 2025-02-18T09:14:00.4863679+01:00[Europe/Rome], OrderId: 13": {
+   "exchangeType": "ask",
+   "gmt": "2025-02-18T09:14:00.4863679+01:00[Europe/Rome]",
+   "orderId": 13,
+   "price": 1,
+   "size": 1,
+   "user": "pino"
+  },
+  "Price: 1, Timestamp: 2025-02-18T09:14:00.7618811+01:00[Europe/Rome], OrderId: 14": {
+   "exchangeType": "ask",
+   "gmt": "2025-02-18T09:14:00.7618811+01:00[Europe/Rome]",
+   "orderId": 14,
+   "price": 1,
+   "size": 1,
+   "user": "pino"
+  },
+  "Price: 1, Timestamp: 2025-02-18T09:14:01.0433974+01:00[Europe/Rome], OrderId: 15": {
+   "exchangeType": "ask",
+   "gmt": "2025-02-18T09:14:01.0433974+01:00[Europe/Rome]",
+   "orderId": 15,
+   "price": 1,
+   "size": 1,
+   "user": "pino"
+  },
+  "Price: 1, Timestamp: 2025-02-18T09:14:01.3184596+01:00[Europe/Rome], OrderId: 16": {
+   "exchangeType": "ask",
+   "gmt": "2025-02-18T09:14:01.3184596+01:00[Europe/Rome]",
+   "orderId": 16,
+   "price": 1,
+   "size": 1,
+   "user": "pino"
+  },
+  "Price: 1, Timestamp: 2025-02-18T09:14:01.5624351+01:00[Europe/Rome], OrderId: 17": {
+   "exchangeType": "ask",
+   "gmt": "2025-02-18T09:14:01.5624351+01:00[Europe/Rome]",
+   "orderId": 17,
+   "price": 1,
+   "size": 1,
+   "user": "pino"
+  },
+  "Price: 1, Timestamp: 2025-02-18T09:14:30.3371563+01:00[Europe/Rome], OrderId: 18": {
+   "exchangeType": "ask",
+   "gmt": "2025-02-18T09:14:30.3371563+01:00[Europe/Rome]",
+   "orderId": 18,
+   "price": 1,
+   "size": 1,
+   "user": "pino"
+  }
+ },
  "bidMap": {}
 }

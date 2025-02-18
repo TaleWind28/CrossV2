@@ -16,7 +16,7 @@
    "username": "TaleWind"
   },
   "pippo": {
-   "isLogged": false,
+   "isLogged": true,
    "password": "$2a$10$IKo05duGZ5mRTBo5jupHGOqs93TtWr35.2xgC1UgTgQ1Zvdt6JT/2",
    "username": "pippo"
   },
