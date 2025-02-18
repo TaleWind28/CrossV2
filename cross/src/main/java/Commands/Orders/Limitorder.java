@@ -3,21 +3,23 @@ package Commands.Orders;
 import java.time.ZonedDateTime;
 
 import Communication.Values;
+import Communication.Messages.OrderResponseMessage;
 import Communication.Messages.ServerMessage;
 import JsonUtils.JsonAccessedData;
 import JsonUtils.Orderbook;
 import ServerTasks.GenericTask;
 import Utils.OrderCache;
+import Utils.OrderSorting;
 
 public class Limitorder extends Order implements Values{
     private String exchangeType;
-    private int size;
+    //private int size;
     private int price;
 
     public Limitorder(String exchangeType,int size, int price){
         super();
         this.exchangeType = exchangeType;
-        this.size = size;
+        super.setSize(size);
         this.price = price;
     }
 
@@ -32,20 +34,77 @@ public class Limitorder extends Order implements Values{
         String result = "";
         String reverseType = "";
         OrderCache cache = new OrderCache();
-        while(!result.equals("[104] Non sono stati trovati ordini per le tue esigenze") && this.size>0){
-            result = new MarketOrder(user, size).evadeOrder(reverseType, user, orderbook, cache,"");
+        reverseType = super.findOppositeMap(this.exchangeType);
+        
+        while(result!=null){
+            result = this.evadeOrder(reverseType, user, orderbook, cache, result);
         }
-        //non so come funziona l'algoritmo richiesto dalla ricci quindi lo lascio così
-        orderbook.addData(this, this.exchangeType);
-        //System.out.println("fatto");
-        return new ServerMessage("Ordine Correttamente Evaso",100);
+        // while(count>0){
+        //     Limitorder ord = cache.removeOrder();
+        //     System.out.println("[Limitorder-cachesizeadder]");
+        //     switch(reverseType){
+        //         case "ask":
+        //             if(ord.getPrice()>this.price){
+        //                 //restore orders
+        //                 this.setSize(this.getSize()+ord.getSize());
+        //                 cache.addOrder(ord);
+        //             }
+        //         case "bid":
+        //             if(ord.getPrice()<this.price){
+        //                 //restore orders
+        //                 this.setSize(this.getSize()+ord.getSize());
+        //                 cache.addOrder(ord);
+        //             }
+        //         }
+        //     count--;
+        //     System.out.println("[Limitorder-cache_orderevader] "+ord.toString()+", size="+this.getSize());
+        // }
+        // orderbook.restoreOrders(cache, orderbook);
+        if (super.getSize() == 0)return new OrderResponseMessage(this.getOrderId(),"Order executed successfully!");
+        else orderbook.addData(this, this.exchangeType);
+        
+        return new OrderResponseMessage(100,"Order executed successfully!");
+    }
+
+    @Override
+    public String evadeOrder(String exchangetype,String user,Orderbook orderbook, OrderCache cache,String responseMessage){
+        System.out.println("[Order-evadeOrd] entro in evaded con size= "+this.getSize()+",exchange type"+exchangetype+",utente"+user);
+        //cerco il miglior prezzo per la qtà di bitcoin che voglio comprare
+        OrderSorting orderbookEntry = orderbook.getBestPriceAvailable(exchangetype,user);
+        System.out.println("[Order-evadeOrd] entry="+orderbookEntry);
+        //controllo che esista una entry per il mio ordine
+        if(orderbookEntry == null){System.out.println("[Order]mamma");return null;}
+        responseMessage = ""+this.getOrderId();
+        
+        //rimuovo l'ordine dall'orderbook
+        Limitorder evadedOrder = (Limitorder)orderbook.removeData(exchangetype,orderbookEntry);
+        //salvo l'ordine rimosso dall'ordebook in caso non si possa evadere completamente il marketorder
+        cache.addOrder(evadedOrder);
+        //controllo che l'ordine sia stato evaso
+        if(evadedOrder == null){
+            System.out.println("[Order-evadeOrd]ordine inevdibile");
+            return null;
+        }
+        //controllo quanti btc sono stati comprati
+        if(evadedOrder.getSize()>this.getSize()){
+            //bitcoinBought = this.getSize();
+            //sottraggo la taglia di bitcoin comprata
+            evadedOrder.addSize(-(this.getSize()));
+            //rimetto l'offerta sul mercato
+            orderbook.addData(evadedOrder, exchangetype);
+            //imposto la size a 0 perchè ho sicuramente evaso tutto l'ordine
+            this.setSize(0);
+        }
+        this.setSize(this.getSize() -evadedOrder.getSize());
+        System.out.println("[Order-evadeOrd] size"+this.getSize());
+        return responseMessage;
     }
 
     @Override
     public String toString() {
         return "Limitorder{" +
         "\nexchangeType="+this.exchangeType
-        +"\n size="+this.size+
+        +"\n size="+super.getSize()+
         "\n price="+this.price+
         "\n orderID="+super.getOrderId()+
         "\n Utente="+super.getUser()+
@@ -63,13 +122,8 @@ public class Limitorder extends Order implements Values{
         return this.price;    
     }
 
-    @Override
-    public int getSize() {
-        return this.size;    
-    }
-
     public void addSize(int size) {
-        this.size+=size;    
+        super.setSize(super.getSize()+size);    
     }
 
     @Override

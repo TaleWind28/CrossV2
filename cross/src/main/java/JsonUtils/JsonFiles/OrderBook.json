@@ -1,62 +1,22 @@
 {
  "askMap": {
-  "Price: 1, Timestamp: 2025-02-18T09:37:54.6208008+01:00[Europe/Rome], OrderId: 1": {
+  "Price: 5, Timestamp: 2025-02-18T17:45:20.4030378+01:00[Europe/Rome], OrderId: 19": {
    "exchangeType": "ask",
-   "gmt": "2025-02-18T09:37:54.6208008+01:00[Europe/Rome]",
-   "orderId": 1,
-   "price": 1,
-   "size": 12,
-   "user": "pino"
-  },
-  "Price: 1, Timestamp: 2025-02-18T09:37:57.7127811+01:00[Europe/Rome], OrderId: 2": {
-   "exchangeType": "ask",
-   "gmt": "2025-02-18T09:37:57.7127811+01:00[Europe/Rome]",
-   "orderId": 2,
-   "price": 1,
-   "size": 12,
-   "user": "pino"
-  },
-  "Price: 1, Timestamp: 2025-02-18T09:37:58.2889838+01:00[Europe/Rome], OrderId: 3": {
-   "exchangeType": "ask",
-   "gmt": "2025-02-18T09:37:58.2889838+01:00[Europe/Rome]",
-   "orderId": 3,
-   "price": 1,
-   "size": 12,
-   "user": "pino"
-  },
-  "Price: 1, Timestamp: 2025-02-18T09:37:59.0129436+01:00[Europe/Rome], OrderId: 4": {
-   "exchangeType": "ask",
-   "gmt": "2025-02-18T09:37:59.0129436+01:00[Europe/Rome]",
-   "orderId": 4,
-   "price": 1,
-   "size": 12,
-   "user": "pino"
-  },
-  "Price: 1, Timestamp: 2025-02-18T09:37:59.5377949+01:00[Europe/Rome], OrderId: 5": {
-   "exchangeType": "ask",
-   "gmt": "2025-02-18T09:37:59.5377949+01:00[Europe/Rome]",
-   "orderId": 5,
-   "price": 1,
-   "size": 12,
-   "user": "pino"
-  },
-  "Price: 1, Timestamp: 2025-02-18T09:37:59.8796976+01:00[Europe/Rome], OrderId: 6": {
-   "exchangeType": "ask",
-   "gmt": "2025-02-18T09:37:59.8796976+01:00[Europe/Rome]",
-   "orderId": 6,
-   "price": 1,
-   "size": 12,
-   "user": "pino"
+   "gmt": "2025-02-18T17:45:20.4030378+01:00[Europe/Rome]",
+   "orderId": 19,
+   "price": 5,
+   "size": 35,
+   "user": "pin"
   }
  },
  "bidMap": {
-  "Price: 1, Timestamp: 2025-02-18T09:38:03.0371215+01:00[Europe/Rome], OrderId: 7": {
+  "Price: 5, Timestamp: 2025-02-18T17:45:21.6300816+01:00[Europe/Rome], OrderId: 20": {
    "exchangeType": "bid",
-   "gmt": "2025-02-18T09:38:03.0371215+01:00[Europe/Rome]",
-   "orderId": 7,
-   "price": 1,
-   "size": 12,
-   "user": "pino"
+   "gmt": "2025-02-18T17:45:21.6300816+01:00[Europe/Rome]",
+   "orderId": 20,
+   "price": 6,
+   "size": 35,
+   "user": "pin"
   }
  }
 }

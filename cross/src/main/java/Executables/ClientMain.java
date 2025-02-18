@@ -116,7 +116,7 @@ public class ClientMain extends ClientProtocol{
             System.exit(0);
         }
         catch(Exception e){
-            System.out.println(e.getMessage()+"\n"+e.getClass()+"\n"+e.getCause()+"\n"+e.getSuppressed());
+            System.out.println("[ClientReceiver]"+e.getMessage()+"\n"+e.getClass()+"\n"+e.getCause()+"\n"+e.getSuppressed());
             System.out.println("Stiamo riscontrando dei problemi sul server, procederemo a chiudere la connessione, ci scusiamo per il disagio");
             System.exit(0);
         }    
