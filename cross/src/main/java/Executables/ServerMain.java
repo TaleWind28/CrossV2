@@ -12,6 +12,7 @@ import com.squareup.moshi.JsonReader;
 import com.squareup.moshi.Moshi;
 
 import Commands.Orders.Limitorder;
+import Communication.Messages.OrderResponseMessage;
 import Communication.Protocols.ServerProtocol;
 import Communication.Protocols.TCP;
 import Communication.Protocols.UDP;
@@ -33,7 +34,7 @@ public class ServerMain extends ServerProtocol{
         super(config.getTCPport(),Runtime.getRuntime().availableProcessors());
         this.bindAddress = config.getTCPaddress();
         this.registeredUsers = new Userbook(config.getUserbook());
-        
+        //System.out.println(new OrderResponseMessage(-1).toString());
         this.orderbook = new Orderbook(config.getOrderBook());
         try{
             this.UDPListner =   new UDP(config.getUDPaddress(),config.getUDPport(),null);

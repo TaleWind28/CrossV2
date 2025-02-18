@@ -23,6 +23,7 @@ import Commands.Orders.StopOrder;
 import Communication.Values;
 import Communication.Messages.ClientMessage;
 import Communication.Messages.Message;
+import Communication.Messages.OrderResponseMessage;
 import Communication.Messages.ServerMessage;
 
 import com.squareup.moshi.Moshi;
@@ -33,7 +34,8 @@ public class TCP implements Protocol{
     //protected Gson gson = new Gson();
     protected Moshi moshi = new Moshi.Builder().add(PolymorphicJsonAdapterFactory.of(Message.class, "type")
         .withSubtype(ServerMessage.class, "ServerMessage")
-        .withSubtype(ClientMessage.class, "ClientMessage"))
+        .withSubtype(ClientMessage.class, "ClientMessage")
+        .withSubtype(OrderResponseMessage.class, "Confirmation"))
         .add(PolymorphicJsonAdapterFactory.of(Values.class,"type")
         .withSubtype(Limitorder.class, "limitorder")
         .withSubtype(MarketOrder.class,"marketorder")
