@@ -24,84 +24,31 @@ public class Limitorder extends Order implements Values{
 
     @Override
     public ServerMessage execute(JsonAccessedData data,String user,GenericTask task){
+        //controllo che l'utente sia loggato
         if(user.equals(""))return new ServerMessage("401: Per effettuare ordini bisogna creare un account o accedervi",401);
+        //imposto l'orderId
         super.setOrderId(task.getProgressiveOrderNumber());
+        //aumento l'orderId
         task.increaseProgressiveOrderNumber();
+        //recupero l'orderbook
         Orderbook orderbook = (Orderbook)data;
-        //la faccio semplice per vedere se funziona
+        //memorizzo l'orario in cui è avvennuto l'ordine
         super.setGmt(ZonedDateTime.now());
-        String result = "";
-        String reverseType = "";
         OrderCache cache = new OrderCache();
-        reverseType = super.findOppositeMap(this.exchangeType);
-        //int i = 0;
+        String result = new String();
+        //ricavo la mappa opposta a quella richiesta per cercare offerte compatibili
+        String reverseType = super.findOppositeMap(this.exchangeType);
+        //ciclo finchè non esauirisco tutte le entry dell'orederbook oppure evado completamente l'ordine
         while(result!=null && this.getSize()!=0){
-            //if(i == 2)break;
             result = this.evadeOrder(reverseType, user, orderbook, cache, result);
-            //i++;
         }
-        //System.out.println("[Limitorder] cicles"+i);
-        
-        // while(count>0){
-        //     Limitorder ord = cache.removeOrder();
-        //     System.out.println("[Limitorder-cachesizeadder]");
-        //     switch(reverseType){
-        //         case "ask":
-        //             if(ord.getPrice()>this.price){
-        //                 //restore orders
-        //                 this.setSize(this.getSize()+ord.getSize());
-        //                 cache.addOrder(ord);
-        //             }
-        //         case "bid":
-        //             if(ord.getPrice()<this.price){
-        //                 //restore orders
-        //                 this.setSize(this.getSize()+ord.getSize());
-        //                 cache.addOrder(ord);
-        //             }
-        //         }
-        //     count--;
-        //     System.out.println("[Limitorder-cache_orderevader] "+ord.toString()+", size="+this.getSize());
-        // }
-        // orderbook.restoreOrders(cache, orderbook);
-        if (this.getSize() == 0)return new OrderResponseMessage(this.getOrderId(),"Order executed successfully!");
+        System.out.println("[Limitorder] dopo evade"+this.getSize());
+        this.notifySuccessfullTrades(cache, task.UDPsender, this.getOrderId(), user);
+        if (this.getSize() == 0)return new OrderResponseMessage(this.getOrderId(),"Order Fully Executed successfully!");
         else orderbook.addData(this, this.exchangeType);
         
-        return new OrderResponseMessage(100,"Order executed successfully!");
+        return new OrderResponseMessage(this.getOrderId(),"Order Partially Executed, the remnants are placed as a limitorder in the orderbook");
     }
-
-    // @Override
-    // public String evadeOrder(String exchangetype,String user,Orderbook orderbook, OrderCache cache,String responseMessage){
-    //     System.out.println("[Order-evadeOrd] entro in evaded con size= "+this.getSize()+",exchange type"+exchangetype+",utente"+user);
-    //     //cerco il miglior prezzo per la qtà di bitcoin che voglio comprare
-    //     OrderSorting orderbookEntry = orderbook.getBestPriceAvailable(exchangetype,user);
-    //     System.out.println("[Order-evadeOrd] entry="+orderbookEntry);
-    //     //controllo che esista una entry per il mio ordine
-    //     if(orderbookEntry == null){System.out.println("[Order]mamma");return null;}
-    //     responseMessage = ""+this.getOrderId();
-        
-    //     //rimuovo l'ordine dall'orderbook
-    //     Limitorder evadedOrder = (Limitorder)orderbook.removeData(exchangetype,orderbookEntry);
-    //     //salvo l'ordine rimosso dall'ordebook in caso non si possa evadere completamente il marketorder
-    //     cache.addOrder(evadedOrder);
-    //     //controllo che l'ordine sia stato evaso
-    //     if(evadedOrder == null){
-    //         System.out.println("[Order-evadeOrd]ordine inevdibile");
-    //         return null;
-    //     }
-    //     //controllo quanti btc sono stati comprati
-    //     if(evadedOrder.getSize()>this.getSize()){
-    //         //bitcoinBought = this.getSize();
-    //         //sottraggo la taglia di bitcoin comprata
-    //         evadedOrder.addSize(-(this.getSize()));
-    //         //rimetto l'offerta sul mercato
-    //         orderbook.addData(evadedOrder, exchangetype);
-    //         //imposto la size a 0 perchè ho sicuramente evaso tutto l'ordine
-    //         this.setSize(0);
-    //     }
-    //     this.setSize(this.getSize() -evadedOrder.getSize());
-    //     System.out.println("[Order-evadeOrd] size"+this.getSize());
-    //     return responseMessage;
-    // }
 
     @Override
     public String toString() {

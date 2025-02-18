@@ -34,7 +34,6 @@ public class CommandFactory{
                 case "market":   
                     return new MarketOrder(command[1],Integer.parseInt(command[2]));
                 case "limit":
-                    System.out.println("limit"+command[1]+command[2]+command[3]);
                     return new Limitorder(command[1],Integer.parseInt(command[2]),Integer.parseInt(command[3]));
                 case "stop":
                     return new StopOrder(command[1],Integer.parseInt(command[2]),Integer.parseInt(command[3]));

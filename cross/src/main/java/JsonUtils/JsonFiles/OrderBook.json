@@ -1,21 +1,13 @@
 {
- "askMap": {
-  "Price: 5, Timestamp: 2025-02-18T19:07:13.9008349+01:00[Europe/Rome], OrderId: 30": {
-   "exchangeType": "ask",
-   "gmt": "2025-02-18T19:07:13.9008349+01:00[Europe/Rome]",
-   "orderId": 30,
+ "askMap": {},
+ "bidMap": {
+  "Price: 5, Timestamp: 2025-02-18T23:04:50.6774604+01:00[Europe/Rome], OrderId: 1": {
+   "exchangeType": "bid",
+   "gmt": "2025-02-18T23:04:50.6774604+01:00[Europe/Rome]",
+   "orderId": 1,
    "price": 5,
-   "size": 35,
+   "size": 4,
    "user": "pippo"
-  },
-  "Price: 5, Timestamp: 2025-02-18T19:13:43.997371+01:00[Europe/Rome], OrderId: 32": {
-   "exchangeType": "ask",
-   "gmt": "2025-02-18T19:13:43.997371+01:00[Europe/Rome]",
-   "orderId": 32,
-   "price": 5,
-   "size": 29,
-   "user": "pino"
   }
- },
- "bidMap": {}
+ }
 }

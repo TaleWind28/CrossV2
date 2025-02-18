@@ -12,7 +12,7 @@ public class OrderResponseMessage extends ServerMessage{
 
     @Override
     public String toString() {
-        return "OrderResponseMessage{\norderId='"+this.orderId+"\nMessage='"+this.message+"'\n}";
+        return "OrderResponseMessage{\norderId='"+this.orderId+"'\nMessage='"+this.message+"'\n}";
     }
 
 }

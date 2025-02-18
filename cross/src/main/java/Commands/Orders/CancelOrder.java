@@ -40,6 +40,8 @@ public class CancelOrder  extends Order implements Values{
             if(!(entry.getValue().getOrderId()== Id))continue;
             if(!entry.getValue().getUser().equals(user))return false;//controllare eccezione
             //orderbook.removeData("ask",entry.getKey());
+            orderbook.removeData(requestedMap, entry.getKey());
+            orderbook.dataFlush();
             return true;
         }
         return false;

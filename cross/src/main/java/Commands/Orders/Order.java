@@ -24,9 +24,7 @@ public abstract class Order {
     }
 
     public void setSize(int size) {
-        
         this.size = size;
-        System.out.println("[Order] size= "+this.size);
     }
 
     public int getSize() {
@@ -46,9 +44,7 @@ public abstract class Order {
     }
     
     public void setOrderId(int orderId) {
-        System.out.println("[Order]"+orderId);
         this.orderId = orderId;
-        System.out.println("[Order]"+this.orderId);
     }
 
     public void setGmt(ZonedDateTime gmt) {
@@ -74,7 +70,7 @@ public abstract class Order {
             responseMessage = ""+orderId;
         }
         if(tradeNotify.size()!=0)udp.sendMessage(new UDPMessage(user,"closedTrades",tradeNotify.toArray(new String[0])));
-        else responseMessage = "-1: Order not fully executed";
+        else responseMessage = "Order not fully executed";
         return responseMessage;
     }
     

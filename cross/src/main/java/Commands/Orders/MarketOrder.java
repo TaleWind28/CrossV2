@@ -31,7 +31,7 @@ public class MarketOrder extends Order implements Values {
         //creo una cache per memorizzare gli ordini
         OrderCache cache = new OrderCache();
         //predispongo un codice di risposta di default
-        int resp_code = 200;
+        int resp_code = this.getOrderId();
         //ciclo finchè non evado completamente l'ordine
         while(super.getSize()>0){
             //invoco evadeORder per evadere l'ordine
@@ -47,12 +47,12 @@ public class MarketOrder extends Order implements Values {
                 //System.out.println("[Marketorder]"+super.getOrderId());
                 responseMessage = "Order not fully Executed!";
                 resp_code = -1;
-               
                 break;
             }
+            responseMessage = "Order fully Executed";            
             
         }
-        super.notifySuccessfullTrades(cache, task.UDPsender, super.getOrderId(), this.getUser());
+        super.notifySuccessfullTrades(cache, task.UDPsender, this.getOrderId(), this.getUser());
         return new OrderResponseMessage(resp_code,responseMessage);
     }
 
