@@ -98,17 +98,19 @@ public class Orderbook implements JsonAccessedData{
         }
     }
     
-    public OrderSorting getBestPriceAvailable(String tradeType, String myUsername){
+    public OrderSorting getBestPriceAvailable(String tradeType, String myUsername,int price){
         ConcurrentSkipListMap<OrderSorting, Limitorder> requestedMap = getRequestedMap(tradeType);
+        System.out.println("[Orderbook] price="+price+", tradetype="+tradeType);
         if(requestedMap.isEmpty())return null;
         Iterator<OrderSorting> navi =requestedMap.navigableKeySet().iterator();
         while(navi.hasNext()){
             OrderSorting currentKey = navi.next();
-            if(!requestedMap.get(currentKey).getUser().equals(myUsername))return currentKey;
-            
+            if(requestedMap.get(currentKey).getUser().equals(myUsername))continue;
+            if(price == 0 && !requestedMap.get(currentKey).getUser().equals(myUsername))return currentKey;
+            if(tradeType.equals("ask") && requestedMap.get(currentKey).getPrice()>=price)return currentKey;
+            if(tradeType.equals("bid") && requestedMap.get(currentKey).getPrice()<=price)return currentKey;
         }
-        return null;
-        //else return requestedMap.firstEntry().getKey();
+        return null;    
     }
 
     public ConcurrentSkipListMap<OrderSorting, Limitorder> getRequestedMap(String request){

@@ -10,8 +10,6 @@ import Utils.OrderCache;
 
 public class MarketOrder extends Order implements Values {
     private String exchangeType;
-    
-    //private String user;
 
     public MarketOrder(String exchangeType,int size){
         super.setSize(size);

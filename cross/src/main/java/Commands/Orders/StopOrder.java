@@ -9,13 +9,13 @@ import ServerTasks.GenericTask;
 public class StopOrder extends Order implements Values {
     private String exchangeType;
     //private int size;
-    private int price;
+    //private int price;
     //private String user;
 
     public StopOrder(String exchangeType,int size, int price){
         this.exchangeType = exchangeType;
         super.setSize(size);
-        this.price = price;
+        super.setPrice(price);
         
     }
 
@@ -42,11 +42,6 @@ public class StopOrder extends Order implements Values {
     @Override
     public String getExchangeType() {
         return this.exchangeType;    
-    }
-
-    @Override
-    public int getPrice() {
-        return this.price;
     }
 
     @Override

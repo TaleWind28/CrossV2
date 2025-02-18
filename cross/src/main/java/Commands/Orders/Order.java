@@ -17,6 +17,7 @@ public abstract class Order {
     private int orderId;
     private String gmt;
     private int size;
+    private int price = 0;
     
     public String getUser(){
         return this.user;
@@ -38,6 +39,10 @@ public abstract class Order {
 
     public int getOrderId(){
         return this.orderId;
+    }
+
+    public void setPrice(int price) {
+        this.price = price;
     }
     
     public void setOrderId(int orderId) {
@@ -86,23 +91,22 @@ public abstract class Order {
     }
 
     public String evadeOrder(String exchangetype,String user,Orderbook orderbook, OrderCache cache,String responseMessage){
-        System.out.println("[Order-evadeOrd] entro in evaded con size= "+this.size+",exchange type"+exchangetype+",utente"+user);
+        System.out.println("[Order-evadeOrd] entro in evaded con price= "+this.getPrice());
         //cerco il miglior prezzo per la qtà di bitcoin che voglio comprare
-        OrderSorting orderbookEntry = orderbook.getBestPriceAvailable(exchangetype,user);
+        OrderSorting orderbookEntry = orderbook.getBestPriceAvailable(exchangetype,user,this.getPrice());
         System.out.println("[Order-evadeOrd] entry="+orderbookEntry);
         //controllo che esista una entry per il mio ordine
         if(orderbookEntry == null){System.out.println("[Order]mamma");return null;}
         responseMessage = ""+this.getOrderId();
-        
         //rimuovo l'ordine dall'orderbook
         Limitorder evadedOrder = (Limitorder)orderbook.removeData(exchangetype,orderbookEntry);
-        //salvo l'ordine rimosso dall'ordebook in caso non si possa evadere completamente il marketorder
-        cache.addOrder(evadedOrder);
         //controllo che l'ordine sia stato evaso
         if(evadedOrder == null){
             System.out.println("[Order-evadeOrd]ordine inevdibile");
             return null;
         }
+        //salvo l'ordine rimosso dall'ordebook in caso non si possa evadere completamente il marketorder
+        cache.addOrder(evadedOrder);
         //controllo quanti btc sono stati comprati
         if(evadedOrder.getSize()>this.size){
             //bitcoinBought = this.size;
@@ -112,12 +116,18 @@ public abstract class Order {
             orderbook.addData(evadedOrder, exchangetype);
             this.size = 0;
         }
-        this.size -= evadedOrder.getSize();
+        else{
+            this.size -= evadedOrder.getSize();
+        }
+        System.out.println("[Order-evadeOrd] pre decremento size"+this.size);
+        //this.size -= evadedOrder.getSize();
         System.out.println("[Order-evadeOrd] size"+this.size);
         return responseMessage;
     }
     public abstract String getExchangeType();
-    public abstract int getPrice();
+    public int getPrice(){
+        return this.price;
+    };
     
     
 }
