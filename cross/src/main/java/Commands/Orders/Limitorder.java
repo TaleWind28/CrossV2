@@ -32,10 +32,10 @@ public class Limitorder extends Order implements Values{
         String result = "";
         String reverseType = "";
         OrderCache cache = new OrderCache();
-        while(!result.equals("[104] Non sono stati trovati ordini per le tue esigenze")){
+        while(!result.equals("[104] Non sono stati trovati ordini per le tue esigenze") && this.size>0){
             result = new MarketOrder(user, size).evadeOrder(reverseType, user, orderbook, cache,"");
         }
-         //non so come funziona l'algoritmo richiesto dalla ricci quindi lo lascio così
+        //non so come funziona l'algoritmo richiesto dalla ricci quindi lo lascio così
         orderbook.addData(this, this.exchangeType);
         //System.out.println("fatto");
         return new ServerMessage("Ordine Correttamente Evaso",100);

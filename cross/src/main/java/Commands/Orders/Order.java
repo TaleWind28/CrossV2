@@ -51,10 +51,10 @@ public abstract class Order {
             Limitorder order = cache.removeOrder();
             tradeNotify.add(order.toString()+"\n");
             String[] trades= {order.toString()};
-            udp.sendMessage(new UDPMessage("Prova Multicast",order.getUsername(),"closedTrades",trades));
+            udp.sendMessage(new UDPMessage(order.getUsername(),"closedTrades",trades));
             responseMessage = ""+orderId;
         }
-        if(tradeNotify.size()!=0)udp.sendMessage(new UDPMessage("Prova Multicast",user,"closedTrades",tradeNotify.toArray(new String[0])));
+        if(tradeNotify.size()!=0)udp.sendMessage(new UDPMessage(user,"closedTrades",tradeNotify.toArray(new String[0])));
         else responseMessage = "-1: Order not fully executed";
         return responseMessage;
     }

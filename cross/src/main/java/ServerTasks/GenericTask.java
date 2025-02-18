@@ -129,7 +129,7 @@ public class GenericTask implements Runnable {
             }
 
             //Stampa di debug -> risposta del server
-            System.out.println("[GenericTask] Messaggio generato:\nPayload: "+responseMessage.errorMessage+", code: "+responseMessage.response);
+            System.out.println("[GenericTask] Messaggio generato:\n"+responseMessage.toString());
             //invio il messaggio al client
             protocol.sendMessage(responseMessage);
             //stampa di debug

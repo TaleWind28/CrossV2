@@ -107,7 +107,7 @@ public class ClientMain extends ClientProtocol{
                     //default
                     default:
                         if(this.cmdSent.equals("login"))this.onlineUser = "";
-                        System.out.print(serverAnswer.errorMessage+"\n >>");
+                        System.out.print("[Server]"+serverAnswer.toString()+"\n >>");
                         this.canSend = true;
                         continue;
                 }            

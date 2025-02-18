@@ -3,8 +3,11 @@ package JsonUtils;
 import java.io.EOFException;
 import java.io.File;
 import java.time.ZonedDateTime;
+import java.util.Iterator;
+import java.util.NavigableSet;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.ConcurrentSkipListMap;
+
 
 import com.squareup.moshi.JsonAdapter;
 import com.squareup.moshi.JsonReader;
@@ -69,11 +72,6 @@ public class Orderbook implements JsonAccessedData{
         return;
     }
 
-    public ConcurrentSkipListMap<OrderSorting, Limitorder> getRequestedMap(String request){
-        if(request.equals("ask"))return this.askOrders;
-        else return this.bidOrders;
-    }
-
     public synchronized void dataFlush(){
         OrderClass oc = new OrderClass(this.askOrders, this.bidOrders);
         try (JsonWriter writer = JsonWriter.of(Okio.buffer(Okio.sink(new File(this.jsonFilePath))))) {
@@ -104,9 +102,19 @@ public class Orderbook implements JsonAccessedData{
     public OrderSorting getBestPriceAvailable(String tradeType, String myUsername){
         ConcurrentSkipListMap<OrderSorting, Limitorder> requestedMap = getRequestedMap(tradeType);
         if(requestedMap.isEmpty())return null;
-        if(requestedMap.firstEntry().getValue().getUser().equals(myUsername))return null;
-        else return requestedMap.firstEntry().getKey();
+        Iterator<OrderSorting> navi =requestedMap.navigableKeySet().iterator();
+        while(navi.hasNext()){
+            OrderSorting currentKey = navi.next();
+            if(!requestedMap.get(currentKey).getUser().equals(myUsername))return currentKey;
+            
+        }
+        return null;
         //else return requestedMap.firstEntry().getKey();
+    }
+
+    public ConcurrentSkipListMap<OrderSorting, Limitorder> getRequestedMap(String request){
+        if(request.equals("ask"))return this.askOrders;
+        else return this.bidOrders;
     }
 
     public ConcurrentSkipListMap<OrderSorting, Limitorder> getAskOrders() {

@@ -1,6 +1,7 @@
 package Commands.Orders;
 
 import Communication.Values;
+import Communication.Messages.OrderResponseMessage;
 import Communication.Messages.ServerMessage;
 import JsonUtils.JsonAccessedData;
 import JsonUtils.Orderbook;
@@ -21,7 +22,7 @@ public class MarketOrder extends Order implements Values {
     @Override
     public ServerMessage execute(JsonAccessedData data,String user,GenericTask task){
         //controllo che l'utente sia autenticato
-        if(user.equals(""))return new ServerMessage("401: Per effettuare ordini bisogna creare un account o accedervi",401);
+        if(user.equals(""))return new OrderResponseMessage(-1,"User not logged in");
         super.setOrderId(task.getProgressiveOrderNumber());
         //recupero l'orderbook
         Orderbook orderbook = (Orderbook)data;
@@ -43,8 +44,8 @@ public class MarketOrder extends Order implements Values {
                 orderbook.restoreOrders(cache,orderbook);
                 //imposto orderId a -1 per indicare il fallimento
                 super.setOrderId(-1);
-                System.out.println("[Marketorder]--"+super.getOrderId());
-                responseMessage = super.getOrderId()+": Order not fully Executed!";
+                //System.out.println("[Marketorder]"+super.getOrderId());
+                responseMessage = "Order not fully Executed!";
                 resp_code = -1;
                 break;
             }
@@ -52,13 +53,14 @@ public class MarketOrder extends Order implements Values {
         //System.out.println("[Marketorder]-"+responseMessage);
         super.notifySuccessfullTrades(cache, task.UDPsender, super.getOrderId(), this.getUser());
         //responseMessage = responseMessage.stripTrailing();
-        return new ServerMessage(responseMessage,resp_code);
+        return new OrderResponseMessage(resp_code,responseMessage);
     }
 
     public String evadeOrder(String exchangetype,String user,Orderbook orderbook, OrderCache cache,String responseMessage){
         System.out.println("[MarketOrder] entro in evaded con size= "+this.size);
         //cerco il miglior prezzo per la qtà di bitcoin che voglio comprare
         OrderSorting orderbookEntry = orderbook.getBestPriceAvailable(exchangetype,user);
+        System.out.println("[Marketorder-evadeOrd] entry="+orderbookEntry);
         //controllo che esista una entry per il mio ordine
         if(orderbookEntry == null){System.out.println("[Marketorder]mamma");return "[104] Non sono stati trovati ordini per le tue esigenze";}
         //rimuovo l'ordine dall'orderbook
@@ -68,7 +70,7 @@ public class MarketOrder extends Order implements Values {
         //controllo che l'ordine sia stato evaso
         if(evadedOrder == null){
             System.out.println("[Marketorder]ordine inevdibile");
-            return "[104] Non sono stati trovati ordini per le tue esigenze";
+            return "Non sono stati trovati ordini per le tue esigenze";
         }
         //controllo quanti btc sono stati comprati
         if(evadedOrder.getSize()>this.size){
