@@ -37,10 +37,8 @@ public class ClientMain extends ClientProtocol{
         this.factory = new CommandFactory();
         this.UDPReceiver = new Thread(() -> {
             while(true){
-                //System.out.println("[ReceiverUDP] onlineUser="+this.onlineUser);
                 UDPMessage message = (UDPMessage)this.UDPUpdater.receiveMessage();
-                //stampa di debug
-                //System.out.println("[ReceiverUDP] messaggio per:"+message.getInterestedUser());
+                
                 if(this.onlineUser.equals(""))continue;
                 else if(!message.getInterestedUser().equals(this.onlineUser))continue;
                 else System.out.println("[ReceiverUDP] Received:\n"+message.tradeNotification());
@@ -89,8 +87,8 @@ public class ClientMain extends ClientProtocol{
                         this.UDPUpdater = UDP.buildFromString(serverAnswer.errorMessage);
                         this.UDPReceiver.start();
                         continue;
-                    case 200:
-                        if (serverAnswer.errorMessage.equals("FIN")){
+                    case 100:
+                        if (serverAnswer.errorMessage.contains("Disconnessione avvenuta con successo")){
                             System.out.println("Chiusura Connessione");
                             this.sock.close();
                             System.exit(0);
@@ -114,7 +112,7 @@ public class ClientMain extends ClientProtocol{
             }
         }
         catch(IOException e){
-            System.out.println("bella: "+e.getMessage());
+            System.out.println("[ClientReceiver-IOException] "+e.getMessage());
             System.exit(0);
         }
         catch(Exception e){
@@ -126,14 +124,14 @@ public class ClientMain extends ClientProtocol{
 
         public void sendBehaviour(){
             while(true){
-                //System.out.println("entro");
                 if(this.canSend){
                     String rawClientRequest = this.userInput.nextLine();
                 
                     String[] clientRequest = rawClientRequest.split(" ");
                     ClientMessage userMessage = new ClientMessage(clientRequest[0],this.factory.createValue(clientRequest));
                     if(userMessage.operation.equals(""))userMessage.operation = "help";
-                    System.out.println("[CLIENTMAIN]"+userMessage.toString());
+                    //System.out.println("[CLIENTMAIN]"+userMessage.toString());
+                    System.out.println("[ClientHelper] Message Sent");
                     if(userMessage.operation.equals("login"))this.onlineUser = userMessage.values.getUsername();
                     this.protocol.sendMessage(userMessage);
                     

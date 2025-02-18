@@ -122,7 +122,7 @@ public class GenericTask implements Runnable {
             
             /*FINE ESECUZIONE COMANDO */
             
-            if(responseMessage.response == 200 && this.onlineUser.equals("") && clientRequest.operation.equals("login")){
+            if(responseMessage.response == 100 && this.onlineUser.equals("") && clientRequest.operation.equals("login")){
                 Login log = (Login)clientRequest.values;
                 this.onlineUser = log.getUsername();
                 System.out.println("[GenericTask] Username: "+log.getUsername());

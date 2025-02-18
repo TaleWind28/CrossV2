@@ -22,13 +22,12 @@ public class Register implements Values{
         Userbook userbook = (Userbook)data;
         System.out.println("User: "+user+"\tUsername: "+this.username);
         //controllare che username non esista già
-        if(userbook.accessData(username) == 200)return new ServerMessage("[400]: Utente già presente nel database",400);//sostituire con eccezzione
+        if(userbook.accessData(username) == 200)return new ServerMessage(" Utente già presente nel database",102);//sostituire con eccezzione
         //System.out.println("controllo dati utente esistente superato");
-        
         //memorizzare username e password
         userbook.addData(new User(username, password));
         //System.out.println("entro");
-        return new ServerMessage("[101]: Utente correttamente registrato col nome "+username,101);
+        return new ServerMessage("[101]: Utente correttamente registrato col nome "+username,100);
     }
 
     @Override

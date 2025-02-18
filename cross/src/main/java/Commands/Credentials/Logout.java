@@ -20,15 +20,15 @@ public class Logout implements Values{
         setUsername(user);
         //controllo che esista l'utente
         //if(!context.onlineUser.equals(this.username))return new Message("[401]: Non possiedi le autorizzazioni necessarie",401);
-        if(userbook.accessData(this.username) == 404)return new ServerMessage("[404]: Utente non registrato",404);
+        if(userbook.accessData(this.username) == 404)return new ServerMessage("Utente non registrato",101);
         //controllo che l'utente sia effettivamente loggato
-        if(userbook.getUserMap().get(this.username).getLogged() == false)return new ServerMessage("[400]: Utente non attualmente loggato",400);
+        if(userbook.getUserMap().get(this.username).getLogged() == false)return new ServerMessage("Utente non attualmente loggato",101);
         //ulteriore controllo su chi sta chiedendo il logout
         //sloggare
         //context.onlineUser = "";
         userbook.getUserMap().get(this.username).setLogged(false);
         userbook.dataFlush();
-        return new ServerMessage("[200]: Disconnessione avenuta con successo!",408);
+        return new ServerMessage("Disconnessione avvenuta con successo!",100);
     }
     @Override
     public void setUsername(String username) {

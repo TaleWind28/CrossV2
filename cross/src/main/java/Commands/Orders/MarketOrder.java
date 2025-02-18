@@ -34,12 +34,14 @@ public class MarketOrder extends Order implements Values {
         OrderCache cache = new OrderCache();
         //predispongo un codice di risposta di default
         int resp_code = 200;
-        //ciclo finchè non esaurisco l'irdine
+        //ciclo finchè non evado completamente l'ordine
         while(this.size>0){
             //invoco evadeORder per evadere l'ordine
             responseMessage = evadeOrder(exchangetype, user, orderbook, cache, responseMessage);
+            System.out.println("[Marketorder-execute] response"+responseMessage+", size "+this.size);
             //controllo il risultato dell'evadeORder
-            if (responseMessage.contains("[104]")){
+            if (responseMessage == null){
+                System.out.println("[Marketorder-evadeOrd.exception] response "+responseMessage);
                 //ripristino l'orderbook
                 orderbook.restoreOrders(cache,orderbook);
                 //imposto orderId a -1 per indicare il fallimento
@@ -47,12 +49,12 @@ public class MarketOrder extends Order implements Values {
                 //System.out.println("[Marketorder]"+super.getOrderId());
                 responseMessage = "Order not fully Executed!";
                 resp_code = -1;
+               
                 break;
             }
+            
         }
-        //System.out.println("[Marketorder]-"+responseMessage);
         super.notifySuccessfullTrades(cache, task.UDPsender, super.getOrderId(), this.getUser());
-        //responseMessage = responseMessage.stripTrailing();
         return new OrderResponseMessage(resp_code,responseMessage);
     }
 
@@ -62,7 +64,9 @@ public class MarketOrder extends Order implements Values {
         OrderSorting orderbookEntry = orderbook.getBestPriceAvailable(exchangetype,user);
         System.out.println("[Marketorder-evadeOrd] entry="+orderbookEntry);
         //controllo che esista una entry per il mio ordine
-        if(orderbookEntry == null){System.out.println("[Marketorder]mamma");return "[104] Non sono stati trovati ordini per le tue esigenze";}
+        if(orderbookEntry == null){System.out.println("[Marketorder]mamma");return null;}
+        responseMessage = ""+this.getOrderId();
+        
         //rimuovo l'ordine dall'orderbook
         Limitorder evadedOrder = (Limitorder)orderbook.removeData(exchangetype,orderbookEntry);
         //salvo l'ordine rimosso dall'ordebook in caso non si possa evadere completamente il marketorder
@@ -70,7 +74,7 @@ public class MarketOrder extends Order implements Values {
         //controllo che l'ordine sia stato evaso
         if(evadedOrder == null){
             System.out.println("[Marketorder]ordine inevdibile");
-            return "Non sono stati trovati ordini per le tue esigenze";
+            return null;
         }
         //controllo quanti btc sono stati comprati
         if(evadedOrder.getSize()>this.size){
@@ -81,9 +85,8 @@ public class MarketOrder extends Order implements Values {
             orderbook.addData(evadedOrder, exchangetype);
             this.size = 0;
         }
-        //System.out.println("[Marketorder]evadedOrder size="+evadedOrder.getSize());
         this.size -= evadedOrder.getSize();
-        //System.out.println("[Marketorder]myorder size="+this.size);
+        System.out.println("[Marketorder-evadeOrder] size"+this.size);
         return responseMessage;
     }
 
