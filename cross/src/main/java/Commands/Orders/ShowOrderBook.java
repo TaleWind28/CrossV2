@@ -14,7 +14,8 @@ public class ShowOrderBook implements Values {
     @Override
     public ServerMessage execute(JsonAccessedData data,String user,GenericTask task){
         Orderbook orderbook = (Orderbook) data;
-        String prettyPrintedString = "------------------------------------------------------------------------------------------\n" + //
+        String prettyPrintedString = "askMarketPrice = "+orderbook.getAskMarketPrice()+"\tbidMarketPrice = "+orderbook.getBidMarketPrice()+"\n";
+        prettyPrintedString += "------------------------------------------------------------------------------------------\n" + //
                         "User\t  ExchangeType\tBitcoin Size\tPrice per Bitcoin\tTotal Price\tOrder ID\n";
         //sta cosa mi fa schifo, dovrei usare strategy ma non so se ne ho voglia -> spoiler non ne ho voglia
         if(orderbook.mapLen()!= 0){        

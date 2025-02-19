@@ -1,8 +1,10 @@
 package Commands.Orders;
 
 import Communication.Values;
+import Communication.Messages.OrderResponseMessage;
 import Communication.Messages.ServerMessage;
 import JsonUtils.JsonAccessedData;
+import JsonUtils.Orderbook;
 //import JsonMemories.Orderbook;
 import ServerTasks.GenericTask;
 
@@ -21,13 +23,15 @@ public class StopOrder extends Order implements Values {
 
     @Override
     public ServerMessage execute(JsonAccessedData data,String user,GenericTask task){
-        //if(context.onlineUser.equals(""))return new ServerMessage("401: Per effettuare ordini bisogna creare un account o accedervi",401);
-        //Orderbook orderbook = (Orderbook)data;
-        //la faccio semplice per vedere se funziona
-        //non so come funziona l'algoritmo richiesto dalla ricci quindi lo lascio così
-        //orderbook.addData(this, this.exchangeType);
-        //System.out.println("fatto");
-        return new ServerMessage("Ordine Correttamente Evaso",100);
+        //controllo che l'utente sia autenticato
+        if(user.equals(""))return new OrderResponseMessage(-1,"User not logged in");
+        //aggiorno orderId
+        super.setOrderId(task.getProgressiveOrderNumber());
+        Orderbook orderbook = (Orderbook)data;
+        if(user.equals("stopprice met"))return new MarketOrder(user, getSize()).execute(data, user, task);
+        this.setUser(user);
+        orderbook.getStopOrders().add(this);
+        return new OrderResponseMessage(this.getOrderId(),"StopORder successfully placed");
     }
 
     // public void setUser(String user) {

@@ -32,7 +32,9 @@ public class Orderbook implements JsonAccessedData{
     private JsonAdapter<OrderClass> adapter = moshi.adapter(OrderClass.class);
     private ConcurrentSkipListMap<OrderSorting, Limitorder> askOrders = new ConcurrentSkipListMap<>(OrderSorting.PRICE_ASCENDING); // Prezzi crescenti
     private ConcurrentSkipListMap<OrderSorting, Limitorder> bidOrders = new ConcurrentSkipListMap<>(OrderSorting.PRICE_DESCENDING); // Prezzi decrescenti
-    private ConcurrentLinkedQueue<StopOrder> stopOrders;//devo ancora capire cosa sono
+    private ConcurrentLinkedQueue<StopOrder> stopOrders = new ConcurrentLinkedQueue<>();//devo ancora capire cosa sono
+    private int askMarketPrice;
+    private int bidMarketPrice;
     private String currentScope = "[ORDERBOOK]";
         
     public Orderbook(String jsonFilePath){
@@ -52,6 +54,7 @@ public class Orderbook implements JsonAccessedData{
             OrderClass orderData = adapter.fromJson(reader);
             this.askOrders.putAll(orderData.askMap);
             this.bidOrders.putAll(orderData.bidMap);
+            this.updateMarketPrice();
         }
         catch(EOFException e){
             System.out.println(this.currentScope+"NO AVAILABLE ORDERS!");
@@ -59,6 +62,12 @@ public class Orderbook implements JsonAccessedData{
         catch(Exception e){
             System.out.println("[ORDERBOOK] LOADDATA: "+e.getMessage()+" "+e.getClass());
         }
+    }
+
+    public synchronized void updateMarketPrice(){
+        if(!this.getAskOrders().isEmpty())this.bidMarketPrice = this.getAskOrders().firstEntry().getValue().getPrice();
+        if(!this.getBidOrders().isEmpty())this.askMarketPrice = this.getBidOrders().firstEntry().getValue().getPrice();
+        //System.out.println("[Orderbook]market pricese:\naskprice="+this.askMarketPrice+"\tbidprice="+this.bidMarketPrice);
     }
 
     public synchronized void addData(Values val,String mapType) {
@@ -79,6 +88,7 @@ public class Orderbook implements JsonAccessedData{
         } catch (Exception e) {
             System.out.println("Aiuto");
         }
+        this.updateMarketPrice();
         return;
     }
 
@@ -128,6 +138,17 @@ public class Orderbook implements JsonAccessedData{
     
     public int mapLen() {
         return this.askOrders.size() +this.bidOrders.size();
+    }
+
+    public int getAskMarketPrice() {
+        return askMarketPrice;
+    }
+    public int getBidMarketPrice() {
+        return bidMarketPrice;
+    }
+
+    public ConcurrentLinkedQueue<StopOrder> getStopOrders() {
+        return stopOrders;
     }
 
 }
