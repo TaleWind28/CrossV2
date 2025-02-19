@@ -12,8 +12,6 @@ import Utils.OrderCache;
 
 public class Limitorder extends Order implements Values{
     private String exchangeType;
-    //private int size;
-    //private int price;
 
     public Limitorder(String exchangeType,int size, int price){
         super();
@@ -25,28 +23,31 @@ public class Limitorder extends Order implements Values{
     @Override
     public ServerMessage execute(JsonAccessedData data,String user,GenericTask task){
         //controllo che l'utente sia loggato
-        if(user.equals(""))return new ServerMessage("401: Per effettuare ordini bisogna creare un account o accedervi",401);
+        if(user.equals(""))return new OrderResponseMessage(-1,"Per effettuare ordini bisogna creare un account o accedervi");
         //imposto l'orderId
-        super.setOrderId(task.getProgressiveOrderNumber());
+        this.setOrderId(task.getProgressiveOrderNumber());
+        //memorizzo l'orario in cui è avvennuto l'ordine
+        this.setGmt(ZonedDateTime.now());
         //aumento l'orderId
         task.increaseProgressiveOrderNumber();
         //recupero l'orderbook
         Orderbook orderbook = (Orderbook)data;
-        //memorizzo l'orario in cui è avvennuto l'ordine
-        super.setGmt(ZonedDateTime.now());
-        OrderCache cache = new OrderCache();
-        String result = new String();
+        //Inizializzo cache e result
+        OrderCache cache = new OrderCache();String result = new String();
         //ricavo la mappa opposta a quella richiesta per cercare offerte compatibili
-        String reverseType = super.findOppositeMap(this.exchangeType);
+        String reverseType = this.findOppositeMap(this.exchangeType);
         //ciclo finchè non esauirisco tutte le entry dell'orederbook oppure evado completamente l'ordine
         while(result!=null && this.getSize()!=0){
             result = this.evadeOrder(reverseType, user, orderbook, cache, result);
         }
+        //stampa di debug
         System.out.println("[Limitorder] dopo evade"+this.getSize());
+        //notifico i client dei trade avvenuti
         this.notifySuccessfullTrades(cache, task.UDPsender, this.getOrderId(), user);
+        //se ho evaso tutto l'ordine lo comunico, altrimenti inserisco una nuova entry nell'orderbook
         if (this.getSize() == 0)return new OrderResponseMessage(this.getOrderId(),"Order Fully Executed successfully!");
         else orderbook.addData(this, this.exchangeType);
-        
+        //restituisco l'esito al client
         return new OrderResponseMessage(this.getOrderId(),"Order Partially Executed, the remnants are placed as a limitorder in the orderbook");
     }
 
@@ -68,9 +69,7 @@ public class Limitorder extends Order implements Values{
     }
 
     public void addSize(int size) {
-        //System.out.println("[Limitorder-addSize] size"+size);
         int sub = super.getSize()+size;
-        //System.out.println("[limitorder] subtract"+sub);
         super.setSize(sub);    
     }
 
