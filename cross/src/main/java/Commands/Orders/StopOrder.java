@@ -34,15 +34,6 @@ public class StopOrder extends Order implements Values {
         return new OrderResponseMessage(this.getOrderId(),"StopORder successfully placed");
     }
 
-    // public void setUser(String user) {
-    //     super.setUser(user);
-    // }
-
-    // @Override
-    // public String getUser() {
-    //     return this.user;
-    // }
-
     @Override
     public String getExchangeType() {
         return this.exchangeType;    

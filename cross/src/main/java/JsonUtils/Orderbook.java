@@ -33,8 +33,8 @@ public class Orderbook implements JsonAccessedData{
     private ConcurrentSkipListMap<OrderSorting, Limitorder> askOrders = new ConcurrentSkipListMap<>(OrderSorting.PRICE_ASCENDING); // Prezzi crescenti
     private ConcurrentSkipListMap<OrderSorting, Limitorder> bidOrders = new ConcurrentSkipListMap<>(OrderSorting.PRICE_DESCENDING); // Prezzi decrescenti
     private ConcurrentLinkedQueue<StopOrder> stopOrders = new ConcurrentLinkedQueue<>();//devo ancora capire cosa sono
-    private int askMarketPrice;
-    private int bidMarketPrice;
+    private int askMarketPrice;// miglior prezzo di vendita -> prima entry dei bid ossia prezzo maggiore
+    private int bidMarketPrice;// miglior prezzo d'acquisto -> prima entry degli ask ossia prezzo minore
     private String currentScope = "[ORDERBOOK]";
         
     public Orderbook(String jsonFilePath){

@@ -28,6 +28,7 @@ public class ServerMain extends ServerProtocol{
     private volatile int progressiveOrderNumber;
     private String bindAddress;
     private UDP UDPListner;
+    private Thread stopOrderListner;
 
     public ServerMain(ServerConfig config){
         super(config.getTCPport(),Runtime.getRuntime().availableProcessors());
@@ -94,10 +95,15 @@ public class ServerMain extends ServerProtocol{
     public void initialConfig(){
         //carico in memoria
         this.registeredUsers.loadData();
-        
         this.orderbook.loadData();
-        progressiveOrderNumber = findOrderID(orderbook)+1;
+        progressiveOrderNumber = findOrderID(this.orderbook)+1;
         System.out.println("[ServerMain-initialConfig] Numero Ordine: "+progressiveOrderNumber);
+        try {
+            this.stopOrderListner = new Thread(new StopOrderCheckerTask(this.orderbook, new GenericTask(null, this, new TCP())));
+            this.stopOrderListner.start();
+        } catch (Exception e) {
+            System.out.println("[ServerMain-InitialConfig]"+e.getMessage());
+        }
         return;
     }
 
