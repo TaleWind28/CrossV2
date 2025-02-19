@@ -1,6 +1,6 @@
 package Commands.Orders;
 
-import java.time.ZonedDateTime;
+import java.time.Instant;
 
 import Communication.Values;
 import Communication.Messages.OrderResponseMessage;
@@ -27,7 +27,7 @@ public class Limitorder extends Order implements Values{
         //imposto l'orderId
         this.setOrderId(task.getProgressiveOrderNumber());
         //memorizzo l'orario in cui è avvennuto l'ordine
-        this.setGmt(ZonedDateTime.now());
+        this.setGmt(Instant.now().getEpochSecond());
         //aumento l'orderId
         task.increaseProgressiveOrderNumber();
         //recupero l'orderbook

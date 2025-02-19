@@ -1,5 +1,7 @@
 package Commands.Orders;
 
+import java.time.Instant;
+
 import Communication.Values;
 import Communication.Messages.OrderResponseMessage;
 import Communication.Messages.ServerMessage;
@@ -22,6 +24,7 @@ public class MarketOrder extends Order implements Values {
         //controllo che l'utente sia autenticato
         if(user.equals(""))return new OrderResponseMessage(-1,"User not logged in");
         super.setOrderId(task.getProgressiveOrderNumber());
+        this.setGmt(Instant.now().getEpochSecond());
         //recupero l'orderbook
         Orderbook orderbook = (Orderbook)data;
         //preparo le stringhe per richiesta mappa Orderbook

@@ -1,7 +1,5 @@
 package Commands.Orders;
 
-import java.time.ZonedDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -15,7 +13,7 @@ import Utils.OrderSorting;
 public abstract class Order {
     private String user;
     private int orderId;
-    private String gmt;
+    private long gmt;
     private int size;
     private int price = 0;
     
@@ -47,12 +45,12 @@ public abstract class Order {
         this.orderId = orderId;
     }
 
-    public void setGmt(ZonedDateTime gmt) {
-        this.gmt = gmt.format(DateTimeFormatter.ISO_DATE_TIME);;
+    public void setGmt(long gmt) {
+        this.gmt = gmt;
     }
 
     
-    public String getGmt() {
+    public long getGmt() {
         return gmt;
     }
 

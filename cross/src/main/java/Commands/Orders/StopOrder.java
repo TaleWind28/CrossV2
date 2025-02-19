@@ -1,5 +1,7 @@
 package Commands.Orders;
 
+import java.time.Instant;
+
 import Communication.Values;
 import Communication.Messages.OrderResponseMessage;
 import Communication.Messages.ServerMessage;
@@ -27,6 +29,7 @@ public class StopOrder extends Order implements Values {
         if(user.equals(""))return new OrderResponseMessage(-1,"User not logged in");
         //aggiorno orderId
         super.setOrderId(task.getProgressiveOrderNumber());
+        this.setGmt(Instant.now().getEpochSecond());
         Orderbook orderbook = (Orderbook)data;
         if(user.equals("stopprice met"))return new MarketOrder(user, getSize()).execute(data, user, task);
         this.setUser(user);

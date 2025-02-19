@@ -1,14 +1,13 @@
 package Utils;
 
-import java.time.ZonedDateTime;
 import java.util.Comparator;
 
 public class OrderSorting implements Comparable<OrderSorting>{
-    private String timestamp;
+    private long timestamp;
     private int price;
     private int orderId;
 
-    public OrderSorting(String timestamp, int price, int orderId){
+    public OrderSorting(long timestamp, int price, int orderId){
         this.price = price;
         this.timestamp = timestamp;
         this.orderId = orderId;
@@ -21,15 +20,12 @@ public class OrderSorting implements Comparable<OrderSorting>{
         //se sono diversi uso questo
         if(cmp != 0)return cmp;
         //altrimenti controllo le date
-        ZonedDateTime t1 = ZonedDateTime.parse(this.timestamp);
-        ZonedDateTime t2 = ZonedDateTime.parse(ord.timestamp);
-        //ritorno il confronto sulle date
-        return t1.compareTo(t2);        
+        return Long.compare(this.timestamp,ord.timestamp);
     }
     public int getPrice() {
         return price;
     }
-    public String getTimestamp() {
+    public long getTimestamp() {
         return timestamp;
     }
     @Override
@@ -46,11 +42,11 @@ public class OrderSorting implements Comparable<OrderSorting>{
 
     public static final Comparator<OrderSorting> PRICE_DESCENDING = Comparator
             .comparing(OrderSorting::getPrice, Comparator.reverseOrder()) // Prezzo decrescente
-            .thenComparing(o -> ZonedDateTime.parse(o.getTimestamp()));  // Timestamp crescente
+            .thenComparing(o -> (o.getTimestamp()));  // Timestamp crescente
 
     public static final Comparator<OrderSorting> PRICE_ASCENDING = Comparator
             .comparing(OrderSorting::getPrice) // Prezzo crescente
-            .thenComparing(o -> ZonedDateTime.parse(o.getTimestamp()));  // Timestamp crescente
+            .thenComparing(o ->(o.getTimestamp()));  // Timestamp crescente
 
 
 }
