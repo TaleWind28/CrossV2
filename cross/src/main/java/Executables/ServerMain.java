@@ -99,7 +99,8 @@ public class ServerMain extends ServerProtocol{
         progressiveOrderNumber = findOrderID(this.orderbook)+1;
         System.out.println("[ServerMain-initialConfig] Numero Ordine: "+progressiveOrderNumber);
         try {
-            this.stopOrderListner = new Thread(new StopOrderCheckerTask(this.orderbook, new GenericTask(null, this, new TCP())));
+            this.stopOrderListner = new Thread(new StopOrderCheckerTask(this.orderbook, new GenericTask(this)));
+            System.out.println("[ServerMain-InitialConfig]");
             this.stopOrderListner.start();
         } catch (Exception e) {
             System.out.println("[ServerMain-InitialConfig]"+e.getMessage());

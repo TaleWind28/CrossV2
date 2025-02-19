@@ -42,7 +42,12 @@ public class GenericTask implements Runnable {
                         "------------------------------------------------------------------------------------------------------------";
 
     String currentHelpMessage = "";
-    
+    //costruttore per StopOrderChecker
+    public GenericTask(ServerMain server){
+        this.generatorServer = server;
+        this.UDPsender = server.getUDPListner();
+    }
+
     //costruttore
     public GenericTask(Socket client_socket,ServerMain server,Protocol protocol) throws Exception{
         super();
