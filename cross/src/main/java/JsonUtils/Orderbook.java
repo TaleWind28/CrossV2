@@ -111,6 +111,7 @@ public class Orderbook implements JsonAccessedData{
     public OrderSorting getBestPriceAvailable(String tradeType, String myUsername,int price){
         ConcurrentSkipListMap<OrderSorting, Limitorder> requestedMap = getRequestedMap(tradeType);
         System.out.println("[Orderbook] price="+price+", tradetype="+tradeType);
+        if(requestedMap == null)return null;
         if(requestedMap.isEmpty())return null;
         Iterator<OrderSorting> navi =requestedMap.navigableKeySet().iterator();
         while(navi.hasNext()){
@@ -125,7 +126,8 @@ public class Orderbook implements JsonAccessedData{
 
     public ConcurrentSkipListMap<OrderSorting, Limitorder> getRequestedMap(String request){
         if(request.equals("ask"))return this.askOrders;
-        else return this.bidOrders;
+        if(request.equals("bid"))return this.askOrders;
+        return null;
     }
 
     public ConcurrentSkipListMap<OrderSorting, Limitorder> getAskOrders() {
