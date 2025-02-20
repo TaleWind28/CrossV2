@@ -2,23 +2,16 @@ package JsonUtils;
 
 
 import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.time.Instant;
 import java.time.LocalDateTime;
-import java.time.Month;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
-import java.util.Calendar;
-import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
 import com.squareup.moshi.JsonAdapter;
 import com.squareup.moshi.JsonReader;
 import com.squareup.moshi.Moshi;
-import com.squareup.moshi.Types;
 
 import okio.BufferedSource;
 import okio.Okio;
@@ -27,7 +20,7 @@ public class TradeHistory implements JsonAccessedData{
     private String jsonFilePath;
     private TreeMap<Integer, TreeMap<DayTime, Trade>> historicalData = new TreeMap<>();
     private Moshi moshi = new Moshi.Builder().build();
-    private JsonAdapter<List<Trade>> tradeAdapter = moshi.adapter(Types.newParameterizedType(List.class, Trade.class));
+    private JsonAdapter<Trade> tradeAdapter = moshi.adapter( Trade.class);
 
     public TradeHistory(String jsonFilePath){
         this.jsonFilePath = jsonFilePath;
@@ -39,11 +32,6 @@ public class TradeHistory implements JsonAccessedData{
         File file = new File(this.jsonFilePath);
         BufferedSource source = Okio.buffer(Okio.source(file));
         JsonReader reader = JsonReader.of(source);
-        
-        // Crea adapter per Trade
-        Moshi moshi = new Moshi.Builder().build();
-        JsonAdapter<Trade> tradeAdapter = moshi.adapter(Trade.class);
-
         try {
             // Inizio del JSON
             reader.beginObject();
@@ -56,7 +44,7 @@ public class TradeHistory implements JsonAccessedData{
                     
                     while (reader.hasNext()) {
                         // Usa l'adapter per leggere automaticamente il trade
-                        Trade trade = tradeAdapter.fromJson(reader);
+                        Trade trade = this.tradeAdapter.fromJson(reader);
                         
                         if (trade != null) {
                             // Converti timestamp in LocalDateTime
@@ -102,12 +90,58 @@ public class TradeHistory implements JsonAccessedData{
 
     @Override
     public void loadData() {
-        try {
-            this.monthlyTrades(jsonFilePath);
+        // Crea adapter per Trade
+        Moshi moshi = new Moshi.Builder().build();
+        JsonAdapter<Trade> tradeAdapter = moshi.adapter(Trade.class);
+
+        try(JsonReader reader = JsonReader.of(Okio.buffer(Okio.source(new File(this.jsonFilePath))))) {
+            // Inizio del JSON
+            reader.beginObject();
+            
+            while (reader.hasNext()) {
+                String name = reader.nextName();
+                if ("trades".equals(name)) {
+                    // Inizio dell'array trades
+                    reader.beginArray();
+                    
+                    while (reader.hasNext()) {
+                        // Usa l'adapter per leggere automaticamente il trade
+                        Trade trade = tradeAdapter.fromJson(reader);
+                        
+                        if (trade != null) {
+                            // Converti timestamp in LocalDateTime
+                            LocalDateTime tradeDate = LocalDateTime.ofInstant(
+                                    Instant.ofEpochSecond(trade.getTimestamp()), 
+                                    ZoneId.systemDefault());
+                            
+                            int year = tradeDate.getYear();
+                            // int month = tradeDate.getMonthValue();
+                            // int day = tradeDate.getDayOfMonth();
+                            
+                            // Crea la chiave DayTime che include il mese
+                            DayTime dayTime = new DayTime(trade.getTimestamp());
+                            
+                            // Ottieni o crea la TreeMap per l'anno
+                            TreeMap<DayTime, Trade> yearData = 
+                                    historicalData.computeIfAbsent(year, k -> new TreeMap<>());
+                            
+                            // Aggiungi il trade alla TreeMap dell'anno
+                            yearData.put(dayTime, trade);
+                        }
+                    }
+                    
+                    reader.endArray();
+                } else {
+                    // Salta altri campi se presenti
+                    reader.skipValue();
+                }
+            }
+            
+            reader.endObject();
         } catch (Exception e) {
             e.printStackTrace();
         }
-        this.printTradeMap(this.historicalData.get(2024), 0);
+        //this.printTradeMap(this.historicalData.get(2024), 0);
     }
 
     //stampa della mappa
