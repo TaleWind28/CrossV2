@@ -53,9 +53,6 @@ public class TradeHistory implements JsonAccessedData{
                                     ZoneId.systemDefault());
                             
                             int year = tradeDate.getYear();
-                            // int month = tradeDate.getMonthValue();
-                            // int day = tradeDate.getDayOfMonth();
-                            
                             // Crea la chiave DayTime che include il mese
                             DayTime dayTime = new DayTime(trade.getTimestamp());
                             
