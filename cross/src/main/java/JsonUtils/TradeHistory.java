@@ -4,6 +4,7 @@ package JsonUtils;
 import java.io.File;
 import java.time.Instant;
 import java.time.LocalDateTime;
+import java.time.Month;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.Map;
@@ -25,8 +26,8 @@ public class TradeHistory implements JsonAccessedData{
     public TradeHistory(String jsonFilePath){
         this.jsonFilePath = jsonFilePath;
     }
-
-    public TreeMap<Integer,TreeMap<DayTime,Trade>> monthlyTrades(String filePath)throws Exception{
+    /*Cambiare Funzionamento*/
+    public TreeMap<Integer,TreeMap<DayTime,Trade>> monthlyTrades(String filePath, Month targeMonth)throws Exception{
         //TreeMap<Integer, TreeMap<DayTime, Trade>> historicalData = new TreeMap<>();
         
         File file = new File(this.jsonFilePath);
