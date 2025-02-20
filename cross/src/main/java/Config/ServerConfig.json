@@ -4,5 +4,6 @@
     "UDPport":5000,
     "UDPaddress":"230.0.0.1",
     "Userbook":"cross\\src\\main\\java\\JsonUtils\\JsonFiles\\Users.json",
-    "OrderBook":"cross\\src\\main\\java\\JsonUtils\\JsonFiles\\OrderBook.json"
+    "OrderBook":"cross\\src\\main\\java\\JsonUtils\\JsonFiles\\OrderBook.json",
+    "Storico":"cross\\src\\main\\java\\JsonUtils\\JsonFiles\\storicoOrdini.json"
 }

@@ -17,6 +17,7 @@ import Communication.Protocols.TCP;
 import Communication.Protocols.UDP;
 import Config.ServerConfig;
 import JsonUtils.Orderbook;
+import JsonUtils.TradeHistory;
 import JsonUtils.Userbook;
 import ServerTasks.*;
 import Utils.OrderSorting;
@@ -25,6 +26,7 @@ import okio.Okio;
 public class ServerMain extends ServerProtocol{
     private volatile Userbook registeredUsers;
     private volatile Orderbook orderbook;
+    private volatile TradeHistory storico;
     private volatile int progressiveOrderNumber;
     private String bindAddress;
     private UDP UDPListner;
@@ -34,6 +36,7 @@ public class ServerMain extends ServerProtocol{
         super(config.getTCPport(),Runtime.getRuntime().availableProcessors());
         this.bindAddress = config.getTCPaddress();
         this.registeredUsers = new Userbook(config.getUserbook());
+        this.storico = new TradeHistory(config.getStorico());
         //System.out.println(new OrderResponseMessage(-1).toString());
         this.orderbook = new Orderbook(config.getOrderBook());
         try{
@@ -45,14 +48,18 @@ public class ServerMain extends ServerProtocol{
 
     public static void main(String[] args) throws Exception {
         ServerConfig configuration = getServerConfig();
+        System.out.println(configuration.getOrderBook()+"\n"+configuration.getStorico());
         ServerMain server = new ServerMain(configuration);
         //System.out.println(server.UDPListner.toString());
         //Aggiungi uno shutdown hook alla JVM
         Runtime.getRuntime().addShutdownHook(new Thread(new ClosingTask(server)));
+        //TreeMap<Integer,TreeMap<DayTime,Trade>> tradeMap = new TradeHistory().monthlyTrades("cross\\src\\main\\java\\JsonUtils\\JsonFiles\\storicoOrdini.json", Month.OCTOBER);
+        //ServerMain.printTradeMap(tradeMap.get(2024), 0);
         server.initialConfig();
         server.dial();
         return;
     }
+
     
     public static ServerConfig getServerConfig(){
         try(JsonReader reader = JsonReader.of(Okio.buffer(Okio.source(new File("cross\\src\\main\\java\\Config\\ServerConfig.json"))))){
@@ -95,6 +102,7 @@ public class ServerMain extends ServerProtocol{
     public void initialConfig(){
         //carico in memoria
         this.registeredUsers.loadData();
+        this.storico.loadData();
         this.orderbook.loadData();
         progressiveOrderNumber = findOrderID(this.orderbook)+1;
         System.out.println("[ServerMain-initialConfig] Numero Ordine: "+progressiveOrderNumber);

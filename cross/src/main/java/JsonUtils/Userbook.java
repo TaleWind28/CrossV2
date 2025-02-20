@@ -59,15 +59,6 @@ public class Userbook implements JsonAccessedData{
         try (JsonReader reader = JsonReader.of(Okio.buffer(Okio.source(new File(this.jsonFilePath))))){
             UserMap loadedMap = adapter.fromJson(reader);
             this.userMap.putAll(loadedMap.usermap);
-            //inizio la lettura
-            // try (JsonReader reader =JsonReader.of(Okio.buffer(Okio.source(new File(this.jsonFilePath)))))  {
-            //     OrderClass orderData = adapter.fromJson(reader);
-            //     this.askOrders.putAll(orderData.askMap);
-            //     this.bidOrders.putAll(orderData.bidMap);
-            // }
-            //JsonAdapter<UserMap> adaptee = moshi.adapter(UserMap.class);
-            
-            //dataFlush();
         }
         catch(EOFException e){
             System.out.println("[UserBook-loadData] File utenti vuoto");

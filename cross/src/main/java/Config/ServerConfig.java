@@ -7,6 +7,7 @@ public class ServerConfig {
     private String Userbook;
     private String OrderBook;
     private String TCPaddress;
+    private String Storico;
     
     public ServerConfig(){
 
@@ -44,6 +45,10 @@ public class ServerConfig {
         Userbook = userbook;
     }
 
+    public void setStorico(String storico) {
+        Storico = storico;
+    }
+    
     public String getOrderBook() {
         return OrderBook;
     }
@@ -58,5 +63,9 @@ public class ServerConfig {
 
     public String getTCPaddress() {
         return TCPaddress;
+    }
+
+    public String getStorico() {
+        return this.Storico;
     }
 }

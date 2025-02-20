@@ -1,5 +1,13 @@
 {
  "askMap": {
+  "Price: 3, Timestamp: 1740067026, OrderId: 7": {
+   "exchangeType": "ask",
+   "gmt": 1740067026,
+   "orderId": 7,
+   "price": 3,
+   "size": 1,
+   "user": "pino"
+  },
   "Price: 5, Timestamp: 1739969777, OrderId: 0": {
    "exchangeType": "ask",
    "gmt": 1739969777,
