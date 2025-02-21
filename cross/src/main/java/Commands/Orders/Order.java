@@ -64,7 +64,7 @@ public abstract class Order {
             Limitorder order = cache.removeOrder();
             tradeNotify.add(order.toString()+"\n");
             String[] trades= {order.toString()};
-            udp.sendMessage(new UDPMessage(order.getUsername(),"closedTrades",trades));
+            udp.sendMessage(new UDPMessage(order.getUser(),"closedTrades",trades));
             responseMessage = ""+orderId;
         }
         if(tradeNotify.size()!=0)udp.sendMessage(new UDPMessage(user,"closedTrades",tradeNotify.toArray(new String[0])));
@@ -85,7 +85,7 @@ public abstract class Order {
     }
 
     public String evadeOrder(String exchangetype,String user,Orderbook orderbook, OrderCache cache,String responseMessage){
-        System.out.println("[Order-evadeOrd] entro in evaded con price= "+this.getPrice());
+        System.out.println("[Order-evadeOrd] entro in evaded con price= "+this.getPrice()+": size="+this.getSize()+", user="+user);
         //cerco il miglior prezzo per la qtà di bitcoin che voglio comprare
         OrderSorting orderbookEntry = orderbook.getBestPriceAvailable(exchangetype,user,this.getPrice());
         System.out.println("[Order-evadeOrd] entry="+orderbookEntry);
@@ -119,9 +119,14 @@ public abstract class Order {
         return responseMessage;
     }
     public abstract String getExchangeType();
+    
     public int getPrice(){
         return this.price;
     };
     
+    @Override
+    public String toString() {
+        return "user='"+this.user+"', orderId='"+this.orderId+"', timestamp='"+this.gmt+"', size='"+this.size+"', price='"+this.price+"'";
+    }
     
 }

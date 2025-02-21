@@ -55,7 +55,7 @@ public class Orderbook implements JsonAccessedData{
             OrderClass orderData = adapter.fromJson(reader);
             this.askOrders.putAll(orderData.askMap);
             this.bidOrders.putAll(orderData.bidMap);
-            //this.updateMarketPrice();
+            this.updateMarketPrice();
         }
         catch(EOFException e){
             System.out.println(this.currentScope+"NO AVAILABLE ORDERS!");
@@ -66,10 +66,12 @@ public class Orderbook implements JsonAccessedData{
     }
 
     public synchronized void updateMarketPrice(){
-        if(!this.getAskOrders().isEmpty())this.bidMarketPrice = this.getAskOrders().firstEntry().getValue().getPrice();
-        else this.bidMarketPrice = 0;
-        if(!this.getBidOrders().isEmpty())this.askMarketPrice = this.getBidOrders().firstEntry().getValue().getPrice();
-        else this.askMarketPrice = 0;
+        if(this.getAskOrders().isEmpty())this.bidMarketPrice = 0;
+        else this.bidMarketPrice = this.getAskOrders().firstEntry().getValue().getPrice();
+        
+        //else this.bidMarketPrice = 0;
+        if(this.getBidOrders().isEmpty())this.askMarketPrice = 0;
+        else this.askMarketPrice = this.getBidOrders().firstEntry().getValue().getPrice();
     }
 
     public synchronized void addData(Values val,String mapType) {
@@ -145,10 +147,10 @@ public class Orderbook implements JsonAccessedData{
     }
 
     public int getAskMarketPrice() {
-        return askMarketPrice;
+        return this.askMarketPrice;
     }
     public int getBidMarketPrice() {
-        return bidMarketPrice;
+        return this.bidMarketPrice;
     }
 
     public ConcurrentLinkedQueue<StopOrder> getStopOrders() {

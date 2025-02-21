@@ -27,6 +27,7 @@ public class StopOrderCheckerTask implements Runnable{
                 StopOrder order = navi.next();
                 if((order.getExchangeType().equals("ask") && order.getPrice()<=oldAskMarketPrice) || (order.getExchangeType().equals("bid") && order.getPrice() >= oldBidMarketPrice)){
                     ordb.getStopOrders().remove(order);
+                    this.stubTask.onlineUser = order.getUser(); 
                     order.execute(ordb, "stopprice met", this.stubTask);
                 } 
             }

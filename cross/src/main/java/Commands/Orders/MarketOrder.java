@@ -39,7 +39,7 @@ public class MarketOrder extends Order implements Values {
         while(super.getSize()>0){
             //invoco evadeORder per evadere l'ordine
             responseMessage = super.evadeOrder(exchangetype, user, orderbook, cache, responseMessage);
-            System.out.println("[Marketorder-execute] response"+responseMessage+", size "+super.getSize());
+            System.out.println("[Marketorder-execute] response "+responseMessage+", size "+super.getSize());
             //controllo il risultato dell'evadeORder
             if (responseMessage == null){
                 System.out.println("[Marketorder-evadeOrd.exception] response "+responseMessage);
@@ -55,7 +55,7 @@ public class MarketOrder extends Order implements Values {
             responseMessage = "Order fully Executed";            
             
         }
-        super.notifySuccessfullTrades(cache, task.UDPsender, this.getOrderId(), this.getUser());
+        super.notifySuccessfullTrades(cache, task.UDPsender, this.getOrderId(), task.onlineUser);
         return new OrderResponseMessage(resp_code,responseMessage);
     }
 

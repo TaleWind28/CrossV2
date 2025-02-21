@@ -12,9 +12,6 @@ import ServerTasks.GenericTask;
 
 public class StopOrder extends Order implements Values {
     private String exchangeType;
-    //private int size;
-    //private int price;
-    //private String user;
 
     public StopOrder(String exchangeType,int size, int price){
         this.exchangeType = exchangeType;
@@ -31,8 +28,8 @@ public class StopOrder extends Order implements Values {
         super.setOrderId(task.getProgressiveOrderNumber());
         this.setGmt(Instant.now().getEpochSecond());
         Orderbook orderbook = (Orderbook)data;
-        if(user.equals("stopprice met"))return new MarketOrder(user, getSize()).execute(data, user, task);
-        this.setUser(user);
+        if(user.equals("stopprice met"))return new MarketOrder(this.getExchangeType(), this.getSize()).execute(data, task.onlineUser, task);
+        this.setUser(task.onlineUser);
         orderbook.getStopOrders().add(this);
         return new OrderResponseMessage(this.getOrderId(),"StopORder successfully placed");
     }
@@ -52,4 +49,8 @@ public class StopOrder extends Order implements Values {
         return super.getUser();   
     }
 
+    @Override
+    public String toString() {
+        return "StopOrder{"+super.toString()+"}";
+    }
 }
