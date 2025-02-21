@@ -143,4 +143,8 @@ public class ServerMain extends ServerProtocol{
     public UDP getUDPListner() {
         return UDPListner;
     }
+
+    public TradeHistory getStorico() {
+        return storico;
+    }
 }

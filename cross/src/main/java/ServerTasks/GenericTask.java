@@ -114,8 +114,11 @@ public class GenericTask implements Runnable {
             System.out.println("[GenericTask] Comando fabbricato: "+clientRequest.toString());
             //dati in formato json per controllare gli utenti
             JsonAccessedData data = this.generatorServer.getRegisteredUsers();
+            
             //controllo la struttura dati da assegnare al comando
             if(clientRequest.operation.contains("order"))data = this.generatorServer.getOrderbook();
+
+            if(clientRequest.operation.contains("getpricehistory"))data = this.generatorServer.getStorico();
             
             //controllo le informazioni addizionali da passare al comando
             if(clientRequest.operation.equals("help"))additionalInfo = this.currentHelpMessage;

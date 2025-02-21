@@ -15,6 +15,7 @@ import Commands.Credentials.Register;
 import Commands.Credentials.UpdateCredentials;
 import Commands.Internal.ErrorMessage;
 import Commands.Internal.Help;
+import Commands.Internal.getPriceHystory;
 import Commands.Orders.CancelOrder;
 import Commands.Orders.Limitorder;
 import Commands.Orders.MarketOrder;
@@ -47,6 +48,7 @@ public class TCP implements Protocol{
         .withSubtype(Login.class, "login")
         .withSubtype(UpdateCredentials.class, "updatecredentials")
         .withSubtype(Help.class, "help")
+        .withSubtype(getPriceHystory.class, "getpricehistory")
         .withSubtype(ErrorMessage.class, "errormessage")
         .withSubtype(Disconnect.class, "disconnect"))
         .add(PolymorphicJsonAdapterFactory.of(ZonedDateTime.class, "GMT"))

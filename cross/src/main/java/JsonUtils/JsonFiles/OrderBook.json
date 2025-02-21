@@ -7,6 +7,14 @@
    "price": 5,
    "size": 3,
    "user": "pino"
+  },
+  "Price: 5, Timestamp: 1740146303, OrderId: 2": {
+   "exchangeType": "ask",
+   "gmt": 1740146303,
+   "orderId": 2,
+   "price": 5,
+   "size": 5,
+   "user": "pino"
   }
  },
  "bidMap": {

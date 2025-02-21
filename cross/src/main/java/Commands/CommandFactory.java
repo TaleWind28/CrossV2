@@ -7,6 +7,7 @@ import Commands.Credentials.Register;
 import Commands.Credentials.UpdateCredentials;
 import Commands.Internal.ErrorMessage;
 import Commands.Internal.Help;
+import Commands.Internal.getPriceHystory;
 import Commands.Orders.CancelOrder;
 import Commands.Orders.Limitorder;
 import Commands.Orders.MarketOrder;
@@ -19,27 +20,32 @@ public class CommandFactory{
 
     public Values createValue(String[] command) {
         try {
+            for(String data:command){
+                System.out.print("[CommandFactory] comando: "+data);
+            }
+            System.out.println();
             //sistemo il tipo di ordine per avere solo la parte significativa
-            //System.out.println("[ORDERFACTORY] prima stampa command[0] "+command[0]);
+            System.out.println("[ORDERFACTORY] prima stampa command[1] "+command[1]);
             String valueType = command[0].toLowerCase();
             valueType = valueType.replace("insert", "");
             valueType = valueType.replace("order", "");
-            // System.out.println("[ORDERFACTORY]"+command[0]+command[1]);
-            //System.out.println("[ORDERFACTORY]"+valueType);
             /*RIARRANGIARE LA FACTORY */
             switch (valueType) {    
                 case "cancel":
                     return new CancelOrder(Integer.parseInt(command[1]),"unset");    
-                    //break;
+
                 case "market":   
                     return new MarketOrder(command[1],Integer.parseInt(command[2]));
+                
                 case "limit":
                     return new Limitorder(command[1],Integer.parseInt(command[2]),Integer.parseInt(command[3]));
+                
                 case "stop":
                     return new StopOrder(command[1],Integer.parseInt(command[2]),Integer.parseInt(command[3]));
+                
                 case "showbook":
                     return new ShowOrderBook();
-                
+
                 case "register":
                     return new Register(command[1],command[2]);
 
@@ -51,7 +57,8 @@ public class CommandFactory{
 
                 case "logout":
                     return new Logout("unset");
-                
+                case "getpricehistory":
+                    return new getPriceHystory(command[1]);
                 default:
                     throw new UnrecognizedOrderException("ordine non gestito");        
             }

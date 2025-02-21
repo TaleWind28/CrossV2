@@ -25,7 +25,7 @@ public class DailyTradeStats {
     public void updateStats(DailyTradeStats other){
         
         // Aggiorna i maxPrice
-        this.maxAskPrice = Math.max(this.maxAskPrice, other.maxBidPrice);
+        this.maxAskPrice = Math.max(this.maxAskPrice, other.maxAskPrice);
         this.maxBidPrice = Math.max(this.maxBidPrice, other.maxBidPrice);
         // Aggiorna minAskPrice
         if(this.minAskPrice == -1)this.minAskPrice = other.minAskPrice;
@@ -78,7 +78,7 @@ public class DailyTradeStats {
     public String prettyPrint() {
         StringBuilder sb = new StringBuilder();
         sb.append("╔══════════════════════════════════╗\n");
-        sb.append("║       DAILY TRADING STATISTICS   ║\n");
+        sb.append("║     DAILY TRADING STATISTICS     ║\n");
         sb.append("╠══════════════════════════════════╣\n");
         
         // Prezzi di apertura e chiusura
