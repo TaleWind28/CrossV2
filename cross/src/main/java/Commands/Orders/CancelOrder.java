@@ -6,7 +6,7 @@ import java.util.concurrent.ConcurrentSkipListMap;
 import Communication.Values;
 import Communication.Messages.ServerMessage;
 import JsonUtils.JsonAccessedData;
-import JsonUtils.Orderbook;
+import JsonUtils.Orderbook.Orderbook;
 import ServerTasks.GenericTask;
 import Utils.OrderSorting;
 

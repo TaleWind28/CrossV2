@@ -1,4 +1,4 @@
-package JsonUtils;
+package JsonUtils.Orderbook;
 
 import java.io.EOFException;
 import java.io.File;
@@ -18,6 +18,7 @@ import Commands.Orders.Limitorder;
 import Commands.Orders.Order;
 import Commands.Orders.StopOrder;
 import Communication.Values;
+import JsonUtils.JsonAccessedData;
 import Utils.OrderCache;
 import Utils.OrderSorting;
 import Utils.OrderSortingAdapter;
@@ -54,7 +55,7 @@ public class Orderbook implements JsonAccessedData{
             OrderClass orderData = adapter.fromJson(reader);
             this.askOrders.putAll(orderData.askMap);
             this.bidOrders.putAll(orderData.bidMap);
-            this.updateMarketPrice();
+            //this.updateMarketPrice();
         }
         catch(EOFException e){
             System.out.println(this.currentScope+"NO AVAILABLE ORDERS!");

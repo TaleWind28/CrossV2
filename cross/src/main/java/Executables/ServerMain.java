@@ -16,9 +16,9 @@ import Communication.Protocols.ServerProtocol;
 import Communication.Protocols.TCP;
 import Communication.Protocols.UDP;
 import Config.ServerConfig;
-import JsonUtils.Orderbook;
-import JsonUtils.TradeHistory;
-import JsonUtils.Userbook;
+import JsonUtils.Orderbook.Orderbook;
+import JsonUtils.PriceHistory.TradeHistory;
+import JsonUtils.Users.Userbook;
 import ServerTasks.*;
 import Utils.OrderSorting;
 import okio.Okio;
@@ -37,7 +37,6 @@ public class ServerMain extends ServerProtocol{
         this.bindAddress = config.getTCPaddress();
         this.registeredUsers = new Userbook(config.getUserbook());
         this.storico = new TradeHistory(config.getStorico());
-        //System.out.println(new OrderResponseMessage(-1).toString());
         this.orderbook = new Orderbook(config.getOrderBook());
         try{
             this.UDPListner =   new UDP(config.getUDPaddress(),config.getUDPport(),null);
@@ -48,7 +47,7 @@ public class ServerMain extends ServerProtocol{
 
     public static void main(String[] args) throws Exception {
         ServerConfig configuration = getServerConfig();
-        System.out.println(configuration.getOrderBook()+"\n"+configuration.getStorico());
+        //System.out.println(configuration.getOrderBook()+"\n"+configuration.getStorico());
         ServerMain server = new ServerMain(configuration);
         //System.out.println(server.UDPListner.toString());
         //Aggiungi uno shutdown hook alla JVM
@@ -102,8 +101,9 @@ public class ServerMain extends ServerProtocol{
     public void initialConfig(){
         //carico in memoria
         this.registeredUsers.loadData();
-        this.storico.loadData();
         this.orderbook.loadData();
+        this.storico.loadData();
+        
         progressiveOrderNumber = findOrderID(this.orderbook)+1;
         System.out.println("[ServerMain-initialConfig] Numero Ordine: "+progressiveOrderNumber);
         try {

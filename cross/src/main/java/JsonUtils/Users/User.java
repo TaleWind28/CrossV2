@@ -1,4 +1,4 @@
-package JsonUtils;
+package JsonUtils.Users;
 public class User {
     private String username;
     private String password;

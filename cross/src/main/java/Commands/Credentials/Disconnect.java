@@ -3,7 +3,7 @@ package Commands.Credentials;
 import Communication.Values;
 import Communication.Messages.ServerMessage;
 import JsonUtils.JsonAccessedData;
-import JsonUtils.Userbook;
+import JsonUtils.Users.Userbook;
 import ServerTasks.GenericTask;
 
 public class Disconnect implements Values{

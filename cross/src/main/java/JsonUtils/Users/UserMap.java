@@ -1,4 +1,4 @@
-package JsonUtils;
+package JsonUtils.Users;
 
 import java.util.Map;
 

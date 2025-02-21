@@ -1,4 +1,4 @@
-package JsonUtils;
+package JsonUtils.Users;
 
 import java.io.EOFException;
 import java.io.File;
@@ -9,6 +9,7 @@ import com.squareup.moshi.JsonReader;
 import com.squareup.moshi.JsonWriter;
 import com.squareup.moshi.Moshi;
 
+import JsonUtils.JsonAccessedData;
 import okio.Okio;
 
 

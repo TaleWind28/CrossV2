@@ -3,8 +3,8 @@ package Commands.Credentials;
 import Communication.Values;
 import Communication.Messages.ServerMessage;
 import JsonUtils.JsonAccessedData;
-import JsonUtils.User;
-import JsonUtils.Userbook;
+import JsonUtils.Users.User;
+import JsonUtils.Users.Userbook;
 import ServerTasks.GenericTask;
 
 public class Login implements Values{

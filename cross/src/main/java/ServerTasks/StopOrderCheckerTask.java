@@ -3,7 +3,7 @@ package ServerTasks;
 import java.util.Iterator;
 
 import Commands.Orders.StopOrder;
-import JsonUtils.Orderbook;
+import JsonUtils.Orderbook.Orderbook;
 
 public class StopOrderCheckerTask implements Runnable{
     private Orderbook ordb;

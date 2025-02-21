@@ -1,10 +1,9 @@
-package JsonUtils;
+package JsonUtils.PriceHistory;
 
 
 import java.io.File;
 import java.time.Instant;
 import java.time.LocalDateTime;
-import java.time.Month;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.Map;
@@ -14,7 +13,7 @@ import com.squareup.moshi.JsonAdapter;
 import com.squareup.moshi.JsonReader;
 import com.squareup.moshi.Moshi;
 
-import okio.BufferedSource;
+import JsonUtils.JsonAccessedData;
 import okio.Okio;
 
 public class TradeHistory implements JsonAccessedData{
@@ -26,59 +25,22 @@ public class TradeHistory implements JsonAccessedData{
     public TradeHistory(String jsonFilePath){
         this.jsonFilePath = jsonFilePath;
     }
-    /*Cambiare Funzionamento*/
-    public TreeMap<Integer,TreeMap<DayTime,Trade>> monthlyTrades(String filePath, Month targeMonth)throws Exception{
+
+    public TreeMap<Integer,DailyTradeStats> monthlyTradesStat(int year,int month){
         //TreeMap<Integer, TreeMap<DayTime, Trade>> historicalData = new TreeMap<>();
-        
-        File file = new File(this.jsonFilePath);
-        BufferedSource source = Okio.buffer(Okio.source(file));
-        JsonReader reader = JsonReader.of(source);
-        try {
-            // Inizio del JSON
-            reader.beginObject();
-            
-            while (reader.hasNext()) {
-                String name = reader.nextName();
-                if ("trades".equals(name)) {
-                    // Inizio dell'array trades
-                    reader.beginArray();
-                    
-                    while (reader.hasNext()) {
-                        // Usa l'adapter per leggere automaticamente il trade
-                        Trade trade = this.tradeAdapter.fromJson(reader);
-                        
-                        if (trade != null) {
-                            // Converti timestamp in LocalDateTime
-                            LocalDateTime tradeDate = LocalDateTime.ofInstant(
-                                    Instant.ofEpochSecond(trade.getTimestamp()), 
-                                    ZoneId.systemDefault());
-                            
-                            int year = tradeDate.getYear();
-                            // Crea la chiave DayTime che include il mese
-                            DayTime dayTime = new DayTime(trade.getTimestamp());
-                            
-                            // Ottieni o crea la TreeMap per l'anno
-                            TreeMap<DayTime, Trade> yearData = 
-                                    historicalData.computeIfAbsent(year, k -> new TreeMap<>());
-                            
-                            // Aggiungi il trade alla TreeMap dell'anno
-                            yearData.put(dayTime, trade);
-                        }
-                    }
-                    
-                    reader.endArray();
-                } else {
-                    // Salta altri campi se presenti
-                    reader.skipValue();
-                }
+        TreeMap<DayTime,Trade>months = this.historicalData.get(year);
+        TreeMap<Integer,DailyTradeStats> stats = new TreeMap<>();
+        for(DayTime key : months.keySet()){
+            if(key.getMonth() == month){
+                //creo la entry
+                DailyTradeStats stat = new DailyTradeStats(months.get(key));
+                //se non ho ancora registrato quel giorno aggiungo chiave e valore
+                if(!stats.containsKey(key.getDay()))stats.put(key.getDay(), stat);
+                //altrimenti confronto i dati nuovi
+                else stats.get(key.getDay()).updateStats(stat);
             }
-            
-            reader.endObject();
-        } finally {
-            reader.close();
         }
-        
-        return historicalData;
+        return stats;
     }
 
     @Override
@@ -88,10 +50,6 @@ public class TradeHistory implements JsonAccessedData{
 
     @Override
     public void loadData() {
-        // Crea adapter per Trade
-        Moshi moshi = new Moshi.Builder().build();
-        JsonAdapter<Trade> tradeAdapter = moshi.adapter(Trade.class);
-
         try(JsonReader reader = JsonReader.of(Okio.buffer(Okio.source(new File(this.jsonFilePath))))) {
             // Inizio del JSON
             reader.beginObject();
@@ -113,15 +71,12 @@ public class TradeHistory implements JsonAccessedData{
                                     ZoneId.systemDefault());
                             
                             int year = tradeDate.getYear();
-                            // int month = tradeDate.getMonthValue();
-                            // int day = tradeDate.getDayOfMonth();
-                            
+
                             // Crea la chiave DayTime che include il mese
                             DayTime dayTime = new DayTime(trade.getTimestamp());
                             
                             // Ottieni o crea la TreeMap per l'anno
-                            TreeMap<DayTime, Trade> yearData = 
-                                    historicalData.computeIfAbsent(year, k -> new TreeMap<>());
+                            TreeMap<DayTime, Trade> yearData = historicalData.computeIfAbsent(year, k -> new TreeMap<>());
                             
                             // Aggiungi il trade alla TreeMap dell'anno
                             yearData.put(dayTime, trade);
@@ -139,11 +94,40 @@ public class TradeHistory implements JsonAccessedData{
         } catch (Exception e) {
             e.printStackTrace();
         }
+        //this.printStatsMap(this.monthlyTradesStat(2024,9),"Settembre");
         //this.printTradeMap(this.historicalData.get(2024), 0);
     }
 
+    public void printStatsMap(TreeMap<Integer, DailyTradeStats> statsMap, String month) {
+        if (statsMap == null || statsMap.isEmpty()) {
+            System.out.println("La mappa è vuota o non inizializzata.");
+            return;
+        }
+        
+        System.out.println("╔═════════════════════════════════════════════════════════════════════╗");
+        System.out.println("║                     REGISTRO STATISTICHE GIORNALIERE                ║");
+        System.out.println("╚═════════════════════════════════════════════════════════════════════╝");
+        
+        for (Map.Entry<Integer, DailyTradeStats> entry : statsMap.entrySet()) {
+            Integer key = entry.getKey();
+            DailyTradeStats stats = entry.getValue();
+            
+            System.out.println("┌──────────────────────────────────┐");
+            System.out.println("│   GIORNO: " + key +String.format(" %-20s",month) + "│");
+            System.out.println("└──────────────────────────────────┘");
+            
+            // Stampa l'oggetto DailyTradeStats
+            if (stats != null) {
+                System.out.println(stats.prettyPrint());
+            } else {
+                System.out.println("Valore nullo per questa chiave.");
+            }
+            
+            System.out.println(); // Riga vuota per separare le entries
+        }
+    }
     //stampa della mappa
-    public static void printTradeMap(TreeMap<DayTime, Trade> tradeMap, int limit) {
+    public void printTradeMap(TreeMap<DayTime, Trade> tradeMap, int limit) {
         if (tradeMap == null || tradeMap.isEmpty()) {
             System.out.println("La mappa è vuota.");
             return;

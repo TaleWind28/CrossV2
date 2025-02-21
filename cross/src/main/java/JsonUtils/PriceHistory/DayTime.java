@@ -1,4 +1,4 @@
-package JsonUtils;
+package JsonUtils.PriceHistory;
 
 import java.util.Calendar;
 
@@ -9,7 +9,6 @@ public class DayTime implements Comparable<DayTime> {
 
         public DayTime(long timestamp) {
             this.timestamp = timestamp;
-            
             // Conversione del timestamp in data
             Calendar calendar = Calendar.getInstance();
             calendar.setTimeInMillis(timestamp * 1000);
