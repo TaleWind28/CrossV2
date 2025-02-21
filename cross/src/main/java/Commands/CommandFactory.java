@@ -20,16 +20,16 @@ public class CommandFactory{
 
     public Values createValue(String[] command) {
         try {
-            for(String data:command){
-                System.out.print("[CommandFactory] comando: "+data);
-            }
-            System.out.println();
+            ////Stampa di debug
+            // for(String data:command){
+            //     System.out.print("[CommandFactory] comando: "+data);
+            // }
+            //System.out.println();
             //sistemo il tipo di ordine per avere solo la parte significativa
-            System.out.println("[ORDERFACTORY] prima stampa command[1] "+command[1]);
             String valueType = command[0].toLowerCase();
             valueType = valueType.replace("insert", "");
             valueType = valueType.replace("order", "");
-            /*RIARRANGIARE LA FACTORY */
+            //creo il comando in base al tipo di operazione
             switch (valueType) {    
                 case "cancel":
                     return new CancelOrder(Integer.parseInt(command[1]),"unset");    
@@ -57,19 +57,17 @@ public class CommandFactory{
 
                 case "logout":
                     return new Logout("unset");
+                
                 case "getpricehistory":
                     return new getPriceHystory(command[1]);
                 default:
-                    throw new UnrecognizedOrderException("ordine non gestito");        
+                    throw new UnrecognizedOrderException("comando non gestito");        
             }
-        }//potrei generare delle eccezioni specifiche per marketorder e cancelorder
+        }//potrei generare delle eccezioni specifiche per marketorder e cancelorder -> devo valutare se ho voglia
         catch(UnrecognizedOrderException e){
-            //gestire eccezione
-            System.out.println("Ordine non gestito");
             return new Help("unset");
         }
         catch (Exception e) {
-            //if ()return new Values(null, null, 0, 0, 0, orderbook, new ShowOrderBook());
             System.out.println("[ORDERFACTORY] "+e.getClass() +" "+e.getCause());
             return new ErrorMessage("parametri non corretti, digitare aiuto per una lista di comandi");
         }

@@ -129,7 +129,7 @@ public class ClientMain extends ClientProtocol{
                 
                     String[] clientRequest = rawClientRequest.split(" ");
                     ClientMessage userMessage = new ClientMessage(clientRequest[0],this.factory.createValue(clientRequest));
-                    if(userMessage.operation.equals(""))userMessage.operation = "help";
+                    if(userMessage.operation.equals("")|| userMessage.operation.equals("aiuto"))userMessage.operation = "help";
                     //System.out.println("[CLIENTMAIN]"+userMessage.toString());
                     System.out.println("[ClientHelper] Message Sent");
                     if(userMessage.operation.equals("login"))this.onlineUser = userMessage.values.getUsername();

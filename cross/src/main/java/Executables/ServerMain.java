@@ -42,6 +42,7 @@ public class ServerMain extends ServerProtocol{
             this.UDPListner =   new UDP(config.getUDPaddress(),config.getUDPport(),null);
         } catch (Exception e) {
             System.out.println(e.getMessage());
+            
         }
     }
 

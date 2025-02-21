@@ -104,11 +104,9 @@ public class GenericTask implements Runnable {
     public void serverReact(ClientMessage clientRequest){
         try{
             String additionalInfo = this.onlineUser;
-            System.out.println("[GenericTask] SendUDP");
-            //this.generatorServer.getUDPListner().sendMessage(new ServerMessage("Prova Multicast", getProgressiveOrderNumber()));
             //stampa di debug
             System.out.println("[GenericTask] Operation: "+clientRequest.operation+"\nValues: "+clientRequest.values.toString());
-            // //setto l'username per i comandi           
+            //setto l'username per i comandi           
             if(clientRequest.operation.toLowerCase().contains("order"))clientRequest.values.setUsername(this.onlineUser);
             //stampa di debug
             System.out.println("[GenericTask] Comando fabbricato: "+clientRequest.toString());
@@ -137,11 +135,11 @@ public class GenericTask implements Runnable {
             }
 
             //Stampa di debug -> risposta del server
-            System.out.println("[GenericTask] Messaggio generato:\n"+responseMessage.toString());
+            // System.out.println("[GenericTask] Messaggio generato:\n"+responseMessage.toString());
             //invio il messaggio al client
             protocol.sendMessage(responseMessage);
             //stampa di debug
-            System.out.println("[GenericTask] messaggio inviato");
+            System.out.println("[GenericTask] messaggio inviato: \n"+responseMessage.toString());
             return;
         }
         catch(Exception e){
