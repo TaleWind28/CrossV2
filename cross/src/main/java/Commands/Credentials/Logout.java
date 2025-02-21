@@ -14,19 +14,13 @@ public class Logout implements Values{
 
     @Override
     public ServerMessage execute(JsonAccessedData data,String user,GenericTask task){
-        //codice duplicato -> cambiare -> mettere nel costruttore / chiamata di funzione per inizializzare
-        //String[] credentialsInfo = cmd.getInfo();
         Userbook userbook = (Userbook)data;
-        setUsername(user);
         //controllo che esista l'utente
-        //if(!context.onlineUser.equals(this.username))return new Message("[401]: Non possiedi le autorizzazioni necessarie",401);
-        if(userbook.accessData(this.username) == 404)return new ServerMessage("Utente non registrato",101);
+        if(userbook.accessData(user) == 404)return new ServerMessage("Utente non registrato",101);
         //controllo che l'utente sia effettivamente loggato
-        if(userbook.getUserMap().get(this.username).getLogged() == false)return new ServerMessage("Utente non attualmente loggato",101);
-        //ulteriore controllo su chi sta chiedendo il logout
+        if(userbook.getUserMap().get(user).getLogged() == false)return new ServerMessage("Utente non attualmente loggato",101);
         //sloggare
-        //context.onlineUser = "";
-        userbook.getUserMap().get(this.username).setLogged(false);
+        userbook.getUserMap().get(user).setLogged(false);
         userbook.dataFlush();
         return new ServerMessage("Disconnessione avvenuta con successo!",100);
     }

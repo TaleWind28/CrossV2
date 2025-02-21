@@ -18,12 +18,9 @@ public class Register implements Values{
 
     @Override
     public ServerMessage execute(JsonAccessedData data,String user,GenericTask task) {
-        System.out.println("Primo Controllo");
         Userbook userbook = (Userbook)data;
-        System.out.println("User: "+user+"\tUsername: "+this.username);
         //controllare che username non esista già
-        if(userbook.accessData(username) == 200)return new ServerMessage(" Utente già presente nel database",102);//sostituire con eccezzione
-        //System.out.println("controllo dati utente esistente superato");
+        if(userbook.accessData(username) == 200)return new ServerMessage(" Utente già presente nel database",102);
         //memorizzare username e password
         userbook.addData(new User(username, password));
         //System.out.println("entro");

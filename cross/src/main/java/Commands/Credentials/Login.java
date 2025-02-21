@@ -19,7 +19,7 @@ public class Login implements Values{
     @Override
     public ServerMessage execute(JsonAccessedData data,String user,GenericTask task){
         Userbook userbook = (Userbook)data;
-        System.out.println("[Login]"+this.toString());
+        //System.out.println("[Login]"+this.toString());
         // if(userbook.getUserMap().containsKey(this.onlineUser))
         User userClass = new User(this.username, this.password);
         if(!user.equals(""))return new ServerMessage("Login effettuato in precedenza con nome utente "+user,103);

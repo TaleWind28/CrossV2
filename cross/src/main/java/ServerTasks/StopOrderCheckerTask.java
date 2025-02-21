@@ -18,10 +18,13 @@ public class StopOrderCheckerTask implements Runnable{
         int oldBidMarketPrice = ordb.getBidMarketPrice();
         System.out.println("[StopOrderChecker] sono vivo");
         while(true){
+            //System.out.println("[StopOrderChecker]"+ordb.getStopOrders().size());
+            //controllo se sono avvenute delle variazioni nei marketprice
             if(ordb.getAskMarketPrice()>oldAskMarketPrice && ordb.getBidMarketPrice()< oldBidMarketPrice)continue;
-            //aggiorno i marketprice
+            //se sono avvenute aggiorno i marketprice
             oldAskMarketPrice = ordb.getAskMarketPrice();
             oldBidMarketPrice = ordb.getBidMarketPrice();
+            //cerco nella lista 
             Iterator<StopOrder> navi = this.ordb.getStopOrders().iterator();
             while(navi.hasNext()){
                 StopOrder order = navi.next();

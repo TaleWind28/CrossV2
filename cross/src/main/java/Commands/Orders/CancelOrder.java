@@ -1,5 +1,6 @@
 package Commands.Orders;
 
+import java.util.Iterator;
 import java.util.Map;
 import java.util.concurrent.ConcurrentSkipListMap;
 
@@ -23,14 +24,14 @@ public class CancelOrder  extends Order implements Values{
     public ServerMessage execute(JsonAccessedData data,String utente,GenericTask task){
         //Order order = (Order)cmd;
         this.setUsername(utente);
-        String user = super.getUser();
+        String user = this.getUser();
+        //potrebbe essere una funzione
         if(user.equals(""))return new ServerMessage("Devi effettuare l'accesso per piazzare ordini", 104);
-        Orderbook orderbook = (Orderbook)data;//order.getOrderbook();
-        
+        Orderbook orderbook = (Orderbook)data;
+
         if(searchMap(orderbook, "ask", this.orderID, user))return new ServerMessage("[100] Ordine correttamente Cancellato",100);
-        
         else if(searchMap(orderbook, "bid", this.orderID, user))return new ServerMessage("[100] Ordine correttamente Cancellato",100);
-        
+        else if(searchStopOrder(orderbook, orderID, user))return new ServerMessage("Ordine correttamente Cancellato",100);
         else return new ServerMessage("[104] Non è stato possibile cancellare l'ordine richiesto",104);
     }
 
@@ -39,33 +40,29 @@ public class CancelOrder  extends Order implements Values{
         for(Map.Entry<OrderSorting,Limitorder> entry :map.entrySet()){
             if(!(entry.getValue().getOrderId()== Id))continue;
             if(!entry.getValue().getUser().equals(user))return false;//controllare eccezione
-            //orderbook.removeData("ask",entry.getKey());
             orderbook.removeData(requestedMap, entry.getKey());
-            orderbook.dataFlush();
             return true;
         }
         return false;
     }
 
+    public boolean searchStopOrder(Orderbook orderbook,int id, String user){
+        Iterator<StopOrder> navi = orderbook.getStopOrders().iterator();
+        while(navi.hasNext()){
+            //ciclo sugli stoporder
+            StopOrder ord = navi.next();
+            //controllo che utente e orderId siano corretti
+            if(ord.getOrderId() != id || !ord.getUser().equals(user))continue;
+            //solo in quel caso lo rimuovo
+            orderbook.getStopOrders().remove(ord);
+            return true;
+        }
+        return false;
+    }
 
-    // @Override
-    // public String getUser() {
-    //     return this.user;
-    // }
     @Override
     public String getExchangeType() {
         return null;
-    }
-    @Override
-    public int getPrice() {
-        return 0;
-    }
-    @Override
-    public int getSize() {
-        return 0;
-    }
-    public int getOrderID() {
-        return orderID;
     }
 
     @Override

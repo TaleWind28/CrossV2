@@ -85,12 +85,11 @@ public abstract class Order {
     }
 
     public String evadeOrder(String exchangetype,String user,Orderbook orderbook, OrderCache cache,String responseMessage){
-        System.out.println("[Order-evadeOrd] entro in evaded con price= "+this.getPrice()+": size="+this.getSize()+", user="+user);
         //cerco il miglior prezzo per la qtà di bitcoin che voglio comprare
         OrderSorting orderbookEntry = orderbook.getBestPriceAvailable(exchangetype,user,this.getPrice());
-        System.out.println("[Order-evadeOrd] entry="+orderbookEntry);
         //controllo che esista una entry per il mio ordine
-        if(orderbookEntry == null){System.out.println("[Order]mamma");return null;}
+        if(orderbookEntry == null)return null;
+        //controllare utilità responsemessage
         responseMessage = ""+this.getOrderId();
         //rimuovo l'ordine dall'orderbook
         Limitorder evadedOrder = (Limitorder)orderbook.removeData(exchangetype,orderbookEntry);
@@ -103,7 +102,6 @@ public abstract class Order {
         cache.addOrder(evadedOrder);
         //controllo quanti btc sono stati comprati
         if(evadedOrder.getSize()>this.size){
-            //bitcoinBought = this.size;
             //sottraggo la taglia di bitcoin comprata
             evadedOrder.addSize(-(this.size));
             //rimetto l'offerta sul mercato
@@ -113,9 +111,6 @@ public abstract class Order {
         else{
             this.size -= evadedOrder.getSize();
         }
-        System.out.println("[Order-evadeOrd] pre decremento size"+this.size);
-        //this.size -= evadedOrder.getSize();
-        System.out.println("[Order-evadeOrd] size"+this.size);
         return responseMessage;
     }
     public abstract String getExchangeType();

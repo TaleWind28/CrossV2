@@ -27,8 +27,6 @@ public class Userbook implements JsonAccessedData{
     public int accessData(String name) {
         //controllo che l'username non sia già presente nel database
         if (this.userMap.containsKey(name))return 200;
-        //System.out.println(this.userMap.get(name));
-        //utente non presente -> NOT FOUND
         return 404;
     }
 

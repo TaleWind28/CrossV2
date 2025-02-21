@@ -90,6 +90,4 @@ public class ShowOrderBook implements Values {
     public String getUsername() {
         return "unused";
     }
-
-    
 }

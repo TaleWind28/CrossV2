@@ -23,7 +23,7 @@ public class Limitorder extends Order implements Values{
     @Override
     public ServerMessage execute(JsonAccessedData data,String user,GenericTask task){
         //controllo che l'utente sia loggato
-        if(user.equals(""))return new OrderResponseMessage(-1,"Per effettuare ordini bisogna creare un account o accedervi");
+        if(task.onlineUser.equals(""))return new OrderResponseMessage(-1,"Per effettuare ordini bisogna creare un account o accedervi");
         //imposto l'orderId
         this.setOrderId(task.getProgressiveOrderNumber());
         //memorizzo l'orario in cui è avvennuto l'ordine
@@ -40,8 +40,6 @@ public class Limitorder extends Order implements Values{
         while(result!=null && this.getSize()!=0){
             result = this.evadeOrder(reverseType, user, orderbook, cache, result);
         }
-        //stampa di debug
-        System.out.println("[Limitorder] dopo evade"+this.getSize());
         //notifico i client dei trade avvenuti
         this.notifySuccessfullTrades(cache, task.UDPsender, this.getOrderId(), user);
         //se ho evaso tutto l'ordine lo comunico, altrimenti inserisco una nuova entry nell'orderbook
@@ -54,13 +52,13 @@ public class Limitorder extends Order implements Values{
     @Override
     public String toString() {
         return "Limitorder{" +
-        "\nexchangeType="+this.exchangeType
-        +"\n size="+this.getSize()+
-        "\n price="+this.getPrice()+
-        "\n orderID="+super.getOrderId()+
-        "\n Utente="+super.getUser()+
-        "\n timestamp="+super.getGmt()+
-        "\n}";    
+        "exchangeType='"+this.exchangeType
+        +"', size='"+this.getSize()+
+        "', price='"+this.getPrice()+
+        "', orderID='"+this.getOrderId()+
+        "', utente='"+this.getUser()+
+        "', timestamp='"+this.getGmt()+
+        "'}";    
     }
 
     @Override

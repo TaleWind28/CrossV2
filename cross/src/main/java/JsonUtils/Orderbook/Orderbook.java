@@ -81,6 +81,7 @@ public class Orderbook implements JsonAccessedData{
         ConcurrentSkipListMap<OrderSorting, Limitorder> ordermap = this.getRequestedMap(mapType);
         ordermap.put(new OrderSorting(ord.getGmt(),ord.getPrice(),ord.getOrderId()), ord);
         this.dataFlush();
+        this.updateMarketPrice();
         return;
     }
 
@@ -92,16 +93,16 @@ public class Orderbook implements JsonAccessedData{
         } catch (Exception e) {
             System.out.println("Aiuto");
         }
-        this.updateMarketPrice();
+        //this.updateMarketPrice();
         return;
     }
 
     public synchronized Order removeData(String mapType, OrderSorting orderbookEntry){
         Order ord = null;
         ConcurrentSkipListMap<OrderSorting, Limitorder> requestedMap = getRequestedMap(mapType);
-        //System.out.println(this.currentScope+"[RemoveData] entry "+orderbookEntry);
         ord = requestedMap.remove(orderbookEntry);
         dataFlush();
+        this.updateMarketPrice();
         return ord;
     }
 

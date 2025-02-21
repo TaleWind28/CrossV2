@@ -38,16 +38,15 @@ public class MarketOrder extends Order implements Values {
         //ciclo finchè non evado completamente l'ordine
         while(super.getSize()>0){
             //invoco evadeORder per evadere l'ordine
-            responseMessage = super.evadeOrder(exchangetype, user, orderbook, cache, responseMessage);
-            System.out.println("[Marketorder-execute] response "+responseMessage+", size "+super.getSize());
+            responseMessage = this.evadeOrder(exchangetype, user, orderbook, cache, responseMessage);
+            System.out.println("[Marketorder-execute] response "+responseMessage+", size "+this.getSize());
             //controllo il risultato dell'evadeORder
             if (responseMessage == null){
                 System.out.println("[Marketorder-evadeOrd.exception] response "+responseMessage);
                 //ripristino l'orderbook
                 orderbook.restoreOrders(cache,orderbook);
                 //imposto orderId a -1 per indicare il fallimento
-                super.setOrderId(-1);
-                //System.out.println("[Marketorder]"+super.getOrderId());
+                this.setOrderId(-1);
                 responseMessage = "Order not fully Executed!";
                 resp_code = -1;
                 break;
@@ -56,6 +55,8 @@ public class MarketOrder extends Order implements Values {
             
         }
         super.notifySuccessfullTrades(cache, task.UDPsender, this.getOrderId(), task.onlineUser);
+        //aggiorno i prezzi di mercato solo se ho evaso l'ordine
+        orderbook.updateMarketPrice();
         return new OrderResponseMessage(resp_code,responseMessage);
     }
 
@@ -63,7 +64,7 @@ public class MarketOrder extends Order implements Values {
 
     @Override
     public String toString() {
-        return "Marketorder{ exchangeType="+this.exchangeType+" size="+getSize()+" orderId="+super.getOrderId()+"}";    
+        return "Marketorder{"+super.toString()+"}";    
     }
 
 

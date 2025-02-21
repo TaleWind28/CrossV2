@@ -14,6 +14,6 @@ public class ServerMessage implements Message{
     }
 
     public String toString(){
-        return "response: "+this.response+",errorMessage:\n"+this.errorMessage;
+        return "response: "+this.response+",errorMessage:\n"+this.errorMessage.toString();
     }
 }

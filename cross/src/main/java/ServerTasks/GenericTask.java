@@ -29,16 +29,17 @@ public class GenericTask implements Runnable {
                         "Comandi:\n" + 
                         "register<username,password> -> ti permette di registrarti per poter accedere al servizio di trading\n" + 
                         "login<username,password> -> permette di accedere ad un account registrato\n" +
+                        "updateCredentials<username,currentPasswd,newPasswd> -> permette di aggiornare le credenziali\n"+
                         "---------------------------------------------------------------------------------------------------";
     private String loggedUserMessage = "------------------------------------------------------------------------------------------------------------\n"+
                         "Comandi:\n"+
-                        "updateCredentials<username,currentPasswd,newPasswd> -> permette di aggiornare le credenziali\n"+
                         "logout<username> -> permette di uscire dal servizio di trading\n"+
                         "showorderbook -> fa visualizzare l'orderbook\n"+
                         "insertmarketorder <ask/bid> <qtà di bitcoin da vendere/comprare> -> inserisce un marketorder\n"+
-                        "insertmarketorder <ask/bid> <qtà di bitcoin da vendere/comprare> <limitprice> -> inserisce un limitorder\n"+
-                        "insertmarketorder <ask/bid> <qtà di bitcoin da vendere/comprare> <stopprice> -> inserisce uno stoporder\n"+
-                        "cancelorder <orderID>\n"+
+                        "insertlimitorder <ask/bid> <qtà di bitcoin da vendere/comprare> <limitprice> -> inserisce un limitorder\n"+
+                        "insertstoporder <ask/bid> <qtà di bitcoin da vendere/comprare> <stopprice> -> inserisce uno stoporder\n"+
+                        "cancelorder <orderID> -> cancella un ordine piazzato dall'utente\n"+
+                        "getpricehistory <data in formato numerico MMYYYY> -> fa visualizzare tutti gli scambi del mese desiderato\n"+
                         "------------------------------------------------------------------------------------------------------------";
 
     String currentHelpMessage = "";
@@ -81,8 +82,6 @@ public class GenericTask implements Runnable {
                 //imposto il messaggio di errore
                 if(this.onlineUser.equals(""))this.currentHelpMessage = nonLoggedUserMessage;
                 else this.currentHelpMessage = loggedUserMessage;
-                //stampa il contenuto del messaggio ricevuto
-                System.out.println("run:"+clientRequest.operation.toString());
                 //reagisci al messaggio
                 this.serverReact(clientRequest);
             }
@@ -104,20 +103,18 @@ public class GenericTask implements Runnable {
     public void serverReact(ClientMessage clientRequest){
         try{
             String additionalInfo = this.onlineUser;
+            //System.out.println("//////////////////////////////////////////////////////////////////////////////////");
             //stampa di debug
-            System.out.println("[GenericTask] Operation: "+clientRequest.operation+"\nValues: "+clientRequest.values.toString());
+            //System.out.println("[GenericTask] Operation: "+clientRequest.operation+"\nValues: "+clientRequest.values.toString());
             //setto l'username per i comandi           
             if(clientRequest.operation.toLowerCase().contains("order"))clientRequest.values.setUsername(this.onlineUser);
             //stampa di debug
             System.out.println("[GenericTask] Comando fabbricato: "+clientRequest.toString());
             //dati in formato json per controllare gli utenti
             JsonAccessedData data = this.generatorServer.getRegisteredUsers();
-            
             //controllo la struttura dati da assegnare al comando
             if(clientRequest.operation.contains("order"))data = this.generatorServer.getOrderbook();
-
             if(clientRequest.operation.contains("getpricehistory"))data = this.generatorServer.getStorico();
-            
             //controllo le informazioni addizionali da passare al comando
             if(clientRequest.operation.equals("help"))additionalInfo = this.currentHelpMessage;
             
@@ -140,6 +137,7 @@ public class GenericTask implements Runnable {
             protocol.sendMessage(responseMessage);
             //stampa di debug
             System.out.println("[GenericTask] messaggio inviato: \n"+responseMessage.toString());
+            System.out.println("//////////////////////////////////////////////////////////////////////////////////");
             return;
         }
         catch(Exception e){

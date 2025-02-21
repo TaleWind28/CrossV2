@@ -25,7 +25,7 @@ public class getPriceHystory implements Values{
     public ServerMessage execute(JsonAccessedData data, String user, GenericTask genericTask) {
         TradeHistory storico = (TradeHistory) data;
         if(user.equals(""))return new ServerMessage("Per consultare lo storico bisogna creare un account o accedervi",101);
-        System.out.println("[GetPriceHystory] "+this.stringify(storico.monthlyTradesStat(year, month)));
+        //System.out.println("[GetPriceHystory] "+this.stringify(storico.monthlyTradesStat(year, month)));
         return new ServerMessage(this.stringify(storico.monthlyTradesStat(year, month)),100);
     }
 
