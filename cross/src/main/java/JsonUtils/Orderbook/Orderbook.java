@@ -67,8 +67,9 @@ public class Orderbook implements JsonAccessedData{
 
     public synchronized void updateMarketPrice(){
         if(!this.getAskOrders().isEmpty())this.bidMarketPrice = this.getAskOrders().firstEntry().getValue().getPrice();
+        else this.bidMarketPrice = 0;
         if(!this.getBidOrders().isEmpty())this.askMarketPrice = this.getBidOrders().firstEntry().getValue().getPrice();
-        //System.out.println("[Orderbook]market pricese:\naskprice="+this.askMarketPrice+"\tbidprice="+this.bidMarketPrice);
+        else this.askMarketPrice = 0;
     }
 
     public synchronized void addData(Values val,String mapType) {
@@ -127,7 +128,7 @@ public class Orderbook implements JsonAccessedData{
 
     public ConcurrentSkipListMap<OrderSorting, Limitorder> getRequestedMap(String request){
         if(request.equals("ask"))return this.askOrders;
-        if(request.equals("bid"))return this.askOrders;
+        if(request.equals("bid"))return this.bidOrders;
         return null;
     }
 

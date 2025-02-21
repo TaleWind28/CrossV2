@@ -19,8 +19,8 @@ public class ShowOrderBook implements Values {
                         "User\t  ExchangeType\tBitcoin Size\tPrice per Bitcoin\tTotal Price\tOrder ID\n";
         //sta cosa mi fa schifo, dovrei usare strategy ma non so se ne ho voglia -> spoiler non ne ho voglia
         if(orderbook.mapLen()!= 0){        
-            prettyPrintedString = prettyPrinting(orderbook, "ask", prettyPrintedString);
-            prettyPrintedString = prettyPrinting(orderbook, "bid", prettyPrintedString);
+            prettyPrintedString += prettyPrinting(orderbook, "ask");
+            prettyPrintedString += prettyPrinting(orderbook, "bid");
         }else{
             prettyPrintedString +="\t\t------------ NO ORDER AVAILABLE! -------------\n";    
         }
@@ -29,8 +29,8 @@ public class ShowOrderBook implements Values {
     }
 
 
-    public String prettyPrinting(Orderbook orderbook, String requestedmap, String prettyPrinting) {
-        
+    public String prettyPrinting(Orderbook orderbook, String requestedmap) {
+        String prettyPrinting = new String();
         for(Map.Entry<OrderSorting,Limitorder> entry: orderbook.getRequestedMap(requestedmap).entrySet()){
             Order ord = entry.getValue();
             prettyPrinting+=ord.getUser()+"\t\t"+ord.getExchangeType()+"\t \t"+ord.getSize()+"\t \t"+ord.getPrice()+"\t\t    "+ord.getPrice()*ord.getSize()+"\t\t   "+ord.getOrderId()+"\n";

@@ -26,7 +26,7 @@
    "username": "lorenzo"
   },
   "pino": {
-   "isLogged": false,
+   "isLogged": true,
    "password": "$2a$10$MMmf2UzAjQEi9jRUfw2wGeHoQaYrazK/b6mC5.fozYF9hbv8vQus2",
    "username": "pino"
   },
