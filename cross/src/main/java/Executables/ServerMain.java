@@ -1,14 +1,16 @@
 package Executables;
 
-import java.io.File;
+import java.io.BufferedReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.net.InetSocketAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.nio.charset.StandardCharsets;
 import java.util.Map;
 import java.util.concurrent.ConcurrentSkipListMap;
 
 import com.squareup.moshi.JsonAdapter;
-import com.squareup.moshi.JsonReader;
 import com.squareup.moshi.Moshi;
 
 import Commands.Orders.Limitorder;
@@ -21,7 +23,6 @@ import JsonUtils.PriceHistory.TradeHistory;
 import JsonUtils.Users.Userbook;
 import ServerTasks.*;
 import Utils.OrderSorting;
-import okio.Okio;
 
 public class ServerMain extends ServerProtocol{
     private volatile Userbook registeredUsers;
@@ -35,9 +36,9 @@ public class ServerMain extends ServerProtocol{
     public ServerMain(ServerConfig config){
         super(config.getTCPport(),Runtime.getRuntime().availableProcessors());
         this.bindAddress = config.getTCPaddress();
-        this.registeredUsers = new Userbook(config.getUserbook());
-        this.storico = new TradeHistory(config.getStorico());
-        this.orderbook = new Orderbook(config.getOrderBook());
+        this.registeredUsers = new Userbook("cross\\src\\main\\java\\JsonUtils\\JsonFiles\\Users.json");
+        //this.storico = new TradeHistory(config.getStorico());
+        this.orderbook = new Orderbook("cross\\src\\main\\java\\JsonUtils\\JsonFiles\\OrderBook.json");
         try{
             this.UDPListner =   new UDP(config.getUDPaddress(),config.getUDPport(),null);
         } catch (Exception e) {
@@ -62,9 +63,26 @@ public class ServerMain extends ServerProtocol{
 
     
     public static ServerConfig getServerConfig(){
-        try(JsonReader reader = JsonReader.of(Okio.buffer(Okio.source(new File("cross\\src\\main\\java\\Config\\ServerConfig.json"))))){
+        try{
             JsonAdapter<ServerConfig> jsonAdapter = new Moshi.Builder().build().adapter(ServerConfig.class);
-            return jsonAdapter.fromJson(reader);
+            // Carica il file dalle risorse
+            InputStream inputStream = ServerMain.class.getClassLoader()
+                                     .getResourceAsStream("ServerConfig.json");
+            
+            if (inputStream == null) {
+                throw new RuntimeException("File di configurazione non trovato nelle risorse");
+            }
+            
+            // Leggi il contenuto del file
+            BufferedReader reader = new BufferedReader(
+                new InputStreamReader(inputStream, StandardCharsets.UTF_8));
+            StringBuilder jsonContent = new StringBuilder();
+            String line;
+            while ((line = reader.readLine()) != null) {
+                jsonContent.append(line);
+            }
+            reader.close();
+            return jsonAdapter.fromJson(jsonContent.toString());
         }
         catch(Exception e){
             System.out.println("no");
@@ -103,7 +121,7 @@ public class ServerMain extends ServerProtocol{
         //carico in memoria
         this.registeredUsers.loadData();
         this.orderbook.loadData();
-        this.storico.loadData();
+        //this.storico.loadData();
         
         progressiveOrderNumber = findOrderID(this.orderbook)+1;
         System.out.println("[ServerMain-initialConfig] Numero Ordine: "+progressiveOrderNumber);

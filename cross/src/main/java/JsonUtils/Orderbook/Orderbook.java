@@ -64,6 +64,24 @@ public class Orderbook implements JsonAccessedData{
             System.out.println("[ORDERBOOK] LOADDATA: "+e.getMessage()+" "+e.getClass());
         }
     }
+    // @Override
+    // public synchronized void loadData(){
+    //     try (InputStream inputStream = Orderbook.class.getClassLoader().getResourceAsStream(this.jsonFilePath)) {
+    //         if (inputStream == null) {
+    //             throw new IOException("File OrderBook non trovato: " + this.jsonFilePath);
+    //         }
+            
+    //         try (BufferedSource source = Okio.buffer(Okio.source(inputStream))) {
+    //             OrderClass orderdata = adapter.fromJson(source);
+    //             this.askOrders.putAll(orderdata.askMap);
+    //             this.bidOrders.putAll(orderdata.bidMap);
+    //             this.updateMarketPrice();
+    //         }
+    //     }
+    //     catch(Exception e){
+
+    //     }
+    // }
 
     public synchronized void updateMarketPrice(){
         if(this.getAskOrders().isEmpty())this.bidMarketPrice = 0;
