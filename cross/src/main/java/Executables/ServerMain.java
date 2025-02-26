@@ -36,9 +36,9 @@ public class ServerMain extends ServerProtocol{
     public ServerMain(ServerConfig config){
         super(config.getTCPport(),Runtime.getRuntime().availableProcessors());
         this.bindAddress = config.getTCPaddress();
-        this.registeredUsers = new Userbook("cross\\src\\main\\java\\JsonUtils\\JsonFiles\\Users.json");
-        //this.storico = new TradeHistory(config.getStorico());
-        this.orderbook = new Orderbook("cross\\src\\main\\java\\JsonUtils\\JsonFiles\\OrderBook.json");
+        this.registeredUsers = new Userbook(config.getUserbook());
+        this.storico = new TradeHistory(config.getStorico());
+        this.orderbook = new Orderbook(config.getOrderBook());
         try{
             this.UDPListner =   new UDP(config.getUDPaddress(),config.getUDPport(),null);
         } catch (Exception e) {
