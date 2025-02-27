@@ -1,6 +1,5 @@
 package Communication.Protocols;
 import java.net.*;
-import java.util.Enumeration;
 
 import Communication.Messages.Message;
 import Communication.Messages.UDPMessage;
@@ -19,27 +18,9 @@ public class UDP implements Protocol {
         System.out.println("[UDP-Constructor] "+this.group.getHostAddress());
         this.socket = new MulticastSocket(port);
 
-        // Unirsi al gruppo multicast utilizzando l'interfaccia specificata
-        socket.joinGroup(group);
+        // Unirsi al gruppo multicast /*CAPIRE COME CORREGGERE IL DEPRECATO */
+        socket.joinGroup(new InetSocketAddress(group, port), NetworkInterface.getByInetAddress(InetAddress.getLocalHost()));
     }
-
-    // public NetworkInterface findNetworkInterface(){
-    //     try{
-    //         Enumeration<NetworkInterface> interfaces = NetworkInterface.getNetworkInterfaces();
-    //         while (interfaces.hasMoreElements()) {
-    //             NetworkInterface ni = interfaces.nextElement();
-    //             if (ni.isUp() && !ni.isLoopback() && ni.supportsMulticast()) {
-    //                 System.out.println("[UDP-findNetIf] Interfaccia di rete "+ni.toString());
-    //                 return ni;
-    //                 //return ni; // Restituisce la prima interfaccia valida
-    //             }
-    //         }
-    //     }
-    //     catch (Exception e) {
-    //         System.out.println("mino");    
-    //     }
-    //     return null;
-    // }
 
     public String makeParameterString(NetworkInterface netIf){
         System.out.println("[UDP-makeParamString] Interfaccia di rete "+netIf.getName());
