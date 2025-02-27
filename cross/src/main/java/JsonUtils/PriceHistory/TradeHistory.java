@@ -50,7 +50,7 @@ public class TradeHistory implements JsonAccessedData{
 
     @Override
     public void loadData() {
-        try(JsonReader reader = JsonReader.of(Okio.buffer(Okio.source(new File(System.getProperty("user.dir")+this.jsonFilePath))))) {
+        try(JsonReader reader = JsonReader.of(Okio.buffer(Okio.source(new File(this.jsonFilePath))))) {
             // Inizio del JSON
             reader.beginObject();
             

@@ -121,7 +121,7 @@ public class ServerMain extends ServerProtocol{
         //carico in memoria
         this.registeredUsers.loadData();
         this.orderbook.loadData();
-        //this.storico.loadData();
+        this.storico.loadData();
         
         progressiveOrderNumber = findOrderID(this.orderbook)+1;
         System.out.println("[ServerMain-initialConfig] Numero Ordine: "+progressiveOrderNumber);

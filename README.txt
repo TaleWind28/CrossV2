@@ -1,5 +1,5 @@
 todo:
--Aggiungere un gruppo multicast per ordine
+-(Ottimizzazione)Aggiungere un gruppo multicast per ordine
 -Controllare parametri per ordini
 -Controllare chiusura Socket lato thread gestore
 -Pulire output server
