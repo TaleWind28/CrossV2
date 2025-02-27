@@ -12,7 +12,7 @@ import Communication.Messages.ServerMessage;
 import Communication.Protocols.Protocol;
 import Communication.Protocols.UDP;
 import Executables.ServerMain;
-import JsonUtils.JsonAccessedData;
+import JsonAccessedData.JsonAccessedData;
 
 public class GenericTask implements Runnable {
     private Socket client;

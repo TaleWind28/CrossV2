@@ -5,8 +5,8 @@ import java.util.Map;
 import Communication.Values;
 import Communication.Messages.OrderResponseMessage;
 import Communication.Messages.ServerMessage;
-import JsonUtils.JsonAccessedData;
-import JsonUtils.Orderbook.Orderbook;
+import JsonAccessedData.JsonAccessedData;
+import JsonAccessedData.Orderbook.Orderbook;
 import ServerTasks.GenericTask;
 import Utils.OrderSorting;
 
@@ -18,43 +18,37 @@ public class ShowOrderBook implements Values {
         if(user.equals(""))return new OrderResponseMessage(-1,"Per consultare l'orderbook bisogna creare un account o accedervi");
         StringBuilder output = new StringBuilder();
         // Intestazione con i prezzi di mercato
-        output.append("╔═══════════════════════════════════════════════════════════════════════╗\n");
-        output.append(String.format("║  PREZZI DI MERCATO:  ASK: %-14d  BID: %-14d         ║\n", 
+        output.append("\"+=======================================================================+\n");
+        output.append(String.format("|  PREZZI DI MERCATO:  ASK: %-14d  BID: %-14d         |\n", 
         orderbook.getAskMarketPrice(), orderbook.getBidMarketPrice()));
-        output.append("╠═══════════════════════════════════════════════════════════════════════╣\n");
+        output.append("+=======================================================================+\n");
     
         // Intestazione della tabella
-        output.append("║ User        Exchange   Bitcoin    Prezzo per     Prezzo       ID      ║\n");
-        output.append("║             Type       Size       Bitcoin        Totale               ║\n");
-        output.append("╠═══════════════════════════════════════════════════════════════════════╣\n");
+        output.append("| User        Exchange   Bitcoin    Prezzo per     Prezzo       ID      |\n");
+        output.append("|             Type       Size       Bitcoin        Totale               |\n");
+        output.append("+=======================================================================+\n");
         if (orderbook.mapLen() != 0) {
-        // ASK Orders
-            output.append("║                           ASK ORDERS                                  ║\n");
-            output.append("╠═══════════════════════════════════════════════════════════════════════╣\n");
+            // ASK Orders
+            output.append("|                           ASK ORDERS                                  |\n");
+            output.append("+=======================================================================+\n");
             appendPrettyOrders(output, orderbook, "ask");
         
-        // BID Orders
-            output.append("╠═══════════════════════════════════════════════════════════════════════╣\n");
-            output.append("║                           BID ORDERS                                  ║\n");
-            output.append("╠═══════════════════════════════════════════════════════════════════════╣\n");
+            // BID Orders
+            output.append("+=======================================================================+\n");
+            output.append("|                           BID ORDERS                                  |\n");
+            output.append("+=======================================================================+\n");
             appendPrettyOrders(output, orderbook, "bid");
         } else {
-            output.append("║                  NESSUN ORDINE DISPONIBILE                    ║\n");
+            output.append("|                  NESSUN ORDINE DISPONIBILE                    |\n");
         }
-        output.append("╚═══════════════════════════════════════════════════════════════════════╝\n");
-        return new ServerMessage(output.toString().replace('╔', '+').replace('╗', '+')
-        .replace('╚', '+').replace('╝', '+')
-        .replace('═', '=').replace('║', '|')
-        .replace('┌', '+').replace('┐', '+')
-        .replace('╠', '+').replace('╣', '+')
-        .replace('└', '+').replace('┘', '+')
-        .replace('─', '-').replace('│', '|'), 100);
+        output.append("+=======================================================================+\n");
+        return new ServerMessage(output.toString(), 100);
     }
 
     private void appendPrettyOrders(StringBuilder output, Orderbook orderbook, String requestedMap) {
         Map<OrderSorting, Limitorder> orders = orderbook.getRequestedMap(requestedMap);
         if (orders.isEmpty()) {
-            output.append("║              Nessun ordine di tipo " + requestedMap.toUpperCase() + "               ║\n");
+            output.append("|              Nessun ordine di tipo " + requestedMap.toUpperCase() + "               |\n");
             return;
         }
         for (Map.Entry<OrderSorting, Limitorder> entry : orders.entrySet()) {
@@ -63,7 +57,7 @@ public class ShowOrderBook implements Values {
 
             long price = ord.getPrice();
             long totalPrice = (long)(price * ord.getSize());
-            output.append(String.format("║ %-10s  %-9s  %-10s  %-13d  %-11d  %-6d ║\n",
+            output.append(String.format("| %-10s  %-9s  %-10s  %-13d  %-11d  %-6d |\n",
                           ord.getUser(), ord.getExchangeType(), ord.getSize(), ord.getPrice(), totalPrice, ord.getOrderId()));
         }
     }

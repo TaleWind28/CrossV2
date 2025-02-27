@@ -2,8 +2,8 @@ package Commands.Credentials;
 
 import Communication.Values;
 import Communication.Messages.ServerMessage;
-import JsonUtils.JsonAccessedData;
-import JsonUtils.Users.Userbook;
+import JsonAccessedData.JsonAccessedData;
+import JsonAccessedData.Users.Userbook;
 import ServerTasks.GenericTask;
 
 public class Logout implements Values{

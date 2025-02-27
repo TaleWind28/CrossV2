@@ -77,30 +77,31 @@ public class DailyTradeStats {
 
     public String prettyPrint() {
         StringBuilder sb = new StringBuilder();
-        sb.append("╔══════════════════════════════════╗\n");
-        sb.append("║     DAILY TRADING STATISTICS     ║\n");
-        sb.append("╠══════════════════════════════════╣\n");
-        
-        // Prezzi di apertura e chiusura
-        sb.append(String.format("║ Opening Price:  %11d      ║\n", this.openingPrice));
-        sb.append(String.format("║ Closing Price:  %11d      ║\n", this.closingPrice));
-        sb.append("╠══════════════════════════════════╣\n");
-        
-        // Prezzi Ask
-        sb.append("║ ASK PRICES                       ║\n");
-        sb.append(String.format("║ Maximum:        %11s      ║\n", 
-                  (this.maxAskPrice == -1) ? "N/A" : String.valueOf(this.maxAskPrice)));
-        sb.append(String.format("║ Minimum:        %11s      ║\n", 
-                  (this.minAskPrice == -1) ? "N/A" : String.valueOf(this.minAskPrice)));
-        sb.append("╠══════════════════════════════════╣\n");
-        
-        // Prezzi Bid
-        sb.append("║ BID PRICES                       ║\n");
-        sb.append(String.format("║ Maximum:        %11s      ║\n", 
-                  (this.maxBidPrice == -1) ? "N/A" : String.valueOf(this.maxBidPrice)));
-        sb.append(String.format("║ Minimum:        %11s      ║\n", 
-                  (this.minBidPrice == -1) ? "N/A" : String.valueOf(this.minBidPrice)));
-        sb.append("╚══════════════════════════════════╝\n");
+        sb.append("+==================================+\n");
+sb.append("|     DAILY TRADING STATISTICS     |\n");
+sb.append("+==================================+\n");
+
+// Prezzi di apertura e chiusura
+sb.append(String.format("| Opening Price:  %11d      |\n", this.openingPrice));
+sb.append(String.format("| Closing Price:  %11d      |\n", this.closingPrice));
+sb.append("+==================================+\n");
+
+// Prezzi Ask
+sb.append("| ASK PRICES                       |\n");
+sb.append(String.format("| Maximum:        %11s      |\n", 
+          (this.maxAskPrice == -1) ? "N/A" : String.valueOf(this.maxAskPrice)));
+sb.append(String.format("| Minimum:        %11s      |\n", 
+          (this.minAskPrice == -1) ? "N/A" : String.valueOf(this.minAskPrice)));
+sb.append("+==================================+\n");
+
+// Prezzi Bid
+sb.append("| BID PRICES                       |\n");
+sb.append(String.format("| Maximum:        %11s      |\n", 
+          (this.maxBidPrice == -1) ? "N/A" : String.valueOf(this.maxBidPrice)));
+sb.append(String.format("| Minimum:        %11s      |\n", 
+          (this.minBidPrice == -1) ? "N/A" : String.valueOf(this.minBidPrice)));
+sb.append("+==================================+\n");
+
         
         return sb.toString();
     }

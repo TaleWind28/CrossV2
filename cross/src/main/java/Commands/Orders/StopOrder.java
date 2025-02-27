@@ -5,8 +5,8 @@ import java.time.Instant;
 import Communication.Values;
 import Communication.Messages.OrderResponseMessage;
 import Communication.Messages.ServerMessage;
-import JsonUtils.JsonAccessedData;
-import JsonUtils.Orderbook.Orderbook;
+import JsonAccessedData.JsonAccessedData;
+import JsonAccessedData.Orderbook.Orderbook;
 //import JsonMemories.Orderbook;
 import ServerTasks.GenericTask;
 

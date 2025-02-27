@@ -1,7 +1,7 @@
 package Communication;
 
 import Communication.Messages.ServerMessage;
-import JsonUtils.JsonAccessedData;
+import JsonAccessedData.JsonAccessedData;
 import ServerTasks.GenericTask;
 
 public interface Values {

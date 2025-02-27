@@ -18,9 +18,9 @@ import Communication.Protocols.ServerProtocol;
 import Communication.Protocols.TCP;
 import Communication.Protocols.UDP;
 import Config.ServerConfig;
-import JsonUtils.Orderbook.Orderbook;
-import JsonUtils.PriceHistory.TradeHistory;
-import JsonUtils.Users.Userbook;
+import JsonAccessedData.Orderbook.Orderbook;
+import JsonAccessedData.PriceHistory.TradeHistory;
+import JsonAccessedData.Users.Userbook;
 import ServerTasks.*;
 import Utils.OrderSorting;
 

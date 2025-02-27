@@ -104,17 +104,17 @@ public class TradeHistory implements JsonAccessedData{
             return;
         }
         
-        System.out.println("╔═════════════════════════════════════════════════════════════════════╗");
-        System.out.println("║                     REGISTRO STATISTICHE GIORNALIERE                ║");
-        System.out.println("╚═════════════════════════════════════════════════════════════════════╝");
+        System.out.println("+=====================================================================+");
+        System.out.println("|                     REGISTRO STATISTICHE GIORNALIERE                |");
+        System.out.println("+=====================================================================+");
         
         for (Map.Entry<Integer, DailyTradeStats> entry : statsMap.entrySet()) {
             Integer key = entry.getKey();
             DailyTradeStats stats = entry.getValue();
             
-            System.out.println("┌──────────────────────────────────┐");
-            System.out.println("│   GIORNO: " + key +String.format(" %-20s",month) + "│");
-            System.out.println("└──────────────────────────────────┘");
+            System.out.println("+==================================+");
+            System.out.println("|   GIORNO: " + key +String.format(" %-20s",month) + "|");
+            System.out.println("+==================================+");
             
             // Stampa l'oggetto DailyTradeStats
             if (stats != null) {

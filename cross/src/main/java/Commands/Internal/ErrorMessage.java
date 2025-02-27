@@ -2,7 +2,7 @@ package Commands.Internal;
 
 import Communication.Values;
 import Communication.Messages.ServerMessage;
-import JsonUtils.JsonAccessedData;
+import JsonAccessedData.JsonAccessedData;
 import ServerTasks.GenericTask;
 
 public class ErrorMessage implements Values{

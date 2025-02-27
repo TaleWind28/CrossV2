@@ -5,9 +5,9 @@ import java.util.TreeMap;
 
 import Communication.Values;
 import Communication.Messages.ServerMessage;
-import JsonUtils.JsonAccessedData;
-import JsonUtils.PriceHistory.DailyTradeStats;
-import JsonUtils.PriceHistory.TradeHistory;
+import JsonAccessedData.JsonAccessedData;
+import JsonAccessedData.PriceHistory.DailyTradeStats;
+import JsonAccessedData.PriceHistory.TradeHistory;
 import ServerTasks.GenericTask;
 
 public class getPriceHystory implements Values{
@@ -53,15 +53,7 @@ public class getPriceHystory implements Values{
             if (stats != null) {
                 // Assumendo che prettyPrint() restituisca una stringa con caratteri Unicode
                 // Sostituiamo i caratteri Unicode con ASCII semplici
-                String prettyPrint = stats.prettyPrint()
-                    .replace('╔', '+').replace('╗', '+')
-                    .replace('╚', '+').replace('╝', '+')
-                    .replace('═', '=').replace('║', '|')
-                    .replace('╣', '+').replace('╠', '+')
-                    .replace('┌', '+').replace('┐', '+')
-                    .replace('└', '+').replace('┘', '+')
-                    .replace('─', '-').replace('│', '|');
-                
+                String prettyPrint = stats.prettyPrint();
                 output.append(prettyPrint).append("\n");
             } else {
                 output.append("Valore nullo per questa chiave.\n");
