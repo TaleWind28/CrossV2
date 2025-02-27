@@ -39,7 +39,7 @@ public class Orderbook implements JsonAccessedData{
     private String currentScope = "[ORDERBOOK]";
         
     public Orderbook(String jsonFilePath){
-        this.jsonFilePath = jsonFilePath;
+        this.jsonFilePath = System.getProperty("user.dir")+jsonFilePath;
         System.out.println(this.currentScope+"Stoporders "+this.stopOrders);
     }
     

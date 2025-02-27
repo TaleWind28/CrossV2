@@ -3,7 +3,7 @@
     "TCPaddress":"0.0.0.0",
     "UDPport":5000,
     "UDPaddress":"230.0.0.1",
-    "Storico":"C:\\Users\\matte\\Desktop\\Code\\Java\\CrossV2\\cross\\src\\main\\java\\JsonUtils\\JsonFiles\\storicoOrdini.json",
-    "OrderBook":"C:\\Users\\matte\\Desktop\\Code\\Java\\CrossV2\\cross\\src\\main\\java\\JsonUtils\\JsonFiles\\OrderBook.json",
-    "Userbook":"C:\\Users\\matte\\Desktop\\Code\\Java\\CrossV2\\cross\\src\\main\\java\\JsonUtils\\JsonFiles\\Users.json"
+    "Storico":"\\src\\main\\java\\JsonUtils\\JsonFiles\\storicoOrdini.json",
+    "OrderBook":"\\src\\main\\java\\JsonUtils\\JsonFiles\\OrderBook.json",
+    "Userbook":"\\src\\main\\java\\JsonUtils\\JsonFiles\\Users.json"
 }

@@ -23,7 +23,7 @@ public class TradeHistory implements JsonAccessedData{
     private JsonAdapter<Trade> tradeAdapter = moshi.adapter( Trade.class);
 
     public TradeHistory(String jsonFilePath){
-        this.jsonFilePath = jsonFilePath;
+        this.jsonFilePath = System.getProperty("user.dir")+jsonFilePath;
     }
 
     public TreeMap<Integer,DailyTradeStats> monthlyTradesStat(int year,int month){
@@ -50,7 +50,7 @@ public class TradeHistory implements JsonAccessedData{
 
     @Override
     public void loadData() {
-        try(JsonReader reader = JsonReader.of(Okio.buffer(Okio.source(new File(this.jsonFilePath))))) {
+        try(JsonReader reader = JsonReader.of(Okio.buffer(Okio.source(new File(System.getProperty("user.dir")+this.jsonFilePath))))) {
             // Inizio del JSON
             reader.beginObject();
             

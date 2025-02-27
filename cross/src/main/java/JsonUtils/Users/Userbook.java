@@ -19,7 +19,7 @@ public class Userbook implements JsonAccessedData{
     private Moshi moshi = new Moshi.Builder().build();
     private JsonAdapter<UserMap> adapter = moshi.adapter(UserMap.class);
     public Userbook(String jsonFilePath){
-        this.jsonFilePath = jsonFilePath;
+        this.jsonFilePath = System.getProperty("user.dir")+jsonFilePath;
     }
 
     //cerco sulla mappa
