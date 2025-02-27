@@ -1,4 +1,4 @@
-package JsonUtils.PriceHistory;
+package JsonAccessedData.PriceHistory;
 
 
 import java.io.File;
@@ -13,7 +13,7 @@ import com.squareup.moshi.JsonAdapter;
 import com.squareup.moshi.JsonReader;
 import com.squareup.moshi.Moshi;
 
-import JsonUtils.JsonAccessedData;
+import JsonAccessedData.JsonAccessedData;
 import okio.Okio;
 
 public class TradeHistory implements JsonAccessedData{

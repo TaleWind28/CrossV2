@@ -1,4 +1,4 @@
-package JsonUtils.PriceHistory;
+package JsonAccessedData.PriceHistory;
 // Classe Trade
 public  class Trade {
     private long timestamp;

@@ -1,4 +1,4 @@
-package JsonUtils.PriceHistory;
+package JsonAccessedData.PriceHistory;
 
 public class DailyTradeStats {
     private int openingPrice;

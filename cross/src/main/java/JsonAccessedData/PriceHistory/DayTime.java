@@ -1,4 +1,4 @@
-package JsonUtils.PriceHistory;
+package JsonAccessedData.PriceHistory;
 
 import java.util.Calendar;
 
