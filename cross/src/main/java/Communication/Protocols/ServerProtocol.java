@@ -54,6 +54,10 @@ public abstract class ServerProtocol extends CommunicationProtocol{
         }
     }
 
+    public List<Socket> getActiveClients() {
+        return activeClients;
+    }
+
     //apre il socket e passa al threadpool i vari client
     public abstract void dial();
 }

@@ -95,11 +95,11 @@ public class ServerMain extends ServerProtocol{
                 //String bindAddress = "0.0.0.0"; // Ascolta su tutte le interfacce di rete
                 server.bind(new InetSocketAddress(this.bindAddress,this.PORT));
                 while(true){
+                    //creo il socket per ocmunicare col client
                     Socket client_Socket = server.accept();
-                    //realizzare con factory per miglior versatilità -> inutile in quanto ho solo una task
-                    //TCP protocolToUse = new TCP();
-                    //protocolToUse.setGson(this.gson);
+                    //creo la task per gestire il client
                     GenericTask task = new GenericTask(client_Socket,this,new TCP());
+                    //aggiungo il client alla lista di client attivi
                     addClient(client_Socket);
                     this.pool.execute(task);
                 }
@@ -166,4 +166,5 @@ public class ServerMain extends ServerProtocol{
     public TradeHistory getStorico() {
         return storico;
     }
+    
 }

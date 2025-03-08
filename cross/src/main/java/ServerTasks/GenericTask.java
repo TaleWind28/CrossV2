@@ -24,6 +24,8 @@ public class GenericTask implements Runnable {
     private Protocol protocol;
     public volatile String onlineUser = new String();
     public UDP UDPsender;
+    public int tid;
+    private String printScope;
     public String welcomeMessage = "Per fare trading inserire un ordine di qualunque tipo";
     private String nonLoggedUserMessage = "---------------------------------------------------------------------------------------------------\n"+
                         "Comandi:\n" + 
@@ -47,6 +49,8 @@ public class GenericTask implements Runnable {
     public GenericTask(ServerMain server){
         this.generatorServer = server;
         this.UDPsender = server.getUDPListner();
+        this.tid = server.getActiveClients().size();
+        this.printScope = "[GenericTask - "+this.tid+"]";
     }
 
     //costruttore
@@ -59,6 +63,8 @@ public class GenericTask implements Runnable {
         this.timeoutScheduler = Executors.newSingleThreadScheduledExecutor();
         this.generatorServer = server;
         this.UDPsender = this.generatorServer.getUDPListner();
+        this.tid = server.getActiveClients().size();
+        this.printScope = "[GenericTask - "+this.tid+"]";
     }
 
     public void run(){
@@ -92,6 +98,8 @@ public class GenericTask implements Runnable {
         }
         catch(NullPointerException e){
             this.generatorServer.onClientDisconnect(client, "Disconnessione Client");
+            Thread.currentThread().interrupt();
+            System.out.println(this.printScope+"terminato");
             return;
         }
         catch(Exception e){
@@ -109,7 +117,7 @@ public class GenericTask implements Runnable {
             //setto l'username per i comandi           
             if(clientRequest.operation.toLowerCase().contains("order"))clientRequest.values.setUsername(this.onlineUser);
             //stampa di debug
-            System.out.println("[GenericTask] Comando fabbricato: "+clientRequest.toString());
+            System.out.println(this.printScope+" Comando fabbricato: "+clientRequest.toString());
             //dati in formato json per controllare gli utenti
             JsonAccessedData data = this.generatorServer.getRegisteredUsers();
             //controllo la struttura dati da assegnare al comando
@@ -128,7 +136,7 @@ public class GenericTask implements Runnable {
             if(responseMessage.response == 100 && this.onlineUser.equals("") && clientRequest.operation.equals("login")){
                 Login log = (Login)clientRequest.values;
                 this.onlineUser = log.getUsername();
-                System.out.println("[GenericTask] Username: "+log.getUsername());
+                System.out.println(this.printScope+" Username: "+log.getUsername());
             }
 
             //Stampa di debug -> risposta del server
@@ -136,7 +144,7 @@ public class GenericTask implements Runnable {
             //invio il messaggio al client
             protocol.sendMessage(responseMessage);
             //stampa di debug
-            System.out.println("[GenericTask] messaggio inviato: \n"+responseMessage.toString());
+            System.out.println(this.printScope+" messaggio inviato: \n"+responseMessage.toString());
             System.out.println("//////////////////////////////////////////////////////////////////////////////////");
             return;
         }
