@@ -7,3 +7,4 @@ todo:
 -Ricontrollare i messaggi di risposta
 -Sviluppare TestUnit
 -Chiedere alla Ricci che parametri deve accettare getPriceHistory //chiesto
+-Controllare Rimozione Client

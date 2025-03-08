@@ -92,6 +92,7 @@ public class ClientMain extends ClientProtocol{
                         if (serverAnswer.errorMessage.contains("Disconnessione avvenuta con successo")){
                             System.out.println("Chiusura Connessione");
                             this.sock.close();
+                            this.protocol.close();
                             System.exit(0);
                         }
                         System.out.print("[TCPReceiver]"+serverAnswer.toString()+"\n>>");
@@ -184,6 +185,7 @@ public class ClientMain extends ClientProtocol{
                 //se il socket non è stato aperto termino direttamente perchè non ho niente da chiudere
                 if (this.sock == null)System.exit(0);
                 try {
+                    
                     //attendo la terminazione del receiver se è in esecuzione
                     if(this.receiverThread.isAlive())this.receiverThread.join(0);
                     //chiudo il socket

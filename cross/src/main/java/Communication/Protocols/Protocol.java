@@ -14,6 +14,6 @@ public interface Protocol {
     //definisco come ricevo i messaggi
     public Message receiveMessage();
     // public ClientMessage receiveClientMessage();
-
+    public void close();
     // public ServerMessage receiveServerMessage();
 }

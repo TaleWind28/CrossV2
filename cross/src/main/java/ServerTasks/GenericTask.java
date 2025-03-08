@@ -10,6 +10,7 @@ import Commands.Credentials.Login;
 import Communication.Messages.ClientMessage;
 import Communication.Messages.ServerMessage;
 import Communication.Protocols.Protocol;
+import Communication.Protocols.TCP;
 import Communication.Protocols.UDP;
 import Executables.ServerMain;
 import JsonAccessedData.JsonAccessedData;
@@ -21,7 +22,7 @@ public class GenericTask implements Runnable {
     private ServerMain generatorServer;
     private ScheduledExecutorService timeoutScheduler;
     private ScheduledFuture<?> timeoutTask;
-    private Protocol protocol;
+    private TCP protocol;
     public volatile String onlineUser = new String();
     public UDP UDPsender;
     public int tid;
@@ -57,7 +58,7 @@ public class GenericTask implements Runnable {
     public GenericTask(Socket client_socket,ServerMain server,Protocol protocol) throws Exception{
         super();
         this.client = client_socket;
-        this.protocol = protocol;
+        this.protocol = (TCP)protocol;
         this.protocol.setSender(client_socket);
         this.protocol.setReceiver(client_socket);
         this.timeoutScheduler = Executors.newSingleThreadScheduledExecutor();
@@ -70,10 +71,10 @@ public class GenericTask implements Runnable {
     public void run(){
         //creo la task di disconnessione
         DisconnectTask inactivityDisconnection = new DisconnectTask(this.protocol,this.client,this.generatorServer,this);
-        //invio il messaggio di benvenuto
         //UDP UDPListner = this.generatorServer.getUDPListner();
+        //invio l'UDP Listner
         protocol.sendMessage(new ServerMessage(UDPsender.toBuilderString(),999));
-        
+        //invio il messaggio di benvenuto
         protocol.sendMessage(new ServerMessage(welcomeMessage,200));
         //UDPListner.sendMessage(new UDPMessage("Prova Multicast",this.onlineUser));
         try{
@@ -94,6 +95,7 @@ public class GenericTask implements Runnable {
         }
         catch(IllegalStateException e){
             System.out.println("chiudo tutto");
+            this.generatorServer.onClientDisconnect(client, currentHelpMessage);
             return;
         }
         catch(NullPointerException e){
@@ -111,7 +113,6 @@ public class GenericTask implements Runnable {
     public void serverReact(ClientMessage clientRequest){
         try{
             String additionalInfo = this.onlineUser;
-            //System.out.println("//////////////////////////////////////////////////////////////////////////////////");
             //stampa di debug
             //System.out.println("[GenericTask] Operation: "+clientRequest.operation+"\nValues: "+clientRequest.values.toString());
             //setto l'username per i comandi           
@@ -143,9 +144,19 @@ public class GenericTask implements Runnable {
             // System.out.println("[GenericTask] Messaggio generato:\n"+responseMessage.toString());
             //invio il messaggio al client
             protocol.sendMessage(responseMessage);
+            
             //stampa di debug
             System.out.println(this.printScope+" messaggio inviato: \n"+responseMessage.toString());
             System.out.println("//////////////////////////////////////////////////////////////////////////////////");
+
+            //devo scriverlo meglio
+            if (responseMessage.response == 100 && clientRequest.operation.equals("logout")){
+                this.protocol.close();
+                this.generatorServer.onClientDisconnect(client, this.printScope+" disconnessione richiesta dall'utente");
+                Thread.currentThread().interrupt();
+                return;
+            }
+
             return;
         }
         catch(Exception e){

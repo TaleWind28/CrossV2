@@ -105,6 +105,15 @@ public class TCP implements Protocol{
         return 1;
     }
     
+    public void close(){
+        this.sender.close();
+        try{
+            this.receiver.close();
+        }
+        catch(Exception e){
+            System.out.println("[TCP] chiusura: "+e.getMessage());
+        }
+    }
     //metodi classe concreta
 
     public BufferedReader getReceiver() {

@@ -28,17 +28,17 @@ public abstract class ServerProtocol extends CommunicationProtocol{
 
     public synchronized void onClientDisconnect(Socket client, String message){
         System.out.println(message);
-        activeClients.remove(client);
+        this.activeClients.remove(client);
         try{
             client.close();
         }            
         catch (Exception e) {
             System.out.println(e.getClass()+": "+e.getStackTrace());   
         }
-        if(activeClients.isEmpty() && serverTimeout){
-            System.out.println("Timeout Disconnessione iniziato");
-            this.timeoutTask = timeoutScheduler.schedule(()->{System.out.println("Timeout scaduto, terminazione server");this.pool.shutdownNow();System.exit(0);}, CONNECTION_TIMEOUT, TimeUnit.MILLISECONDS);
-        }
+        // if(activeClients.isEmpty() && serverTimeout){
+        //     System.out.println("Timeout Disconnessione iniziato");
+        //     this.timeoutTask = timeoutScheduler.schedule(()->{System.out.println("Timeout scaduto, terminazione server");this.pool.shutdownNow();System.exit(0);}, CONNECTION_TIMEOUT, TimeUnit.MILLISECONDS);
+        // }
         
     }
 
