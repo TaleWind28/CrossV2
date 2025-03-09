@@ -6,7 +6,6 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
-import Commands.Credentials.Login;
 import Communication.Messages.ClientMessage;
 import Communication.Messages.ServerMessage;
 import Communication.Protocols.Protocol;
@@ -79,56 +78,53 @@ public class GenericTask implements Runnable {
         //UDPListner.sendMessage(new UDPMessage("Prova Multicast",this.onlineUser));
         try{
             while(!(Thread.currentThread().isInterrupted())){
-                //avvio timeout inattività
+                /*AVVIO TIMEOUT */
                 this.timeoutTask = this.timeoutScheduler.schedule(inactivityDisconnection, CONNECTION_TIMEOUT, TimeUnit.SECONDS);
-                //recupero il messaggio del client
+                
+                /*RICEVO IL MESSAGGIO DEL CLIENT CHE STO GESTENDO */
                 ClientMessage clientRequest = (ClientMessage)protocol.receiveMessage();
-                //azzero il timeout
+                
+                /*AZZERO IL TIMEOUT */
                 this.timeoutTask.cancel(false);
-                this.timeoutTask = null;
-                //imposto il messaggio di errore
-                if(this.onlineUser.equals(""))this.currentHelpMessage = nonLoggedUserMessage;
-                else this.currentHelpMessage = loggedUserMessage;
-                //reagisci al messaggio
-                ServerMessage responseMessage = this.serverReact(clientRequest);
 
-                /*CONTROLLI PRE-INVIO */
+                /*PREPARO I DATI PER LA EXECUTE*/
+                JsonAccessedData neededData = this.serverReact(clientRequest);
+                
+                /*ESECUZIONE COMANDO */
+                ServerMessage responseMessage = clientRequest.values.execute(neededData, this.onlineUser, this);
+                
+                /*CONTROLLI PRE-INVIO RISPOSTA */
                 if(responseMessage.response == 100 && this.onlineUser.equals("") && clientRequest.operation.equals("login")){
                     this.onlineUser = clientRequest.values.getUsername();
-                    //this.onlineUser = log.getUsername();
                     System.out.println(this.printScope+" Username: "+this.onlineUser);
                 }
+                //capire come fare
+                //responseMessage.errorMessage = "\r"+responseMessage.errorMessage;
+                //invio il messaggio al client
+                protocol.sendMessage(responseMessage);
+                
+                System.out.println(this.printScope+" messaggio inviato: \n"+responseMessage.toString());
+                System.out.println("//////////////////////////////////////////////////////////////////////////////////");
 
-            //Stampa di debug -> risposta del server
-            // System.out.println("[GenericTask] Messaggio generato:\n"+responseMessage.toString());
-            //invio il messaggio al client
-            protocol.sendMessage(responseMessage);
-            
-            /*CONTROLLI POST-INVIO */
-            //stampa di debug
-            System.out.println(this.printScope+" messaggio inviato: \n"+responseMessage.toString());
-            System.out.println("//////////////////////////////////////////////////////////////////////////////////");
-
-            //devo scriverlo meglio
-            if (responseMessage.response == 100 && (clientRequest.operation.equals("logout") || clientRequest.operation.toLowerCase().equals("exit"))){
-                this.protocol.close();
-                this.generatorServer.onClientDisconnect(client, this.printScope+" disconnessione richiesta dall'utente");
-                Thread.currentThread().interrupt();
-                return;
-            }
-
-
+                /*CONTROLLI POST-INVIO RISPOSTA*/
+                if (responseMessage.response == 100 && (clientRequest.operation.equals("logout") || clientRequest.operation.toLowerCase().equals("exit"))){
+                    this.protocol.close();
+                    this.generatorServer.onClientDisconnect(client, this.printScope+" disconnessione richiesta dall'utente");
+                    return;
+                }
 
             }
         }
         catch(IllegalStateException e){
             System.out.println("chiudo tutto");
+            this.protocol.close();
             this.generatorServer.onClientDisconnect(client, currentHelpMessage);
             return;
         }
         catch(NullPointerException e){
             this.generatorServer.onClientDisconnect(client, "Disconnessione Client");
-            Thread.currentThread().interrupt();
+            this.protocol.close();
+            //Thread.currentThread().interrupt();
             System.out.println(this.printScope+"terminato");
             return;
         }
@@ -138,34 +134,22 @@ public class GenericTask implements Runnable {
         }
     }
 
-    public ServerMessage serverReact(ClientMessage clientRequest){
+    public JsonAccessedData serverReact(ClientMessage clientRequest){
         try{
             //stampa di debug
             //System.out.println("[GenericTask] Operation: "+clientRequest.operation+"\nValues: "+clientRequest.values.toString());
-            String additionalInfo = this.onlineUser;
             //setto l'username per i comandi           
             if(clientRequest.operation.toLowerCase().contains("order"))clientRequest.values.setUsername(this.onlineUser);
             //stampa di debug
             System.out.println(this.printScope+" Comando fabbricato: "+clientRequest.toString());
-            //dati in formato json per controllare gli utenti
-            JsonAccessedData data = this.generatorServer.getRegisteredUsers();
             //controllo la struttura dati da assegnare al comando
-            if(clientRequest.operation.contains("order"))data = this.generatorServer.getOrderbook();
-
-            if(clientRequest.operation.contains("getpricehistory"))data = this.generatorServer.getStorico();
-            //controllo le informazioni addizionali da passare al comando
-            if(clientRequest.operation.equals("help"))additionalInfo = this.currentHelpMessage;
-            
-            /*ESECUZIONE COMANDO */
-
-            //ottengo la risposta per il client eseguendo il comando creato dalla factory
-            ServerMessage responseMessage = clientRequest.values.execute(data,additionalInfo,this);
-            
-            /*FINE ESECUZIONE COMANDO */
-            return responseMessage;
+            if(clientRequest.operation.contains("order"))return this.generatorServer.getOrderbook();
+            else if(clientRequest.operation.contains("getpricehistory"))return this.generatorServer.getStorico();
+            //else return null; 
+            return this.generatorServer.getRegisteredUsers();
         }
         catch(Exception e){
-            return new ServerMessage("[400]: Comando non correttamente formulato, digitare aiuto per una lista di comandi disponibili",400);
+            return null;
         }
     }
 
@@ -175,6 +159,12 @@ public class GenericTask implements Runnable {
 
     public synchronized int getProgressiveOrderNumber(){
         return this.generatorServer.getProgressiveOrderNumber();
+    }
+
+    public String getHelpMessage(){
+        //imposto il messaggio di help
+        if(this.onlineUser.equals(""))return nonLoggedUserMessage;
+        else return loggedUserMessage;
     }
 
     public synchronized void increaseProgressiveOrderNumber(){

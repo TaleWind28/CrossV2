@@ -15,7 +15,7 @@ public class ClosingTask implements Runnable{
         generatorServer.pool.shutdown();
         try {
                 //Attende la terminazione dei thread attivi
-                if (!generatorServer.pool.awaitTermination(10, TimeUnit.MILLISECONDS)) {
+            if (!generatorServer.pool.awaitTermination(10, TimeUnit.MILLISECONDS)) {
                 System.out.println("[ClosingTask] Interruzione forzata dei thread attivi...");
                 generatorServer.pool.shutdownNow();
             }

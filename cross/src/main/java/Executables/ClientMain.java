@@ -40,7 +40,7 @@ public class ClientMain extends ClientProtocol{
             
                 if(this.onlineUser.equals(""))continue;
                 else if(!message.getInterestedUser().equals(this.onlineUser))continue;
-                else System.out.println("[ReceiverUDP] Received:\n"+message.tradeNotification());
+                else System.out.println("\r[ReceiverUDP] Received:\n"+message.tradeNotification());
                   
             }
         });
@@ -95,7 +95,7 @@ public class ClientMain extends ClientProtocol{
                             this.protocol.close();
                             System.exit(0);
                         }
-                        System.out.print("[TCPReceiver]"+serverAnswer.toString()+"\n>>");
+                        System.out.print("[TCPReceiver]"+serverAnswer.toString()+"\r\n"+this.onlineUser+"@>");
                         
                         this.canSend = true;
                         continue;
@@ -103,16 +103,14 @@ public class ClientMain extends ClientProtocol{
                     case 408:
                         System.out.println(serverAnswer.errorMessage);
                         
-                        if (this.sigintTermination){
-                            System.out.println("termino con ctrl+c");
-                            this.protocol.close();
-                            Thread.currentThread().interrupt();
-                        }
+                        if (!this.sigintTermination)System.exit(0);;
+                        System.out.println("termino con ctrl+c");
+                        this.protocol.close();
                         return;
                     //default
                     default:
                         if(this.cmdSent.equals("login"))this.onlineUser = "";
-                        System.out.print("[Server]"+serverAnswer.toString()+"\n >>");
+                        System.out.print("[Server]"+serverAnswer.toString()+"\r\n"+this.onlineUser+"@>");
                         this.canSend = true;
                         continue;
                 }            
@@ -123,7 +121,8 @@ public class ClientMain extends ClientProtocol{
             System.exit(0);
         }
         catch(Exception e){
-            System.out.println("[ClientReceiver]"+e.getMessage()+"\n"+e.getClass()+"\n"+e.getCause()+"\n"+e.getSuppressed());
+            //capire se rimuovere o meno
+            //System.out.println("[ClientReceiver]"+e.getMessage()+"\n"+e.getClass()+"\n"+e.getCause()+"\n"+e.getSuppressed());
             System.out.println("Stiamo riscontrando dei problemi sul server, procederemo a chiudere la connessione, ci scusiamo per il disagio");
             System.exit(0);
         }    
@@ -136,16 +135,22 @@ public class ClientMain extends ClientProtocol{
                 
                     String[] clientRequest = rawClientRequest.split(" ");
                     ClientMessage userMessage = new ClientMessage(clientRequest[0],this.factory.createValue(clientRequest));
+
                     if(userMessage.operation.equals("")|| userMessage.operation.equals("aiuto"))userMessage.operation = "help";
-                    //System.out.println("[CLIENTMAIN]"+userMessage.toString());
+                    
                     System.out.println("[ClientHelper] Message Sent");
+                    
+                    //capire come metterlo nel receiver
                     if(userMessage.operation.equals("login"))this.onlineUser = userMessage.values.getUsername();
+                    
+                    /*INVIO MESSAGGIO */
                     this.protocol.sendMessage(userMessage);
                     
                     this.canSend = false;
                 }
             }
         }
+
         //dialogo col server sfruttando il multithreading
         public void multiDial(){
             try {

@@ -7,10 +7,10 @@ import java.net.Socket;
 public abstract class ServerProtocol extends CommunicationProtocol{
     public int PORT;
     public ExecutorService pool;
-    private boolean serverTimeout;
+    //private boolean serverTimeout;
     //private int activeClients = 0;
-    private final long CONNECTION_TIMEOUT = 180;
-    private ScheduledExecutorService timeoutScheduler;
+    //private final long CONNECTION_TIMEOUT = 180;
+    //private ScheduledExecutorService timeoutScheduler;
     private List<Socket> activeClients;
     private ScheduledFuture<?> timeoutTask;
 
@@ -18,12 +18,12 @@ public abstract class ServerProtocol extends CommunicationProtocol{
         this.PORT = port;
         this.pool = Executors.newFixedThreadPool(numThreads);
         this.activeClients = Collections.synchronizedList(new ArrayList<>());
-        this.timeoutScheduler = Executors.newScheduledThreadPool(1);
-        this.serverTimeout = false;
+        //this.timeoutScheduler = Executors.newScheduledThreadPool(1);
+        //this.serverTimeout = false;
     }
 
     public void setServerTimeout(boolean serverTimeout) {
-        this.serverTimeout = serverTimeout;
+        //this.serverTimeout = serverTimeout;
     }
 
     public synchronized void onClientDisconnect(Socket client, String message){

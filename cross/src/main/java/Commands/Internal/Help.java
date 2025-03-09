@@ -21,10 +21,10 @@ public class Help implements Values{
     @Override
     public ServerMessage execute(JsonAccessedData data,String user,GenericTask task) {
         //sfrutto l'utente passato come parametro dall'implementazione del metodo dell'interfaccia per avere il messaggio d'errore
-        setHelpMessage(user); //user-> additionalInfo 
-        return new ServerMessage(this.helpMessage,200);
+        return new ServerMessage(task.getHelpMessage(),200);
 
     }
+    
     @Override
     public void setUsername(String user) {
         this.setHelpMessage(user);
