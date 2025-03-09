@@ -140,9 +140,9 @@ public class GenericTask implements Runnable {
 
     public ServerMessage serverReact(ClientMessage clientRequest){
         try{
-            String additionalInfo = this.onlineUser;
             //stampa di debug
             //System.out.println("[GenericTask] Operation: "+clientRequest.operation+"\nValues: "+clientRequest.values.toString());
+            String additionalInfo = this.onlineUser;
             //setto l'username per i comandi           
             if(clientRequest.operation.toLowerCase().contains("order"))clientRequest.values.setUsername(this.onlineUser);
             //stampa di debug
@@ -151,6 +151,7 @@ public class GenericTask implements Runnable {
             JsonAccessedData data = this.generatorServer.getRegisteredUsers();
             //controllo la struttura dati da assegnare al comando
             if(clientRequest.operation.contains("order"))data = this.generatorServer.getOrderbook();
+
             if(clientRequest.operation.contains("getpricehistory"))data = this.generatorServer.getStorico();
             //controllo le informazioni addizionali da passare al comando
             if(clientRequest.operation.equals("help"))additionalInfo = this.currentHelpMessage;
@@ -161,33 +162,7 @@ public class GenericTask implements Runnable {
             ServerMessage responseMessage = clientRequest.values.execute(data,additionalInfo,this);
             
             /*FINE ESECUZIONE COMANDO */
-            //qui devo terminare la funzione e passare la risposta al server
             return responseMessage;
-            // //controllo da fare nel run
-            // if(responseMessage.response == 100 && this.onlineUser.equals("") && clientRequest.operation.equals("login")){
-            //     Login log = (Login)clientRequest.values;
-            //     this.onlineUser = log.getUsername();
-            //     System.out.println(this.printScope+" Username: "+log.getUsername());
-            // }
-
-            // //Stampa di debug -> risposta del server
-            // // System.out.println("[GenericTask] Messaggio generato:\n"+responseMessage.toString());
-            // //invio il messaggio al client
-            // protocol.sendMessage(responseMessage);
-            
-            // //stampa di debug
-            // System.out.println(this.printScope+" messaggio inviato: \n"+responseMessage.toString());
-            // System.out.println("//////////////////////////////////////////////////////////////////////////////////");
-
-            // //devo scriverlo meglio
-            // if (responseMessage.response == 100 && (clientRequest.operation.equals("logout") || clientRequest.operation.toLowerCase().equals("exit"))){
-            //     this.protocol.close();
-            //     this.generatorServer.onClientDisconnect(client, this.printScope+" disconnessione richiesta dall'utente");
-            //     Thread.currentThread().interrupt();
-            //     return;
-            // }
-
-            //return;
         }
         catch(Exception e){
             return new ServerMessage("[400]: Comando non correttamente formulato, digitare aiuto per una lista di comandi disponibili",400);
