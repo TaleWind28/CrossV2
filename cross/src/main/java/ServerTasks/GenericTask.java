@@ -150,7 +150,7 @@ public class GenericTask implements Runnable {
             System.out.println("//////////////////////////////////////////////////////////////////////////////////");
 
             //devo scriverlo meglio
-            if (responseMessage.response == 100 && clientRequest.operation.equals("logout")){
+            if (responseMessage.response == 100 && (clientRequest.operation.equals("logout") || clientRequest.operation.toLowerCase().equals("exit"))){
                 this.protocol.close();
                 this.generatorServer.onClientDisconnect(client, this.printScope+" disconnessione richiesta dall'utente");
                 Thread.currentThread().interrupt();

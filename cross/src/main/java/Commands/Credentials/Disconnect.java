@@ -15,11 +15,11 @@ public class Disconnect implements Values{
 
     @Override
     public ServerMessage execute(JsonAccessedData data, String user,GenericTask task) {
-        if(task.onlineUser.equals(""))return new ServerMessage("Disconnessione avvenuta con successo",408);    
+        if(task.onlineUser.equals(""))return new ServerMessage("Disconnessione avvenuta con successo",100);    
         Userbook userbook = (Userbook)data;
         userbook.getUserMap().get(task.onlineUser).setLogged(false);
         userbook.dataFlush();
-        return new ServerMessage("[Server]Disconnessione avvenuta con successo", 408);
+        return new ServerMessage("[Server]Disconnessione avvenuta con successo", 100);
     }
 
     @Override

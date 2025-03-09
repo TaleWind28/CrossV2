@@ -71,7 +71,7 @@ public class ClientMain extends ClientProtocol{
             new Thread(
                 () -> {
                     //ho bisogno di shutdownhook solo per controllare il logout dell'utente dal server nel caso di sigint
-                    if (this.sigintTermination == false)return;
+                    if (this.sigintTermination == true)return;
                     try {
                         System.out.println("[TerminationThread] "+this.protocol.receiveMessage().toString());
                     } catch (Exception e) {;}
@@ -102,7 +102,12 @@ public class ClientMain extends ClientProtocol{
                     //disconnessione
                     case 408:
                         System.out.println(serverAnswer.errorMessage);
-                        if (!this.sigintTermination)System.exit(0);
+                        
+                        if (this.sigintTermination){
+                            System.out.println("termino con ctrl+c");
+                            this.protocol.close();
+                            Thread.currentThread().interrupt();
+                        }
                         return;
                     //default
                     default:
@@ -188,6 +193,7 @@ public class ClientMain extends ClientProtocol{
                     
                     //attendo la terminazione del receiver se è in esecuzione
                     if(this.receiverThread.isAlive())this.receiverThread.join(0);
+                    //this.protocol.close();
                     //chiudo il socket
                     this.sock.close();
                     //stampa di debug   
