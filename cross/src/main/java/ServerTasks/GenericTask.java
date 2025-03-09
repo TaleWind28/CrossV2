@@ -90,7 +90,35 @@ public class GenericTask implements Runnable {
                 if(this.onlineUser.equals(""))this.currentHelpMessage = nonLoggedUserMessage;
                 else this.currentHelpMessage = loggedUserMessage;
                 //reagisci al messaggio
-                this.serverReact(clientRequest);
+                ServerMessage responseMessage = this.serverReact(clientRequest);
+
+                /*CONTROLLI PRE-INVIO */
+                if(responseMessage.response == 100 && this.onlineUser.equals("") && clientRequest.operation.equals("login")){
+                    this.onlineUser = clientRequest.values.getUsername();
+                    //this.onlineUser = log.getUsername();
+                    System.out.println(this.printScope+" Username: "+this.onlineUser);
+                }
+
+            //Stampa di debug -> risposta del server
+            // System.out.println("[GenericTask] Messaggio generato:\n"+responseMessage.toString());
+            //invio il messaggio al client
+            protocol.sendMessage(responseMessage);
+            
+            /*CONTROLLI POST-INVIO */
+            //stampa di debug
+            System.out.println(this.printScope+" messaggio inviato: \n"+responseMessage.toString());
+            System.out.println("//////////////////////////////////////////////////////////////////////////////////");
+
+            //devo scriverlo meglio
+            if (responseMessage.response == 100 && (clientRequest.operation.equals("logout") || clientRequest.operation.toLowerCase().equals("exit"))){
+                this.protocol.close();
+                this.generatorServer.onClientDisconnect(client, this.printScope+" disconnessione richiesta dall'utente");
+                Thread.currentThread().interrupt();
+                return;
+            }
+
+
+
             }
         }
         catch(IllegalStateException e){
@@ -110,7 +138,7 @@ public class GenericTask implements Runnable {
         }
     }
 
-    public void serverReact(ClientMessage clientRequest){
+    public ServerMessage serverReact(ClientMessage clientRequest){
         try{
             String additionalInfo = this.onlineUser;
             //stampa di debug
@@ -133,34 +161,36 @@ public class GenericTask implements Runnable {
             ServerMessage responseMessage = clientRequest.values.execute(data,additionalInfo,this);
             
             /*FINE ESECUZIONE COMANDO */
+            //qui devo terminare la funzione e passare la risposta al server
+            return responseMessage;
+            // //controllo da fare nel run
+            // if(responseMessage.response == 100 && this.onlineUser.equals("") && clientRequest.operation.equals("login")){
+            //     Login log = (Login)clientRequest.values;
+            //     this.onlineUser = log.getUsername();
+            //     System.out.println(this.printScope+" Username: "+log.getUsername());
+            // }
+
+            // //Stampa di debug -> risposta del server
+            // // System.out.println("[GenericTask] Messaggio generato:\n"+responseMessage.toString());
+            // //invio il messaggio al client
+            // protocol.sendMessage(responseMessage);
             
-            if(responseMessage.response == 100 && this.onlineUser.equals("") && clientRequest.operation.equals("login")){
-                Login log = (Login)clientRequest.values;
-                this.onlineUser = log.getUsername();
-                System.out.println(this.printScope+" Username: "+log.getUsername());
-            }
+            // //stampa di debug
+            // System.out.println(this.printScope+" messaggio inviato: \n"+responseMessage.toString());
+            // System.out.println("//////////////////////////////////////////////////////////////////////////////////");
 
-            //Stampa di debug -> risposta del server
-            // System.out.println("[GenericTask] Messaggio generato:\n"+responseMessage.toString());
-            //invio il messaggio al client
-            protocol.sendMessage(responseMessage);
-            
-            //stampa di debug
-            System.out.println(this.printScope+" messaggio inviato: \n"+responseMessage.toString());
-            System.out.println("//////////////////////////////////////////////////////////////////////////////////");
+            // //devo scriverlo meglio
+            // if (responseMessage.response == 100 && (clientRequest.operation.equals("logout") || clientRequest.operation.toLowerCase().equals("exit"))){
+            //     this.protocol.close();
+            //     this.generatorServer.onClientDisconnect(client, this.printScope+" disconnessione richiesta dall'utente");
+            //     Thread.currentThread().interrupt();
+            //     return;
+            // }
 
-            //devo scriverlo meglio
-            if (responseMessage.response == 100 && (clientRequest.operation.equals("logout") || clientRequest.operation.toLowerCase().equals("exit"))){
-                this.protocol.close();
-                this.generatorServer.onClientDisconnect(client, this.printScope+" disconnessione richiesta dall'utente");
-                Thread.currentThread().interrupt();
-                return;
-            }
-
-            return;
+            //return;
         }
         catch(Exception e){
-            protocol.sendMessage(new ServerMessage("[400]: Comando non correttamente formulato, digitare aiuto per una lista di comandi disponibili",400));
+            return new ServerMessage("[400]: Comando non correttamente formulato, digitare aiuto per una lista di comandi disponibili",400);
         }
     }
 
