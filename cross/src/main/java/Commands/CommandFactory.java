@@ -12,6 +12,7 @@ import Commands.Orders.CancelOrder;
 import Commands.Orders.Limitorder;
 import Commands.Orders.MarketOrder;
 import Commands.Orders.ShowOrderBook;
+import Commands.Orders.ShowStopOrder;
 import Commands.Orders.StopOrder;
 import Communication.Values;
 import Utils.CustomExceptions.UnrecognizedOrderException;
@@ -45,6 +46,9 @@ public class CommandFactory{
                 
                 case "showbook":
                     return new ShowOrderBook();
+                
+                case "showstop":
+                    return new ShowStopOrder();
 
                 case "register":
                     return new Register(command[1],command[2]);

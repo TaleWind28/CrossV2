@@ -20,6 +20,7 @@ import Commands.Orders.CancelOrder;
 import Commands.Orders.Limitorder;
 import Commands.Orders.MarketOrder;
 import Commands.Orders.ShowOrderBook;
+import Commands.Orders.ShowStopOrder;
 import Commands.Orders.StopOrder;
 import Communication.Values;
 import Communication.Messages.ClientMessage;
@@ -42,6 +43,7 @@ public class TCP implements Protocol{
         .withSubtype(MarketOrder.class,"marketorder")
         .withSubtype(StopOrder.class, "stoporder")
         .withSubtype(ShowOrderBook.class, "showorderbook")
+        .withSubtype(ShowStopOrder.class, "showstoporder")
         .withSubtype(CancelOrder.class, "cancelorder")
         .withSubtype(Logout.class, "logout")
         .withSubtype(Register.class, "register")
