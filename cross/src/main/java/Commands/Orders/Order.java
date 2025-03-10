@@ -121,7 +121,7 @@ public abstract class Order {
     
     @Override
     public String toString() {
-        return "user='"+this.user+"', orderId='"+this.orderId+"', timestamp='"+this.gmt+"', size='"+this.size+"', price='"+this.price+"'";
+        return "user='"+this.user+"', orderId='"+this.orderId+"', timestamp='"+this.gmt+"', size='"+this.size+"', price='"+this.price+"', tradeType='"+this.getExchangeType()+"'";
     }
     
 }
