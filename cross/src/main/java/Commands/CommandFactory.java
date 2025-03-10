@@ -7,7 +7,7 @@ import Commands.Credentials.Register;
 import Commands.Credentials.UpdateCredentials;
 import Commands.Internal.ErrorMessage;
 import Commands.Internal.Help;
-import Commands.Internal.getPriceHystory;
+import Commands.Internal.getPriceHistory;
 import Commands.Orders.CancelOrder;
 import Commands.Orders.Limitorder;
 import Commands.Orders.MarketOrder;
@@ -63,7 +63,7 @@ public class CommandFactory{
                     return new Logout("unset");
                 
                 case "getpricehistory":
-                    return new getPriceHystory(command[1]);
+                    return new getPriceHistory(command[1]);
                 default:
                     throw new UnrecognizedOrderException("comando non gestito");        
             }

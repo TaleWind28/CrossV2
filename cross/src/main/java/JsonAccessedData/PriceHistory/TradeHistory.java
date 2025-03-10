@@ -27,7 +27,6 @@ public class TradeHistory implements JsonAccessedData{
     }
 
     public TreeMap<Integer,DailyTradeStats> monthlyTradesStat(int year,int month){
-        //TreeMap<Integer, TreeMap<DayTime, Trade>> historicalData = new TreeMap<>();
         TreeMap<DayTime,Trade>months = this.historicalData.get(year);
         TreeMap<Integer,DailyTradeStats> stats = new TreeMap<>();
         for(DayTime key : months.keySet()){
@@ -94,8 +93,6 @@ public class TradeHistory implements JsonAccessedData{
         } catch (Exception e) {
             e.printStackTrace();
         }
-        //this.printStatsMap(this.monthlyTradesStat(2024,9),"Settembre");
-        //this.printTradeMap(this.historicalData.get(2024), 0);
     }
 
     public void printStatsMap(TreeMap<Integer, DailyTradeStats> statsMap, String month) {

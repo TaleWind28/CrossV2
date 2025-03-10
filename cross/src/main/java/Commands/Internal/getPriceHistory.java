@@ -10,11 +10,11 @@ import JsonAccessedData.PriceHistory.DailyTradeStats;
 import JsonAccessedData.PriceHistory.TradeHistory;
 import ServerTasks.GenericTask;
 
-public class getPriceHystory implements Values{
+public class getPriceHistory implements Values{
     private int month;
     private int year;
     
-    public getPriceHystory(String monYear) throws Exception{
+    public getPriceHistory(String monYear) throws Exception{
         if(monYear.length()!=6)throw new Exception("mi piace l'uccello");
         String[] parsing = monYear.split("");
         this.month = Integer.parseInt(parsing[0]+parsing[1]);
@@ -25,7 +25,6 @@ public class getPriceHystory implements Values{
     public ServerMessage execute(JsonAccessedData data, String user, GenericTask genericTask) {
         TradeHistory storico = (TradeHistory) data;
         if(user.equals(""))return new ServerMessage("Per consultare lo storico bisogna creare un account o accedervi",101);
-        //System.out.println("[GetPriceHystory] "+this.stringify(storico.monthlyTradesStat(year, month)));
         return new ServerMessage(this.stringify(storico.monthlyTradesStat(year, month)),100);
     }
 
@@ -51,7 +50,6 @@ public class getPriceHystory implements Values{
             
             // Aggiungi l'oggetto DailyTradeStats
             if (stats != null) {
-                // Assumendo che prettyPrint() restituisca una stringa con caratteri Unicode
                 // Sostituiamo i caratteri Unicode con ASCII semplici
                 String prettyPrint = stats.prettyPrint();
                 output.append(prettyPrint).append("\n");
