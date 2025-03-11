@@ -19,7 +19,7 @@ public class ShowOrderBook implements Values {
         if(user.equals(""))return new OrderResponseMessage(-1,"Per consultare l'orderbook bisogna creare un account o accedervi");
         StringBuilder output = new StringBuilder();
         // Intestazione con i prezzi di mercato
-        output.append("\"+=======================================================================+\n");
+        output.append("+=======================================================================+\n");
         output.append(String.format("|  PREZZI DI MERCATO:  ASK: %-14d  BID: %-14d         |\n", 
         orderbook.getAskMarketPrice(), orderbook.getBidMarketPrice()));
         output.append("+=======================================================================+\n");
