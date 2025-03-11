@@ -11,13 +11,9 @@ import ServerTasks.GenericTask;
 import Utils.OrderCache;
 
 public class Limitorder extends Order implements Values{
-    private String exchangeType;
 
-    public Limitorder(String exchangeType,int size, int price){
-        super();
-        this.exchangeType = exchangeType;
-        super.setSize(size);
-        super.setPrice(price);
+    public Limitorder(String user,String exchangeType,int size, int price){
+        super(user,size,price,exchangeType);
     }
 
     @Override
@@ -35,7 +31,7 @@ public class Limitorder extends Order implements Values{
         //Inizializzo cache e result
         OrderCache cache = new OrderCache();String result = new String();
         //ricavo la mappa opposta a quella richiesta per cercare offerte compatibili
-        String reverseType = this.findOppositeMap(this.exchangeType);
+        String reverseType = this.findOppositeMap(this.getExchangeType());
         //ciclo finchè non esauirisco tutte le entry dell'orederbook oppure evado completamente l'ordine
         while(result!=null && this.getSize()!=0){
             result = this.evadeOrder(reverseType, user, orderbook, cache, result);
@@ -44,7 +40,7 @@ public class Limitorder extends Order implements Values{
         this.notifySuccessfullTrades(cache, task.UDPsender, this.getOrderId(), user);
         //se ho evaso tutto l'ordine lo comunico, altrimenti inserisco una nuova entry nell'orderbook
         if (this.getSize() == 0)return new OrderResponseMessage(this.getOrderId(),"Order Fully Executed successfully!");
-        else orderbook.addData(this, this.exchangeType);
+        else orderbook.addData(this, this.getExchangeType());
         //restituisco l'esito al client
         return new OrderResponseMessage(this.getOrderId(),"Order Partially Executed, the remnants are placed as a limitorder in the orderbook");
     }
@@ -52,18 +48,13 @@ public class Limitorder extends Order implements Values{
     @Override
     public String toString() {
         return "Limitorder{" +
-        "exchangeType='"+this.exchangeType
+        "exchangeType='"+this.getExchangeType()
         +"', size='"+this.getSize()+
         "', price='"+this.getPrice()+
         "', orderID='"+this.getOrderId()+
         "', utente='"+this.getUser()+
         "', timestamp='"+this.getGmt()+
         "'}";    
-    }
-
-    @Override
-    public String getExchangeType() {
-        return this.exchangeType;
     }
 
     public void addSize(int size) {

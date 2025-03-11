@@ -12,26 +12,21 @@ import ServerTasks.GenericTask;
 import Utils.OrderSorting;
 
 public class CancelOrder  extends Order implements Values{
-    private int orderID;
-    //private String user;
 
-    public CancelOrder(int orderID, String user){
-        this.orderID = orderID;
-        super.setUser(user);
+    public CancelOrder(int orderId, String user){
+        super(user,0,0,null);
+        this.setUsername(user);
     }
     
     @Override
     public ServerMessage execute(JsonAccessedData data,String utente,GenericTask task){
-        //Order order = (Order)cmd;
-        this.setUsername(utente);
-        String user = this.getUser();
         //potrebbe essere una funzione
-        if(user.equals(""))return new ServerMessage("Devi effettuare l'accesso per piazzare ordini", 104);
+        if(this.getUser().equals(""))return new ServerMessage("Devi effettuare l'accesso per piazzare ordini", 104);
         Orderbook orderbook = (Orderbook)data;
 
-        if(searchMap(orderbook, "ask", this.orderID, user))return new ServerMessage("[100] Ordine correttamente Cancellato",100);
-        else if(searchMap(orderbook, "bid", this.orderID, user))return new ServerMessage("[100] Ordine correttamente Cancellato",100);
-        else if(searchStopOrder(orderbook, orderID, user))return new ServerMessage("Ordine correttamente Cancellato",100);
+        if(searchMap(orderbook, "ask", this.getOrderId(), this.getUser()))return new ServerMessage("[100] Ordine correttamente Cancellato",100);
+        else if(searchMap(orderbook, "bid", this.getOrderId(), this.getUser()))return new ServerMessage("[100] Ordine correttamente Cancellato",100);
+        else if(searchStopOrder(orderbook, this.getOrderId(), this.getUser()))return new ServerMessage("Ordine correttamente Cancellato",100);
         else return new ServerMessage("[104] Non è stato possibile cancellare l'ordine richiesto",104);
     }
 

@@ -44,7 +44,8 @@ public abstract class ServerProtocol extends CommunicationProtocol{
 
     public synchronized void addClient(Socket clientSocket){
         activeClients.add(clientSocket);
-        System.out.println("Client connesso. Client attivi: " + activeClients.size());
+        System.out.println("[ServerProtocol]"+clientSocket);
+        System.out.println("[ServerProtocol] Client connesso. Client attivi: " + activeClients.size());
 
         // Cancella il timeout se ci sono client attivi
         if (timeoutTask != null) {

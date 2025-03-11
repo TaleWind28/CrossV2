@@ -12,20 +12,13 @@ public class UDPMessage implements Message{
 
     }
 
-    public UDPMessage(String interestedUser, String notiication, String[] trades){
-        //this.data = data;
-        System.out.println("[UDPMessage-Construct]User="+interestedUser);
+    public UDPMessage(String interestedUser, String notification, String[] trades){
         this.interestedUser = interestedUser;
-        this.notification = notiication;
+        this.notification = notification;
         this.trades = trades;
     }
-    
-    // public String getData() {
-    //     return data;
-    // }
    
     public String getFullMessage(){
-        System.out.println("[UDPMessage] "+this.tradesString());
         return this.interestedUser+";"+this.notification+";"+this.tradesString();
     }
 
@@ -60,11 +53,9 @@ public class UDPMessage implements Message{
 
     public UDPMessage buildFromPackage(DatagramPacket packet){
         String packString = new String(packet.getData(),0,packet.getLength());
-        //this.data = packString.split(";")[0];
         this.interestedUser = packString.split(";")[0];
         this.notification = packString.split(";")[1];
         this.trades = packString.split(";")[2].split("");
-        //System.out.println("[UDPMessage]"+this.toString());
         return this;
         
     }

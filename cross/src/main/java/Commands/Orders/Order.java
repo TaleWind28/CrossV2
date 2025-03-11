@@ -16,6 +16,18 @@ public abstract class Order {
     private long gmt;
     private int size;
     private int price = 0;
+    private String exchangeType;
+
+    public Order(){
+
+    }
+    
+    public Order(String user, int size, int price, String exchangeType){
+        this.user = user;
+        this.size = size;
+        this.price = price;
+        this.exchangeType = exchangeType;
+    }
     
     public String getUser(){
         return this.user;
@@ -57,18 +69,19 @@ public abstract class Order {
     public String notifySuccessfullTrades(OrderCache cache,UDP udp,int orderId,String user){
         //memorizzo le transazioni per poi mandarle
         List<String> tradeNotify = new ArrayList<>();
+        tradeNotify.add("You have bought/sold:\n");
         String responseMessage = "";
         //mando messaggio UDP
         while(cache.getSize()!=0){
             //rimuovo l'ordine dalla cache
             Limitorder order = cache.removeOrder();
             tradeNotify.add(order.toString()+"\n");
-            String[] trades= {order.toString()};
+            String[] trades= {"Your offer for "+order.getSize()+" bitcoins at "+(order.getPrice()*order.getSize())+" USD was accomplished by "+this.getUser()+"\nOrderDetails: "+order.toString()};
             udp.sendMessage(new UDPMessage(order.getUser(),"closedTrades",trades));
             responseMessage = ""+orderId;
         }
         if(tradeNotify.size()!=0)udp.sendMessage(new UDPMessage(user,"closedTrades",tradeNotify.toArray(new String[0])));
-        else responseMessage = "Order not fully executed";
+        else return "Order couldn't be executed";
         return responseMessage;
     }
     
@@ -113,7 +126,9 @@ public abstract class Order {
         }
         return responseMessage;
     }
-    public abstract String getExchangeType();
+    public String getExchangeType(){
+        return this.exchangeType;
+    }
     
     public int getPrice(){
         return this.price;
@@ -121,7 +136,7 @@ public abstract class Order {
     
     @Override
     public String toString() {
-        return "user='"+this.user+"', orderId='"+this.orderId+"', timestamp='"+this.gmt+"', size='"+this.size+"', price='"+this.price+"', tradeType='"+this.getExchangeType()+"'";
+        return "user='"+this.user+"', orderId='"+this.orderId+"', timestamp='"+this.gmt+"', size='"+this.size+"', price='"+this.price+"', tradeType='"+this.exchangeType+"'";
     }
     
 }

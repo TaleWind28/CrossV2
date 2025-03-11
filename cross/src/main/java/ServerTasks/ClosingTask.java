@@ -1,5 +1,6 @@
 package ServerTasks;
 
+import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 
 import Executables.ServerMain;
@@ -14,8 +15,11 @@ public class ClosingTask implements Runnable{
         //Arresta il thread pool
         generatorServer.pool.shutdown();
         try {
+            
+            //generatorServer.pool.shutdown();
                 //Attende la terminazione dei thread attivi
             if (!generatorServer.pool.awaitTermination(10, TimeUnit.MILLISECONDS)) {
+                //System.out.println("[ClosingTask] Comunico la chiusura ai Client connessi...");
                 System.out.println("[ClosingTask] Interruzione forzata dei thread attivi...");
                 generatorServer.pool.shutdownNow();
             }
@@ -27,5 +31,10 @@ public class ClosingTask implements Runnable{
         generatorServer.getRegisteredUsers().getUserMap().forEach((username, user)-> user.setLogged(false));
         generatorServer.getRegisteredUsers().dataFlush();
         System.out.println("[ClosingTask] Utenti correttamente sloggati");
+        try {
+            this.generatorServer.getServer().close();
+        } catch (IOException e) {
+            System.out.println("[ClosingTask] Unable to close serverSocket");
+        }
     }
 }

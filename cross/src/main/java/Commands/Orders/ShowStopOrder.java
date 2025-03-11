@@ -10,7 +10,12 @@ import ServerTasks.GenericTask;
 
 public class ShowStopOrder extends Order implements Values{
 
-    @Override
+    public ShowStopOrder() {
+        super();
+        //super(null,0,0,null);
+    }
+    
+        @Override
     public String getExchangeType() {
         return null;    
     }
@@ -19,11 +24,16 @@ public class ShowStopOrder extends Order implements Values{
     public ServerMessage execute(JsonAccessedData data, String user, GenericTask genericTask) {
         String prettyStopOrders = new String();
         Orderbook orderbook = (Orderbook) data;
+        //creo un'iteratore per scorrere la lista
         Iterator<StopOrder> navi = orderbook.getStopOrders().iterator();
+        //scorro la lista di stoporder per trovare gli ordini piazzati dall'utente
         while (navi.hasNext()) {
             StopOrder currentOrder = navi.next();
+            if (!currentOrder.getUser().equals(genericTask.onlineUser))continue;
             prettyStopOrders+= currentOrder.toString()+"\n";
         }
+        //se l'utente non ha piazzato alcuno stoporder allora glielo comunico
+        if(prettyStopOrders.equals(""))prettyStopOrders = "No StopOrders Placed";
         return new ServerMessage(prettyStopOrders,100);
     }
 

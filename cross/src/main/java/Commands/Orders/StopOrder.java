@@ -11,13 +11,9 @@ import JsonAccessedData.Orderbook.Orderbook;
 import ServerTasks.GenericTask;
 
 public class StopOrder extends Order implements Values {
-    private String exchangeType;
 
-    public StopOrder(String exchangeType,int size, int price){
-        this.exchangeType = exchangeType;
-        super.setSize(size);
-        super.setPrice(price);
-        
+    public StopOrder(String user,String exchangeType,int size, int price){
+        super(user,size,price,exchangeType);
     }
 
     @Override
@@ -28,15 +24,10 @@ public class StopOrder extends Order implements Values {
         this.setOrderId(task.getProgressiveOrderNumber());
         this.setGmt(Instant.now().getEpochSecond());
         Orderbook orderbook = (Orderbook)data;
-        if(user.equals("stopprice met"))return new MarketOrder(this.getExchangeType(), this.getSize()).execute(data, task.onlineUser, task);
+        if(user.equals("stopprice met"))return new MarketOrder(this.getUser(),this.getExchangeType(), this.getSize()).execute(data, task.onlineUser, task);
         this.setUser(task.onlineUser);
         orderbook.getStopOrders().add(this);
         return new OrderResponseMessage(this.getOrderId(),"StopOrder successfully placed");
-    }
-
-    @Override
-    public String getExchangeType() {
-        return this.exchangeType;    
     }
 
     @Override

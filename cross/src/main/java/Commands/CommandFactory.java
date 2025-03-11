@@ -22,10 +22,13 @@ public class CommandFactory{
     public Values createValue(String[] command) {
         try {
             ////Stampa di debug
-            // for(String data:command){
-            //     System.out.print("[CommandFactory] comando: "+data);
-            // }
-            //System.out.println();
+            System.out.print("[CommandFactory] comando: ");
+            
+            for(String data:command){
+                System.out.print(data+" ");
+            }
+
+            System.out.println();
             //sistemo il tipo di ordine per avere solo la parte significativa
             String valueType = command[0].toLowerCase();
             valueType = valueType.replace("insert", "");
@@ -33,16 +36,16 @@ public class CommandFactory{
             //creo il comando in base al tipo di operazione
             switch (valueType) {    
                 case "cancel":
-                    return new CancelOrder(Integer.parseInt(command[1]),"unset");    
+                    return new CancelOrder(Integer.parseInt(command[2]),command[1]);    
 
                 case "market":   
-                    return new MarketOrder(command[1],Integer.parseInt(command[2]));
+                    return new MarketOrder(command[1],command[1],Integer.parseInt(command[2]));
                 
                 case "limit":
-                    return new Limitorder(command[1],Integer.parseInt(command[2]),Integer.parseInt(command[3]));
+                    return new Limitorder(command[1],command[2],Integer.parseInt(command[3]),Integer.parseInt(command[4]));
                 
                 case "stop":
-                    return new StopOrder(command[1],Integer.parseInt(command[2]),Integer.parseInt(command[3]));
+                    return new StopOrder(command[1],command[2],Integer.parseInt(command[3]),Integer.parseInt(command[4]));
                 
                 case "showbook":
                     return new ShowOrderBook();
@@ -51,13 +54,13 @@ public class CommandFactory{
                     return new ShowStopOrder();
 
                 case "register":
-                    return new Register(command[1],command[2]);
+                    return new Register(command[2],command[3]);
 
                 case "login":
-                    return new Login(command[1],command[2]);
+                    return new Login(command[2],command[3]);
 
                 case "updatecredentials":
-                    return new UpdateCredentials(command[1],command[2],command[3]);
+                    return new UpdateCredentials(command[2],command[3],command[4]);
 
                 case "logout":
                     return new Logout("unset");

@@ -29,6 +29,7 @@ public class ServerMain extends ServerProtocol{
     private volatile Orderbook orderbook;
     private volatile TradeHistory storico;
     private volatile int progressiveOrderNumber;
+    private ServerSocket server;
     private String bindAddress;
     private UDP UDPListner;
     private Thread stopOrderListner;
@@ -49,13 +50,9 @@ public class ServerMain extends ServerProtocol{
 
     public static void main(String[] args) throws Exception {
         ServerConfig configuration = getServerConfig();
-        //System.out.println(configuration.getOrderBook()+"\n"+configuration.getStorico());
         ServerMain server = new ServerMain(configuration);
-        //System.out.println(server.UDPListner.toString());
         //Aggiungi uno shutdown hook alla JVM
         Runtime.getRuntime().addShutdownHook(new Thread(new ClosingTask(server)));
-        //TreeMap<Integer,TreeMap<DayTime,Trade>> tradeMap = new TradeHistory().monthlyTrades("cross\\src\\main\\java\\JsonUtils\\JsonFiles\\storicoOrdini.json", Month.OCTOBER);
-        //ServerMain.printTradeMap(tradeMap.get(2024), 0);
         server.initialConfig();
         server.dial();
         return;
@@ -91,15 +88,18 @@ public class ServerMain extends ServerProtocol{
     }
     
     public void dial(){
-            try (ServerSocket server = new ServerSocket()) {
+            try {
                 //String bindAddress = "0.0.0.0"; // Ascolta su tutte le interfacce di rete
-                server.bind(new InetSocketAddress(this.bindAddress,this.PORT));
+                this.server = new ServerSocket();
+                this.server.bind(new InetSocketAddress(this.bindAddress,this.PORT));
                 while(true){
                     //creo il socket per ocmunicare col client
                     Socket client_Socket = server.accept();
                     //creo la task per gestire il client
                     GenericTask task = new GenericTask(client_Socket,this,new TCP());
                     //aggiungo il client alla lista di client attivi
+                    if(client_Socket== null)System.out.println("[ServerMain-dial] porcodiooooo");
+                    //this.getActiveClients().add(client_Socket);
                     addClient(client_Socket);
                     this.pool.execute(task);
                 }
@@ -167,4 +167,7 @@ public class ServerMain extends ServerProtocol{
         return storico;
     }
     
+    public ServerSocket getServer() {
+        return server;
+    }
 }
