@@ -132,12 +132,16 @@ public class ClientMain extends ClientProtocol{
         while(true){
             if(this.canSend){
                 String rawClientRequest =this.userInput.nextLine();
-                // Trova la posizione del primo spazio nella rischiesta del client
-                int firstSpaceIndex = rawClientRequest.indexOf(" ");
-                if (firstSpaceIndex != -1) {
-                    // Ricostruisci la stringa inserendo onlineUser dopo il primo token
-                    rawClientRequest = rawClientRequest.substring(0, firstSpaceIndex) + " " + this.onlineUser + rawClientRequest.substring(firstSpaceIndex);
+                
+                if(rawClientRequest.length()>1){
+                    // Trova la posizione del primo spazio nella rischiesta del client
+                    int firstSpaceIndex = rawClientRequest.indexOf(" ");
+                    if (firstSpaceIndex != -1) {
+                        // Ricostruisci la stringa inserendo onlineUser dopo il primo token
+                        rawClientRequest = rawClientRequest.substring(0, firstSpaceIndex) + " " + this.onlineUser + rawClientRequest.substring(firstSpaceIndex);
+                    }
                 }
+                
                 //splitto la stringa per ottenere il comando da passare alla factory
                 String[] clientRequest = rawClientRequest.split(" ");    
                 //creo la richiesta da mandare al server
@@ -198,8 +202,8 @@ public class ClientMain extends ClientProtocol{
             this.sigintTermination = true;
         }
         //eccezione generica
-        catch(Exception e ){        
-            System.out.println("eccezione: "+e.getClass()+" : "+e.getStackTrace()+" : "+e.getCause());
+        catch(ArrayIndexOutOfBoundsException e ){        
+            
         }
         finally{
             //se il socket non è stato aperto termino direttamente perchè non ho niente da chiudere

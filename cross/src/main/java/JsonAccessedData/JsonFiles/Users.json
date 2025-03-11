@@ -10,6 +10,11 @@
    "password": "$2a$10$ByJ.8itNQYgPok7.2qIz8.A2wUnX6UpDvPcNznnG7WvDQKj1pOFeS",
    "username": "mimmo"
   },
+  "lorenzo02": {
+   "isLogged": false,
+   "password": "$2a$10$qNsT.bf/WADYtMboZMR/OunB60iX/Tx.j9pu2g9D5pAlAClKupI5e",
+   "username": "lorenzo02"
+  },
   "TaleWind": {
    "isLogged": false,
    "password": "$2a$10$reYx0tmh9XUmizv0SUJHKOahimZaclLKZ8mjCiCB2bxOOZaJw2.62",
