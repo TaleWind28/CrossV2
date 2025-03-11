@@ -1,7 +1,5 @@
 package Communication.Messages;
 
-import Utils.AnsiColors;
-
 public interface Message {
     @Override
     String toString();
