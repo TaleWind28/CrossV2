@@ -1,6 +1,7 @@
 package ServerTasks;
 
 import java.net.Socket;
+import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
@@ -23,6 +24,7 @@ public class GenericTask implements Runnable {
     private ScheduledFuture<?> timeoutTask;
     private TCP protocol;
     public volatile String onlineUser = new String();
+    private final BlockingQueue<ServerMessage> systemMessages;
     public UDP UDPsender;
     public int tid;
     private String printScope;
@@ -51,10 +53,11 @@ public class GenericTask implements Runnable {
         this.UDPsender = server.getUDPListner();
         this.tid = server.getActiveClients().size();
         this.printScope = "[GenericTask - "+this.tid+"]";
+        this.systemMessages = null;
     }
 
     //costruttore
-    public GenericTask(Socket client_socket,ServerMain server,Protocol protocol) throws Exception{
+    public GenericTask(Socket client_socket,ServerMain server,Protocol protocol,BlockingQueue<ServerMessage>systemMessages) throws Exception{
         super();
         this.client = client_socket;
         this.protocol = (TCP)protocol;
@@ -65,6 +68,7 @@ public class GenericTask implements Runnable {
         this.UDPsender = this.generatorServer.getUDPListner();
         this.tid = server.getActiveClients().size();
         this.printScope = "[GenericTask - "+this.tid+"]";
+        this.systemMessages = systemMessages;
     }
 
     public void run(){
@@ -78,6 +82,15 @@ public class GenericTask implements Runnable {
         //UDPListner.sendMessage(new UDPMessage("Prova Multicast",this.onlineUser));
         try{
             while(!(Thread.currentThread().isInterrupted())){
+                // Controlla se ci sono messaggi di sistema (non bloccante)
+                ServerMessage sysMsg = systemMessages.poll();
+                if (sysMsg != null && sysMsg.response == 408) {
+                    // Invia messaggio di chiusura al client
+                    this.protocol.sendMessage(new ServerMessage("Chiusura forzata", 408));
+                    this.protocol.close();
+                    return;
+                }
+
                 /*AVVIO TIMEOUT */
                 this.timeoutTask = this.timeoutScheduler.schedule(inactivityDisconnection, CONNECTION_TIMEOUT, TimeUnit.SECONDS);
                 
@@ -114,6 +127,9 @@ public class GenericTask implements Runnable {
                 }
 
             }
+            this.protocol.sendMessage(new ServerMessage("chiusura forzata",408));
+            this.protocol.close();
+            Thread.currentThread().interrupt();
         }
         catch(IllegalStateException e){
             System.out.println("chiudo tutto");

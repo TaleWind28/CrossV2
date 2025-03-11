@@ -8,12 +8,15 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.nio.charset.StandardCharsets;
 import java.util.Map;
+import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ConcurrentSkipListMap;
+import java.util.concurrent.LinkedBlockingQueue;
 
 import com.squareup.moshi.JsonAdapter;
 import com.squareup.moshi.Moshi;
 
 import Commands.Orders.Limitorder;
+import Communication.Messages.ServerMessage;
 import Communication.Protocols.ServerProtocol;
 import Communication.Protocols.TCP;
 import Communication.Protocols.UDP;
@@ -33,6 +36,9 @@ public class ServerMain extends ServerProtocol{
     private String bindAddress;
     private UDP UDPListner;
     private Thread stopOrderListner;
+    // Crea una coda condivisa
+    private final BlockingQueue<ServerMessage> systemMessages = new LinkedBlockingQueue<>();
+
 
     public ServerMain(ServerConfig config){
         super(config.getTCPport(),Runtime.getRuntime().availableProcessors());
@@ -96,10 +102,8 @@ public class ServerMain extends ServerProtocol{
                     //creo il socket per ocmunicare col client
                     Socket client_Socket = server.accept();
                     //creo la task per gestire il client
-                    GenericTask task = new GenericTask(client_Socket,this,new TCP());
+                    GenericTask task = new GenericTask(client_Socket,this,new TCP(),systemMessages);
                     //aggiungo il client alla lista di client attivi
-                    if(client_Socket== null)System.out.println("[ServerMain-dial] porcodiooooo");
-                    //this.getActiveClients().add(client_Socket);
                     addClient(client_Socket);
                     this.pool.execute(task);
                 }
@@ -107,6 +111,10 @@ public class ServerMain extends ServerProtocol{
                 System.out.println(e.getClass()+": "+e.getMessage());
                 System.exit(0);
             }
+    }
+
+    public void sendActivityInterrupt(){
+        this.systemMessages.add(new ServerMessage("Chiusura forzata",408));
     }
     
     public Userbook getRegisteredUsers() {

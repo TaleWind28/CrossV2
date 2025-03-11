@@ -33,7 +33,6 @@ import com.squareup.moshi.Moshi;
 public class TCP implements Protocol{
     protected BufferedReader receiver;
     protected PrintWriter sender;
-    //protected Gson gson = new Gson();
     protected Moshi moshi = new Moshi.Builder().add(PolymorphicJsonAdapterFactory.of(Message.class, "type")
         .withSubtype(ServerMessage.class, "ServerMessage")
         .withSubtype(ClientMessage.class, "ClientMessage")
@@ -80,6 +79,7 @@ public class TCP implements Protocol{
 
     public Message receiveMessage(){
         try{
+            //controllare che il socket sia attivo
             String line = receiver.readLine();
             if (line!=null){
                 Message msg = adapter.fromJson(line); 

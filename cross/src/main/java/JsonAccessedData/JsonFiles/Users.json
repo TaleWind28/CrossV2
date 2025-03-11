@@ -10,15 +10,15 @@
    "password": "$2a$10$ByJ.8itNQYgPok7.2qIz8.A2wUnX6UpDvPcNznnG7WvDQKj1pOFeS",
    "username": "mimmo"
   },
-  "pnoi": {
-   "isLogged": false,
-   "password": "$2a$10$Kgscx1pK4oZ6b1RAwhoWMOaiNdN2oxhwitK.P3dqXww8h0S9eqqla",
-   "username": "pnoi"
-  },
   "TaleWind": {
    "isLogged": false,
    "password": "$2a$10$reYx0tmh9XUmizv0SUJHKOahimZaclLKZ8mjCiCB2bxOOZaJw2.62",
    "username": "TaleWind"
+  },
+  "pnoi": {
+   "isLogged": false,
+   "password": "$2a$10$Kgscx1pK4oZ6b1RAwhoWMOaiNdN2oxhwitK.P3dqXww8h0S9eqqla",
+   "username": "pnoi"
   },
   "pippo": {
    "isLogged": false,

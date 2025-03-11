@@ -12,14 +12,12 @@ public class ClosingTask implements Runnable{
     }
     public void run(){    
         System.out.println("[ClosingTask] Ctrl+C rilevato -> chiusura server in corso...");
+        //this.generatorServer.sendActivityInterrupt();
         //Arresta il thread pool
         generatorServer.pool.shutdown();
         try {
-            
-            //generatorServer.pool.shutdown();
-                //Attende la terminazione dei thread attivi
+            //Attende la terminazione dei thread attivi
             if (!generatorServer.pool.awaitTermination(10, TimeUnit.MILLISECONDS)) {
-                //System.out.println("[ClosingTask] Comunico la chiusura ai Client connessi...");
                 System.out.println("[ClosingTask] Interruzione forzata dei thread attivi...");
                 generatorServer.pool.shutdownNow();
             }
