@@ -24,7 +24,7 @@ public class UDPReceiverTask implements Runnable{
                     continue;
                 }
                 else System.out.println("[ReceiverUDP] Received:\n"+message.tradeNotification());
-            }
+        }
     }
 
     public void setUDPUpdater(UDP udpUPdater){
