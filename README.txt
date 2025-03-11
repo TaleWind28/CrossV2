@@ -1,10 +1,11 @@
 todo:
 -(Ottimizzazione)Aggiungere un gruppo multicast per ordine
 -Controllare parametri per ordini
--Controllare chiusura Socket lato thread gestore
+-Controllare chiusura Socket lato thread gestore -> done
 -Pulire output server
--Aggiungere id ai vari thread gestori e vedere quanto si sporca il server
+-Aggiungere id ai vari thread gestori e vedere quanto si sporca il server -> done
 -Ricontrollare i messaggi di risposta
 -Sviluppare TestUnit
 -Chiedere alla Ricci che parametri deve accettare getPriceHistory //chiesto
--Controllare Rimozione Client
+-Controllare Rimozione Client -> done
+-Migliorare messaggio UDP per trades dovuti agli StopOrder
