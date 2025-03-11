@@ -15,7 +15,8 @@ public class CancelOrder  extends Order implements Values{
 
     public CancelOrder(int orderId, String user){
         super(user,0,0,null);
-        this.setUsername(user);
+        this.setOrderId(orderId);
+        //this.setUsername(user);
     }
     
     @Override

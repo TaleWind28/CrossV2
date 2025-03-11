@@ -6,6 +6,7 @@ import JsonAccessedData.JsonAccessedData;
 import JsonAccessedData.Users.User;
 import JsonAccessedData.Users.Userbook;
 import ServerTasks.GenericTask;
+import Utils.AnsiColors;
 
 public class Login implements Values{
     private String username;
@@ -38,7 +39,7 @@ public class Login implements Values{
         userbook.getUserMap().get(this.username).setLogged(true);
         //aggiorno il jsonOriginale
         userbook.dataFlush();
-        return new ServerMessage("Utente correttamente loggato col nome "+this.username,100);
+        return new ServerMessage(AnsiColors.GREEN_DARK+"Utente correttamente loggato col nome "+this.username +AnsiColors.RESET ,100);
     }
     @Override
     public String getUsername() {

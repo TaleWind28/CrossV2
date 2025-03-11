@@ -1,29 +1,23 @@
 {
  "askMap": {
-  "Price: 5, Timestamp: 1741685461, OrderId: 3": {
+  "Price: 5, Timestamp: 1741711713, OrderId: 0": {
+   "ansiColor": "\u001b[96m",
    "exchangeType": "ask",
-   "gmt": 1741685461,
-   "orderId": 3,
-   "price": 5,
-   "size": 5,
-   "user": "pino"
-  },
-  "Price: 5, Timestamp: 1741698872, OrderId: 5": {
-   "exchangeType": "ask",
-   "gmt": 1741698872,
-   "orderId": 5,
+   "gmt": 1741711713,
+   "orderId": 0,
    "price": 5,
    "size": 5,
    "user": "pino"
   }
  },
  "bidMap": {
-  "Price: 10, Timestamp: 1741685511, OrderId: 4": {
+  "Price: 5, Timestamp: 1741711725, OrderId: 1": {
+   "ansiColor": "\u001b[96m",
    "exchangeType": "bid",
-   "gmt": 1741685511,
-   "orderId": 4,
-   "price": 10,
-   "size": 4,
+   "gmt": 1741711725,
+   "orderId": 1,
+   "price": 5,
+   "size": 5,
    "user": "pino"
   }
  }

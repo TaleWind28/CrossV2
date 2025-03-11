@@ -2,12 +2,14 @@ package Communication.Messages;
 
 import java.net.DatagramPacket;
 
+import Utils.AnsiColors;
+
 public class UDPMessage implements Message{
     //private String data;
     private String interestedUser;
     private String notification;
     private String[] trades;
-
+    private String color;
     public UDPMessage(){
 
     }
@@ -16,6 +18,7 @@ public class UDPMessage implements Message{
         this.interestedUser = interestedUser;
         this.notification = notification;
         this.trades = trades;
+        this.color = AnsiColors.MAGENTA;
     }
    
     public String getFullMessage(){
@@ -43,8 +46,8 @@ public class UDPMessage implements Message{
     } 
     
     public String tradeNotification(){
-        return  "[Notification]: closedTrades\n[Trades]:{\n"+ this.tradesString()+"\n}" ;
-    }
+        return  this.color+"[Notification]: closedTrades\n[Trades]:{\n"+ this.tradesString()+"\n}"+AnsiColors.RESET ;
+    }   
 
     @Override
     public String toString() {
@@ -58,5 +61,15 @@ public class UDPMessage implements Message{
         this.trades = packString.split(";")[2].split("");
         return this;
         
+    }
+
+    @Override
+    public String getMessageColor() {
+        return this.color;    
+    }
+
+    @Override
+    public void setMessageColor(String color) {
+        this.color = color;    
     }
 }

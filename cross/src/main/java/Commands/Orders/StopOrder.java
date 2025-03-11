@@ -9,11 +9,13 @@ import JsonAccessedData.JsonAccessedData;
 import JsonAccessedData.Orderbook.Orderbook;
 //import JsonMemories.Orderbook;
 import ServerTasks.GenericTask;
+import Utils.AnsiColors;
 
 public class StopOrder extends Order implements Values {
 
     public StopOrder(String user,String exchangeType,int size, int price){
         super(user,size,price,exchangeType);
+        this.setColor(AnsiColors.BLUE_LIGHT);
     }
 
     @Override

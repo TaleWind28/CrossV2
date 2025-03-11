@@ -2,6 +2,7 @@ package Commands.Internal;
 
 import java.util.Map;
 import java.util.TreeMap;
+import java.util.zip.DataFormatException;
 
 import Communication.Values;
 import Communication.Messages.ServerMessage;
@@ -9,13 +10,14 @@ import JsonAccessedData.JsonAccessedData;
 import JsonAccessedData.PriceHistory.DailyTradeStats;
 import JsonAccessedData.PriceHistory.TradeHistory;
 import ServerTasks.GenericTask;
+import Utils.AnsiColors;
 
 public class getPriceHistory implements Values{
     private int month;
     private int year;
     
     public getPriceHistory(String monYear) throws Exception{
-        if(monYear.length()!=6)throw new Exception("mi piace l'uccello");
+        if(monYear.length()!=6)throw new DataFormatException("La data deve essere espressa come GGYYY es: 092024");
         String[] parsing = monYear.split("");
         this.month = Integer.parseInt(parsing[0]+parsing[1]);
         this.year = Integer.parseInt(parsing[2]+parsing[3]+parsing[4]+parsing[5]);
@@ -59,7 +61,7 @@ public class getPriceHistory implements Values{
             
             output.append("\n"); // Riga vuota per separare le entries
         }
-        return output.toString();
+        return AnsiColors.ORANGE+ output.toString()+ AnsiColors.RESET;
     }
 
     public String convertIntToMonthName(int month) {

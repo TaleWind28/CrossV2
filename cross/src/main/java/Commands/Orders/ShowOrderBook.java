@@ -8,6 +8,7 @@ import Communication.Messages.ServerMessage;
 import JsonAccessedData.JsonAccessedData;
 import JsonAccessedData.Orderbook.Orderbook;
 import ServerTasks.GenericTask;
+import Utils.AnsiColors;
 import Utils.OrderSorting;
 
 
@@ -18,7 +19,7 @@ public class ShowOrderBook implements Values {
         if(user.equals(""))return new OrderResponseMessage(-1,"Per consultare l'orderbook bisogna creare un account o accedervi");
         StringBuilder output = new StringBuilder();
         // Intestazione con i prezzi di mercato
-        output.append("\"+=======================================================================+\n");
+        output.append(AnsiColors.BLUE_DARK+"\"+=======================================================================+\n");
         output.append(String.format("|  PREZZI DI MERCATO:  ASK: %-14d  BID: %-14d         |\n", 
         orderbook.getAskMarketPrice(), orderbook.getBidMarketPrice()));
         output.append("+=======================================================================+\n");
@@ -29,19 +30,19 @@ public class ShowOrderBook implements Values {
         output.append("+=======================================================================+\n");
         if (orderbook.mapLen() != 0) {
             // ASK Orders
-            output.append("|                           ASK ORDERS                                  |\n");
+            output.append(AnsiColors.GREEN_DARK+"|                           ASK ORDERS                                  |\n");
             output.append("+=======================================================================+\n");
             appendPrettyOrders(output, orderbook, "ask");
         
             // BID Orders
-            output.append("+=======================================================================+\n");
+            output.append(AnsiColors.BRIGHT_RED+"+=======================================================================+\n");
             output.append("|                           BID ORDERS                                  |\n");
             output.append("+=======================================================================+\n");
             appendPrettyOrders(output, orderbook, "bid");
         } else {
             output.append("|                  NESSUN ORDINE DISPONIBILE                    |\n");
         }
-        output.append("+=======================================================================+\n");
+        output.append("+=======================================================================+\n"+AnsiColors.RESET);
         return new ServerMessage(output.toString(), 100);
     }
 

@@ -6,6 +6,7 @@ import JsonAccessedData.JsonAccessedData;
 import JsonAccessedData.Users.User;
 import JsonAccessedData.Users.Userbook;
 import ServerTasks.GenericTask;
+import Utils.AnsiColors;
 
 public class Register implements Values{
     private String username;
@@ -24,7 +25,7 @@ public class Register implements Values{
         //memorizzare username e password
         userbook.addData(new User(username, password));
         //System.out.println("entro");
-        return new ServerMessage("[101]: Utente correttamente registrato col nome "+username,100);
+        return new ServerMessage(AnsiColors.GREEN_MEDIUM+"Utente correttamente registrato col nome "+username+AnsiColors.RESET ,100);
     }
 
     @Override

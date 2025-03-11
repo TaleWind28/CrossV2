@@ -4,13 +4,14 @@ import Communication.Values;
 import Communication.Messages.ServerMessage;
 import JsonAccessedData.JsonAccessedData;
 import ServerTasks.GenericTask;
+import Utils.AnsiColors;
 
 
 public class Help implements Values{
     String helpMessage;
     
     public Help(String helpMessage){
-        this.helpMessage = helpMessage;
+        this.helpMessage = AnsiColors.ORANGE+helpMessage+AnsiColors.RESET;
     }
 
     @Override

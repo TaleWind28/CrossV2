@@ -7,11 +7,13 @@ import Communication.Messages.ServerMessage;
 import JsonAccessedData.JsonAccessedData;
 import JsonAccessedData.Orderbook.Orderbook;
 import ServerTasks.GenericTask;
+import Utils.AnsiColors;
 
 public class ShowStopOrder extends Order implements Values{
 
     public ShowStopOrder() {
         super();
+        this.setColor(AnsiColors.BLUE_MEDIUM);
         //super(null,0,0,null);
     }
     

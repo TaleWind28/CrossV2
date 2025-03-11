@@ -1,6 +1,8 @@
 package Commands;
 
 
+import java.util.zip.DataFormatException;
+
 import Commands.Credentials.Login;
 import Commands.Credentials.Logout;
 import Commands.Credentials.Register;
@@ -15,6 +17,7 @@ import Commands.Orders.ShowOrderBook;
 import Commands.Orders.ShowStopOrder;
 import Commands.Orders.StopOrder;
 import Communication.Values;
+import Utils.AnsiColors;
 import Utils.CustomExceptions.UnrecognizedOrderException;
 
 public class CommandFactory{
@@ -22,13 +25,13 @@ public class CommandFactory{
     public Values createValue(String[] command) {
         try {
             ////Stampa di debug
-            System.out.print("[CommandFactory] comando: ");
+            System.out.print(AnsiColors.ORANGE+"[CommandFactory] comando: ");
             
-            for(String data:command){
-                System.out.print(data+" ");
+            for(int i=0;i<command.length;i++){
+                System.out.println("posizione["+i+"] "+command[i]+" len:"+command[i].length());
             }
 
-            System.out.println();
+            System.out.println(AnsiColors.RESET);
             //sistemo il tipo di ordine per avere solo la parte significativa
             String valueType = command[0].toLowerCase();
             valueType = valueType.replace("insert", "");
@@ -66,7 +69,7 @@ public class CommandFactory{
                     return new Logout("unset");
                 
                 case "getpricehistory":
-                    return new getPriceHistory(command[1]);
+                    return new getPriceHistory(command[2]);
                 default:
                     throw new UnrecognizedOrderException("comando non gestito");        
             }
@@ -74,9 +77,13 @@ public class CommandFactory{
         catch(UnrecognizedOrderException e){
             return new Help("unset");
         }
+        catch(DataFormatException e){
+            //System.out.println(e.getMessage());
+            return new ErrorMessage(e.getMessage());
+        }
         catch (Exception e) {
-            System.out.println("[ORDERFACTORY] "+e.getClass() +" "+e.getCause());
-            return new ErrorMessage("parametri non corretti, digitare aiuto per una lista di comandi");
+            System.out.println("[ORDERFACTORY] "+e.getClass() +" "+e.getMessage());
+            return new ErrorMessage(AnsiColors.RED+"parametri non corretti, digitare aiuto per una lista di comandi"+AnsiColors.RESET);
         }
     }
 }

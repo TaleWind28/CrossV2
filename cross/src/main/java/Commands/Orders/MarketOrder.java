@@ -8,12 +8,14 @@ import Communication.Messages.ServerMessage;
 import JsonAccessedData.JsonAccessedData;
 import JsonAccessedData.Orderbook.Orderbook;
 import ServerTasks.GenericTask;
+import Utils.AnsiColors;
 import Utils.OrderCache;
 
 public class MarketOrder extends Order implements Values {
 
     public MarketOrder(String user,String exchangeType,int size){
         super(user, size, -1, exchangeType);
+        this.setColor(AnsiColors.BLUE_DEEP);
     }
     
     @Override

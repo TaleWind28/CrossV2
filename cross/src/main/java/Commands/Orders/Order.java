@@ -6,6 +6,7 @@ import java.util.List;
 import Communication.Messages.UDPMessage;
 import Communication.Protocols.UDP;
 import JsonAccessedData.Orderbook.Orderbook;
+import Utils.AnsiColors;
 import Utils.OrderCache;
 import Utils.OrderSorting;
 
@@ -17,6 +18,7 @@ public abstract class Order {
     private int size;
     private int price = 0;
     private String exchangeType;
+    private String ansiColor = AnsiColors.BLUE_DARK;
 
     public Order(){
 
@@ -134,9 +136,17 @@ public abstract class Order {
         return this.price;
     };
     
+    public void setColor(String color){
+        this.ansiColor = color;
+    }
+
+    public String getAnsiColor() {
+        return ansiColor;
+    }
+
     @Override
     public String toString() {
-        return "user='"+this.user+"', orderId='"+this.orderId+"', timestamp='"+this.gmt+"', size='"+this.size+"', price='"+this.price+"', tradeType='"+this.exchangeType+"'";
+        return this.ansiColor+"user='"+this.user+"', orderId='"+this.orderId+"', timestamp='"+this.gmt+"', size='"+this.size+"', price='"+this.price+"', tradeType='"+this.exchangeType+"'"+AnsiColors.RESET;
     }
     
 }

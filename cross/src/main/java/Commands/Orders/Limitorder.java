@@ -8,12 +8,14 @@ import Communication.Messages.ServerMessage;
 import JsonAccessedData.JsonAccessedData;
 import JsonAccessedData.Orderbook.Orderbook;
 import ServerTasks.GenericTask;
+import Utils.AnsiColors;
 import Utils.OrderCache;
 
 public class Limitorder extends Order implements Values{
 
     public Limitorder(String user,String exchangeType,int size, int price){
         super(user,size,price,exchangeType);
+        this.setColor(AnsiColors.BLUE_LIGHT);
     }
 
     @Override

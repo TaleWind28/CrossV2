@@ -5,6 +5,7 @@ import Communication.Messages.ServerMessage;
 import JsonAccessedData.JsonAccessedData;
 import JsonAccessedData.Users.Userbook;
 import ServerTasks.GenericTask;
+import Utils.AnsiColors;
 
 public class Logout implements Values{
     private String username;
@@ -22,7 +23,7 @@ public class Logout implements Values{
         //sloggare
         userbook.getUserMap().get(user).setLogged(false);
         userbook.dataFlush();
-        return new ServerMessage("Disconnessione avvenuta con successo!",100);
+        return new ServerMessage(AnsiColors.GREEN_LIGHT+"Disconnessione avvenuta con successo!"+ AnsiColors.RESET ,100);
     }
     @Override
     public void setUsername(String username) {

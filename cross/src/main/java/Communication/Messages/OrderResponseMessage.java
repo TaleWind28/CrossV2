@@ -1,5 +1,7 @@
 package Communication.Messages;
 
+import Utils.AnsiColors;
+
 public class OrderResponseMessage extends ServerMessage{
     private int orderId;
     private String message;
@@ -7,12 +9,14 @@ public class OrderResponseMessage extends ServerMessage{
         super(message,-1000);
         this.orderId = orderId;
         this.message = message;
-        this.toString();
+        this.setMessageColor(AnsiColors.BLUE_DEEP);
     }
 
     @Override
     public String toString() {
-        return "OrderResponseMessage{\norderId='"+this.orderId+"'\nMessage='"+this.message+"'\n}";
+        return this.getMessageColor()+"OrderResponseMessage{\norderId='"+this.orderId+"'\nMessage='"+this.message+"'\n}"+AnsiColors.RESET;
     }
+
+
 
 }
