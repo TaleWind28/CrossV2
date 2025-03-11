@@ -3,6 +3,8 @@ package Commands.Orders;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.squareup.moshi.Json;
+
 import Communication.Messages.UDPMessage;
 import Communication.Protocols.UDP;
 import JsonAccessedData.Orderbook.Orderbook;
@@ -18,6 +20,7 @@ public abstract class Order {
     private int size;
     private int price = 0;
     private String exchangeType;
+    @Json(ignore = true)
     private String ansiColor = AnsiColors.BLUE_DARK;
 
     public Order(){

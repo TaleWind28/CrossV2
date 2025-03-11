@@ -76,6 +76,7 @@ public class GenericTask implements Runnable {
         DisconnectTask inactivityDisconnection = new DisconnectTask(this.protocol,this.client,this.generatorServer,this);
         //UDP UDPListner = this.generatorServer.getUDPListner();
         //invio l'UDP Listner
+        System.out.println("[GenericTask] prima di inviare");
         protocol.sendMessage(new ServerMessage(UDPsender.toBuilderString(),999));
         //invio il messaggio di benvenuto
         protocol.sendMessage(new ServerMessage(welcomeMessage,200));

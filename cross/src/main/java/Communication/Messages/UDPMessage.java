@@ -18,7 +18,7 @@ public class UDPMessage implements Message{
         this.interestedUser = interestedUser;
         this.notification = notification;
         this.trades = trades;
-        this.color = AnsiColors.MAGENTA;
+        this.setMessageColor(AnsiColors.MAGENTA);
     }
    
     public String getFullMessage(){

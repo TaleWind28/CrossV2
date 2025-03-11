@@ -7,15 +7,16 @@ import java.util.NoSuchElementException;
 import com.squareup.moshi.JsonAdapter;
 import com.squareup.moshi.Moshi;
 
+import ClientTask.UDPReceiverTask;
 import Commands.CommandFactory;
 import Commands.Credentials.Disconnect;
 import Communication.Messages.ClientMessage;
 import Communication.Messages.ServerMessage;
-import Communication.Messages.UDPMessage;
 import Communication.Protocols.ClientProtocol;
 import Communication.Protocols.TCP;
 import Communication.Protocols.UDP;
 import Config.ClientConfig;
+import Utils.AnsiColors;
 import okio.BufferedSource;
 import okio.Okio;
 
@@ -34,16 +35,7 @@ public class ClientMain extends ClientProtocol{
         super(IP,PORT);
         this.canSend = false;   
         this.factory = new CommandFactory();
-        this.UDPReceiver = new Thread(() -> {
-            while(true){
-                UDPMessage message = (UDPMessage)this.UDPUpdater.receiveMessage();
-            
-                if(this.onlineUser.equals(""))continue;
-                else if(!message.getInterestedUser().equals(this.onlineUser))continue;
-                else System.out.println("\r[ReceiverUDP] Received:\n"+message.tradeNotification());
-                  
-            }
-        });
+        //this.UDPReceiver = new Thread(new UDPReceiverTask(UDPUpdater,this));
 
     }
         
@@ -86,7 +78,10 @@ public class ClientMain extends ClientProtocol{
                 switch (serverAnswer.response) {
                     case 999://configurazione interna al server dell'UDPListner
                         this.UDPUpdater = UDP.buildFromString(serverAnswer.errorMessage);
+                        System.out.println(AnsiColors.ORANGE+"[Client-Helper] costruito udp");
+                        this.UDPReceiver = new Thread(new UDPReceiverTask(UDPUpdater, this));
                         this.UDPReceiver.start();
+                        System.out.println("[Client-Helper] avviato"+AnsiColors.RESET);
                         continue;
                     case 100:
                         if (serverAnswer.errorMessage.contains("Disconnessione avvenuta con successo")){
@@ -121,8 +116,6 @@ public class ClientMain extends ClientProtocol{
             System.exit(0);
         }
         catch(Exception e){
-            //capire se rimuovere o meno
-            //System.out.println("[ClientReceiver]"+e.getMessage()+"\n"+e.getClass()+"\n"+e.getCause()+"\n"+e.getSuppressed());
             System.out.println("Stiamo riscontrando dei problemi sul server, procederemo a chiudere la connessione, ci scusiamo per il disagio");
             System.exit(0);
         }    

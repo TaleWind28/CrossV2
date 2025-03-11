@@ -19,7 +19,7 @@ public class AnsiColors {
     public static final String MAGENTA = "\u001B[35m";          //magenta
 
     public static final String BRIGHT_RED = "\u001B[91m"; //rosso chiaro
-
+    public static final String BLACK = "\u001B[30m";
     // 1 colore completamente diverso: ARANCIONE
     public static final String ORANGE = "\u001B[38;5;214m";     // Arancione ANSI (RGB 214)
 

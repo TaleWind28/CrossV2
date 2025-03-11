@@ -62,9 +62,10 @@ public class UDP implements Protocol {
             socket.receive(packet);
             
             UDPMessage message = new UDPMessage().buildFromPackage(packet);;
-            //System.out.println("[UDP]received message: "+packet.getData());
+            System.out.println("[UDP]received message: "+packet.getData());
             return message;
         } catch (IOException e) {
+            System.out.println("morto receiver udp");
             e.printStackTrace();
             return null;
         }

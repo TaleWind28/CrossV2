@@ -24,14 +24,14 @@ public class CommandFactory{
 
     public Values createValue(String[] command) {
         try {
-            ////Stampa di debug
-            System.out.print(AnsiColors.ORANGE+"[CommandFactory] comando: ");
+            // //Stampa di debug
+            // System.out.print(AnsiColors.ORANGE+"[CommandFactory] comando: ");
             
-            for(int i=0;i<command.length;i++){
-                System.out.println("posizione["+i+"] "+command[i]+" len:"+command[i].length());
-            }
+            // for(int i=0;i<command.length;i++){
+            //     System.out.println("posizione["+i+"] "+command[i]+" len:"+command[i].length());
+            // }
 
-            System.out.println(AnsiColors.RESET);
+            // System.out.println(AnsiColors.RESET);
             //sistemo il tipo di ordine per avere solo la parte significativa
             String valueType = command[0].toLowerCase();
             valueType = valueType.replace("insert", "");
@@ -42,7 +42,7 @@ public class CommandFactory{
                     return new CancelOrder(Integer.parseInt(command[2]),command[1]);    
 
                 case "market":   
-                    return new MarketOrder(command[1],command[1],Integer.parseInt(command[2]));
+                    return new MarketOrder(command[1],command[2],Integer.parseInt(command[3]));
                 
                 case "limit":
                     return new Limitorder(command[1],command[2],Integer.parseInt(command[3]),Integer.parseInt(command[4]));

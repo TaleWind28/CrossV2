@@ -1,24 +1,4 @@
 {
- "askMap": {
-  "Price: 5, Timestamp: 1741711713, OrderId: 0": {
-   "ansiColor": "\u001b[96m",
-   "exchangeType": "ask",
-   "gmt": 1741711713,
-   "orderId": 0,
-   "price": 5,
-   "size": 5,
-   "user": "pino"
-  }
- },
- "bidMap": {
-  "Price: 5, Timestamp: 1741711725, OrderId: 1": {
-   "ansiColor": "\u001b[96m",
-   "exchangeType": "bid",
-   "gmt": 1741711725,
-   "orderId": 1,
-   "price": 5,
-   "size": 5,
-   "user": "pino"
-  }
- }
+ "askMap": {},
+ "bidMap": {}
 }
