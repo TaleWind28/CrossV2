@@ -85,7 +85,7 @@ public abstract class Order {
             udp.sendMessage(new UDPMessage(order.getUser(),"closedTrades",trades));
             responseMessage = ""+orderId;
         }
-        if(tradeNotify.size()!=0)udp.sendMessage(new UDPMessage(user,"closedTrades",tradeNotify.toArray(new String[0])));
+        if(tradeNotify.size()!=1)udp.sendMessage(new UDPMessage(this.user,"closedTrades",tradeNotify.toArray(new String[0])));
         else return "Order couldn't be executed";
         return responseMessage;
     }

@@ -8,15 +8,12 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.nio.charset.StandardCharsets;
 import java.util.Map;
-import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ConcurrentSkipListMap;
-import java.util.concurrent.LinkedBlockingQueue;
 
 import com.squareup.moshi.JsonAdapter;
 import com.squareup.moshi.Moshi;
 
 import Commands.Orders.Limitorder;
-import Communication.Messages.ServerMessage;
 import Communication.Protocols.ServerProtocol;
 import Communication.Protocols.TCP;
 import Communication.Protocols.UDP;
@@ -25,6 +22,7 @@ import JsonAccessedData.Orderbook.Orderbook;
 import JsonAccessedData.PriceHistory.TradeHistory;
 import JsonAccessedData.Users.Userbook;
 import ServerTasks.*;
+import Utils.AnsiColors;
 import Utils.OrderSorting;
 
 public class ServerMain extends ServerProtocol{
@@ -36,9 +34,6 @@ public class ServerMain extends ServerProtocol{
     private String bindAddress;
     private UDP UDPListner;
     private Thread stopOrderListner;
-    // Crea una coda condivisa
-    private final BlockingQueue<ServerMessage> systemMessages = new LinkedBlockingQueue<>();
-
 
     public ServerMain(ServerConfig config){
         super(config.getTCPport(),Runtime.getRuntime().availableProcessors());
@@ -69,9 +64,8 @@ public class ServerMain extends ServerProtocol{
         try{
             JsonAdapter<ServerConfig> jsonAdapter = new Moshi.Builder().build().adapter(ServerConfig.class);
             // Carica il file dalle risorse
-            InputStream inputStream = ServerMain.class.getClassLoader()
-                                     .getResourceAsStream("ServerConfig.json");
-            
+            InputStream inputStream = ServerMain.class.getClassLoader().getResourceAsStream("ServerConfig.json");
+            //controllo di aver caricato il file
             if (inputStream == null) {
                 throw new RuntimeException("File di configurazione non trovato nelle risorse");
             }
@@ -98,11 +92,12 @@ public class ServerMain extends ServerProtocol{
                 //String bindAddress = "0.0.0.0"; // Ascolta su tutte le interfacce di rete
                 this.server = new ServerSocket();
                 this.server.bind(new InetSocketAddress(this.bindAddress,this.PORT));
+                System.out.println(AnsiColors.ORANGE+"[ServerMain] server in attesa di connessioni...");
                 while(true){
                     //creo il socket per ocmunicare col client
                     Socket client_Socket = server.accept();
                     //creo la task per gestire il client
-                    GenericTask task = new GenericTask(client_Socket,this,new TCP(),systemMessages);
+                    GenericTask task = new GenericTask(client_Socket,this,new TCP());
                     //aggiungo il client alla lista di client attivi
                     addClient(client_Socket);
                     this.pool.execute(task);
@@ -111,10 +106,6 @@ public class ServerMain extends ServerProtocol{
                 System.out.println(e.getClass()+": "+e.getMessage());
                 System.exit(0);
             }
-    }
-
-    public void sendActivityInterrupt(){
-        this.systemMessages.add(new ServerMessage("Chiusura forzata",408));
     }
     
     public Userbook getRegisteredUsers() {
@@ -132,10 +123,8 @@ public class ServerMain extends ServerProtocol{
         this.storico.loadData();
         
         progressiveOrderNumber = findOrderID(this.orderbook)+1;
-        System.out.println("[ServerMain-initialConfig] Numero Ordine: "+progressiveOrderNumber);
         try {
             this.stopOrderListner = new Thread(new StopOrderCheckerTask(this.orderbook, new GenericTask(this)));
-            System.out.println("[ServerMain-InitialConfig]");
             this.stopOrderListner.start();
         } catch (Exception e) {
             System.out.println("[ServerMain-InitialConfig]"+e.getMessage());

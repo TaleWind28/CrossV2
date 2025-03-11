@@ -1,7 +1,6 @@
 package ServerTasks;
 
 import java.net.Socket;
-import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
@@ -14,17 +13,16 @@ import Communication.Protocols.TCP;
 import Communication.Protocols.UDP;
 import Executables.ServerMain;
 import JsonAccessedData.JsonAccessedData;
+import Utils.AnsiColors;
 
 public class GenericTask implements Runnable {
     private Socket client;
     private long CONNECTION_TIMEOUT = 60;//tempo in secondi
-    //private GameFactory factory;
     private ServerMain generatorServer;
     private ScheduledExecutorService timeoutScheduler;
     private ScheduledFuture<?> timeoutTask;
     private TCP protocol;
     public volatile String onlineUser = new String();
-    private final BlockingQueue<ServerMessage> systemMessages;
     public UDP UDPsender;
     public int tid;
     private String printScope;
@@ -38,7 +36,8 @@ public class GenericTask implements Runnable {
     private String loggedUserMessage = "------------------------------------------------------------------------------------------------------------\n"+
                         "Comandi:\n"+
                         "logout<username> -> permette di uscire dal servizio di trading\n"+
-                        "showorderbook -> fa visualizzare l'orderbook\n"+
+                        "showorderbook -> permette di visualizzare l'orderbook\n"+
+                        "showstoporder -> permette di visualizzare gli stoporder precedentemente piazzati"+
                         "insertmarketorder <ask/bid> <qtà di bitcoin da vendere/comprare> -> inserisce un marketorder\n"+
                         "insertlimitorder <ask/bid> <qtà di bitcoin da vendere/comprare> <limitprice> -> inserisce un limitorder\n"+
                         "insertstoporder <ask/bid> <qtà di bitcoin da vendere/comprare> <stopprice> -> inserisce uno stoporder\n"+
@@ -53,11 +52,10 @@ public class GenericTask implements Runnable {
         this.UDPsender = server.getUDPListner();
         this.tid = server.getActiveClients().size();
         this.printScope = "[GenericTask - "+this.tid+"]";
-        this.systemMessages = null;
     }
 
     //costruttore
-    public GenericTask(Socket client_socket,ServerMain server,Protocol protocol,BlockingQueue<ServerMessage>systemMessages) throws Exception{
+    public GenericTask(Socket client_socket,ServerMain server,Protocol protocol) throws Exception{
         super();
         this.client = client_socket;
         this.protocol = (TCP)protocol;
@@ -68,7 +66,6 @@ public class GenericTask implements Runnable {
         this.UDPsender = this.generatorServer.getUDPListner();
         this.tid = server.getActiveClients().size();
         this.printScope = "[GenericTask - "+this.tid+"]";
-        this.systemMessages = systemMessages;
     }
 
     public void run(){
@@ -76,7 +73,6 @@ public class GenericTask implements Runnable {
         DisconnectTask inactivityDisconnection = new DisconnectTask(this.protocol,this.client,this.generatorServer,this);
         //UDP UDPListner = this.generatorServer.getUDPListner();
         //invio l'UDP Listner
-        System.out.println("[GenericTask] prima di inviare");
         protocol.sendMessage(new ServerMessage(UDPsender.toBuilderString(),999));
         //invio il messaggio di benvenuto
         protocol.sendMessage(new ServerMessage(welcomeMessage,200));
@@ -84,13 +80,6 @@ public class GenericTask implements Runnable {
         try{
             while(!(Thread.currentThread().isInterrupted())){
                 // Controlla se ci sono messaggi di sistema (non bloccante)
-                ServerMessage sysMsg = systemMessages.poll();
-                if (sysMsg != null && sysMsg.response == 408) {
-                    // Invia messaggio di chiusura al client
-                    this.protocol.sendMessage(new ServerMessage("Chiusura forzata", 408));
-                    this.protocol.close();
-                    return;
-                }
 
                 /*AVVIO TIMEOUT */
                 this.timeoutTask = this.timeoutScheduler.schedule(inactivityDisconnection, CONNECTION_TIMEOUT, TimeUnit.SECONDS);
@@ -110,15 +99,14 @@ public class GenericTask implements Runnable {
                 /*CONTROLLI PRE-INVIO RISPOSTA */
                 if(responseMessage.response == 100 && this.onlineUser.equals("") && clientRequest.operation.equals("login")){
                     this.onlineUser = clientRequest.values.getUsername();
-                    System.out.println(this.printScope+" Username: "+this.onlineUser);
+                    System.out.println(AnsiColors.ORANGE+this.printScope+" Username: "+this.onlineUser);
                 }
-                //capire come fare
-                //responseMessage.errorMessage = "\r"+responseMessage.errorMessage;
+                
                 //invio il messaggio al client
                 protocol.sendMessage(responseMessage);
                 
-                System.out.println(this.printScope+" messaggio inviato: \n"+responseMessage.toString());
-                System.out.println("//////////////////////////////////////////////////////////////////////////////////");
+                System.out.println(AnsiColors.ORANGE+this.printScope+" messaggio inviato: \n"+responseMessage.toString());
+                System.out.println(AnsiColors.ORANGE+"//////////////////////////////////////////////////////////////////////////////////");
 
                 /*CONTROLLI POST-INVIO RISPOSTA*/
                 if (responseMessage.response == 100 && (clientRequest.operation.equals("logout") || clientRequest.operation.toLowerCase().equals("exit"))){
@@ -153,8 +141,6 @@ public class GenericTask implements Runnable {
 
     public JsonAccessedData serverReact(ClientMessage clientRequest){
         try{
-            //stampa di debug
-            //System.out.println("[GenericTask] Operation: "+clientRequest.operation+"\nValues: "+clientRequest.values.toString());
             //setto l'username per i comandi           
             if(clientRequest.operation.toLowerCase().contains("order"))clientRequest.values.setUsername(this.onlineUser);
             //stampa di debug

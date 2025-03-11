@@ -1,8 +1,14 @@
 package Utils.CustomExceptions;
 
 public class UnrecognizedOrderException extends Throwable{
+    private String message;
+    public UnrecognizedOrderException(String message) {  
+        this.message = message;
+    }
 
-    public UnrecognizedOrderException(String string) {    
+    @Override
+    public String getMessage(){
+        return this.message;
     }
 
 }

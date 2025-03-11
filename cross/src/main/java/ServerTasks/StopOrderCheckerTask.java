@@ -19,7 +19,6 @@ public class StopOrderCheckerTask implements Runnable{
         String oldAskMarketPriceOwner = ordb.getMarketPriceOwner("ask");
         String oldBidMarketPriceOwner = ordb.getMarketPriceOwner("bid");
         
-        System.out.println("[StopOrderChecker] sono vivo");
         while(true){//potrei implementare un controllo per attivare il thread solo quando necessario
             //controllo se sono avvenute delle variazioni nei marketprice
             if(ordb.getAskMarketPrice()>oldAskMarketPrice && ordb.getBidMarketPrice()< oldBidMarketPrice)continue;

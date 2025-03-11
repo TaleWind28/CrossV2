@@ -60,7 +60,6 @@ public class TCP implements Protocol{
     public void setReceiver(Socket receiver) {
         try{
             this.receiver = new BufferedReader(new InputStreamReader(receiver.getInputStream()));
-            //this.receiver.useDelimiter(this.delimiter);
         }
         catch(IOException e){
             System.out.println("Errore nel settare il receiver");
@@ -79,7 +78,6 @@ public class TCP implements Protocol{
 
     public Message receiveMessage(){
         try{
-            //controllare che il socket sia attivo
             String line = receiver.readLine();
             if (line!=null){
                 Message msg = adapter.fromJson(line); 

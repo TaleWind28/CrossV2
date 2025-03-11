@@ -10,6 +10,7 @@ import com.squareup.moshi.Moshi;
 import ClientTask.UDPReceiverTask;
 import Commands.CommandFactory;
 import Commands.Credentials.Disconnect;
+import Commands.Internal.ErrorMessage;
 import Communication.Messages.ClientMessage;
 import Communication.Messages.ServerMessage;
 import Communication.Protocols.ClientProtocol;
@@ -35,7 +36,6 @@ public class ClientMain extends ClientProtocol{
         super(IP,PORT);
         this.canSend = false;   
         this.factory = new CommandFactory();
-        //this.UDPReceiver = new Thread(new UDPReceiverTask(UDPUpdater,this));
 
     }
         
@@ -47,30 +47,15 @@ public class ClientMain extends ClientProtocol{
     
     public static ClientConfig getClientConfig(){
         JsonAdapter<ClientConfig> jsonAdapter = new Moshi.Builder().build().adapter(ClientConfig.class);
-            // InputStream inputStream = ClientMain.class.getClassLoader().getResourceAsStream("ClientConfig.json");
-            // if(inputStream == null)throw new RuntimeException("File di configurazione non trovato");
-            try (BufferedSource source = Okio.buffer(Okio.source(ClientMain.class.getClassLoader().getResourceAsStream("ClientConfig.json")))) {
+           try (BufferedSource source = Okio.buffer(Okio.source(ClientMain.class.getClassLoader().getResourceAsStream("ClientConfig.json")))) {
                 return jsonAdapter.fromJson(source);
             } catch (Exception e) {
-                System.out.println("minosse");
+                System.out.println(e.getMessage()+" : "+e.getClass());
             }
         return null;
     }
 
     public void receiveBehaviour(){
-        // Aggiungi uno shutdown hook alla JVM
-        Runtime.getRuntime().addShutdownHook(
-            new Thread(
-                () -> {
-                    //ho bisogno di shutdownhook solo per controllare il logout dell'utente dal server nel caso di sigint
-                    if (this.sigintTermination == true)return;
-                    try {
-                        System.out.println("[TerminationThread] "+this.protocol.receiveMessage().toString());
-                    } catch (Exception e) {;}
-                }
-            )
-        );
-        
         try{
             while(true){
                 ServerMessage serverAnswer = (ServerMessage)this.protocol.receiveMessage();
@@ -78,10 +63,8 @@ public class ClientMain extends ClientProtocol{
                 switch (serverAnswer.response) {
                     case 999://configurazione interna al server dell'UDPListner
                         this.UDPUpdater = UDP.buildFromString(serverAnswer.errorMessage);
-                        System.out.println(AnsiColors.ORANGE+"[Client-Helper] costruito udp");
                         this.UDPReceiver = new Thread(new UDPReceiverTask(UDPUpdater, this));
                         this.UDPReceiver.start();
-                        System.out.println("[Client-Helper] avviato"+AnsiColors.RESET);
                         continue;
                     case 100:
                         if (serverAnswer.errorMessage.contains("Disconnessione avvenuta con successo")){
@@ -90,7 +73,7 @@ public class ClientMain extends ClientProtocol{
                             this.protocol.close();
                             System.exit(0);
                         }
-                        System.out.print("[TCPReceiver]"+serverAnswer.toString()+"\r\n"+this.onlineUser+"@>");
+                        System.out.println("[TCPReceiver]"+serverAnswer.toString());
                         
                         this.canSend = true;
                         continue;
@@ -105,7 +88,7 @@ public class ClientMain extends ClientProtocol{
                     //default
                     default:
                         if(this.cmdSent.equals("login"))this.onlineUser = "";
-                        System.out.print("[Server]"+serverAnswer.toString()+"\r\n"+this.onlineUser+"@>");
+                        System.out.println("[Server]"+serverAnswer.toString());
                         this.canSend = true;
                         continue;
                 }            
@@ -115,7 +98,7 @@ public class ClientMain extends ClientProtocol{
             System.out.println("[ClientReceiver-IOException] "+e.getMessage());
             System.exit(0);
         }
-        catch(Exception e){
+        catch(NullPointerException e){//in caso di sigint sul server viene sollevata questa eccezione
             System.out.println("Stiamo riscontrando dei problemi sul server, procederemo a chiudere la connessione, ci scusiamo per il disagio");
             System.exit(0);
         }    
@@ -124,6 +107,7 @@ public class ClientMain extends ClientProtocol{
     public void sendBehaviour(){
         while(true){
             if(this.canSend){
+                System.out.print(AnsiColors.MAGENTA+this.onlineUser+"@>"+AnsiColors.RESET);
                 String rawClientRequest =this.userInput.nextLine();
                 
                 if(rawClientRequest.length()>1){
@@ -139,6 +123,11 @@ public class ClientMain extends ClientProtocol{
                 String[] clientRequest = rawClientRequest.split(" ");    
                 //creo la richiesta da mandare al server
                 ClientMessage userMessage = new ClientMessage(clientRequest[0],this.factory.createValue(clientRequest));
+
+                if(userMessage.values.getClass()==ErrorMessage.class){
+                    System.out.println(userMessage.values.execute(null, "", null).toString());
+                    continue;
+                }
                 //aggiorno il comando inviato per controllare sul receiver
                 this.cmdSent = clientRequest[0];
                 //controllo il caso di messaggio di aiuto
@@ -153,19 +142,19 @@ public class ClientMain extends ClientProtocol{
                 this.canSend = false;
                 
                 //stampa di debug
-                System.out.println("[ClientHelper] Message Sent");
+                System.out.println(AnsiColors.ORANGE+"[ClientHelper] Message Sent");
                     
             }
         }
     }
 
-        //dialogo col server sfruttando il multithreading
+    //dialogo col server sfruttando il multithreading
     public void multiDial(){
         try {
             //apro il socket lato client
             this.sock = new Socket(this.ip,this.port);
             //stampa di debug
-            System.out.println("socket"+this.sock.toString());
+            //System.out.println("socket"+this.sock.toString());
             //imposto il protocollo di comunicazione
             this.setProtocol(new TCP());
             //imposto receiver, sender e receiverThread
@@ -206,10 +195,14 @@ public class ClientMain extends ClientProtocol{
                 if(this.receiverThread.isAlive())this.receiverThread.join(0);
                 //chiudo il socket
                 this.sock.close();
+                //interrompo il receiverUDP
+                this.UDPReceiver.interrupt();
+                //chiudo il protocollo
+                this.UDPUpdater.close();
                 //this.protocol.close();
                 //stampa di debug   
-            } catch (InterruptedException e1) {
-                e1.printStackTrace();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
             }catch (IOException e) {
                 e.printStackTrace();
             }

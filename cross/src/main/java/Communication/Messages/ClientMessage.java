@@ -17,7 +17,7 @@ public class ClientMessage implements Message{
 
 
     public String toString(){
-        return this.color+"ClientMessage{code = "+this.operation + " ,values = "+this.values.toString()+"}"+AnsiColors.RESET;
+        return this.color+"ClientMessage{operation = "+this.operation + " ,values = "+this.values.toString()+"}"+AnsiColors.RESET;
     }
 
     public String getMessageColor() {

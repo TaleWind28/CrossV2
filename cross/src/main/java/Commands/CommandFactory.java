@@ -8,7 +8,6 @@ import Commands.Credentials.Logout;
 import Commands.Credentials.Register;
 import Commands.Credentials.UpdateCredentials;
 import Commands.Internal.ErrorMessage;
-import Commands.Internal.Help;
 import Commands.Internal.getPriceHistory;
 import Commands.Orders.CancelOrder;
 import Commands.Orders.Limitorder;
@@ -41,13 +40,16 @@ public class CommandFactory{
                 case "cancel":
                     return new CancelOrder(Integer.parseInt(command[2]),command[1]);    
 
-                case "market":   
+                case "market":
+                    if(!command[2].equals("ask") && !command[2].equals("bid"))throw new UnrecognizedOrderException("Tipo di scambio non corretto, sono accettati solo ask e bid");
                     return new MarketOrder(command[1],command[2],Integer.parseInt(command[3]));
                 
                 case "limit":
+                    if(!command[2].equals("ask") && !command[2].equals("bid"))throw new UnrecognizedOrderException("Tipo di scambio non corretto, sono accettati solo ask e bid");
                     return new Limitorder(command[1],command[2],Integer.parseInt(command[3]),Integer.parseInt(command[4]));
                 
                 case "stop":
+                    if(!command[2].equals("ask") && !command[2].equals("bid"))throw new UnrecognizedOrderException("Tipo di scambio non corretto, sono accettati solo ask e bid");    
                     return new StopOrder(command[1],command[2],Integer.parseInt(command[3]),Integer.parseInt(command[4]));
                 
                 case "showbook":
@@ -75,7 +77,7 @@ public class CommandFactory{
             }
         }//potrei generare delle eccezioni specifiche per marketorder e cancelorder -> devo valutare se ho voglia
         catch(UnrecognizedOrderException e){
-            return new Help("unset");
+            return new ErrorMessage(e.getMessage());
         }
         catch(DataFormatException e){
             //System.out.println(e.getMessage());

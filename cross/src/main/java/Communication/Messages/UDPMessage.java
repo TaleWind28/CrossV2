@@ -9,16 +9,16 @@ public class UDPMessage implements Message{
     private String interestedUser;
     private String notification;
     private String[] trades;
-    private String color;
-    public UDPMessage(){
+    private String color = AnsiColors.BLUE_VIBRANT;
 
+    public UDPMessage(){
+        
     }
 
     public UDPMessage(String interestedUser, String notification, String[] trades){
         this.interestedUser = interestedUser;
         this.notification = notification;
         this.trades = trades;
-        this.setMessageColor(AnsiColors.MAGENTA);
     }
    
     public String getFullMessage(){
@@ -46,7 +46,7 @@ public class UDPMessage implements Message{
     } 
     
     public String tradeNotification(){
-        return  this.color+"[Notification]: closedTrades\n[Trades]:{\n"+ this.tradesString()+"\n}"+AnsiColors.RESET ;
+        return this.getMessageColor()+"[Notification]: closedTrades\n[Trades]:{\n"+ this.tradesString()+"\n}"+AnsiColors.RESET ;
     }   
 
     @Override
