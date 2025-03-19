@@ -11,7 +11,6 @@ import JsonAccessedData.Orderbook.Orderbook;
 //import JsonMemories.Orderbook;
 import ServerTasks.GenericTask;
 import Utils.AnsiColors;
-import Utils.OrderCache;
 
 public class StopOrder extends Order implements Values {
 
@@ -28,16 +27,8 @@ public class StopOrder extends Order implements Values {
         this.setGmt(Instant.now().getEpochSecond());
         Orderbook orderbook = (Orderbook)data;
         if(user.equals("stopprice met")){
-            System.out.println("parti");
             OrderResponseMessage executionStatus = (OrderResponseMessage) new MarketOrder(this.getUser(),this.getExchangeType(), this.getSize()).execute(data, task.onlineUser, task);
-            // System.out.println("Risposta: "+executionStatus.response);
-            // if(executionStatus.response == -1){
-            //     System.out.print("Mi pianto?");
-            //     task.UDPsender.sendMessage(new UDPMessage(task.onlineUser,"stoporder couldn't be executed",new String[]{}));
-            //     System.out.print("No\n Ora?"); 
-            //     this.notifySuccessfullTrades(new OrderCache(), task.UDPsender, this.getOrderId(), task.onlineUser);
-            //     System.out.print("No");
-            // }
+            if (executionStatus.getOrderId() == -1)task.UDPsender.sendMessage(new UDPMessage(task.onlineUser,"stoporder couldn't be executed",new String[]{"the stopprice for a previously placed stoporder was met but the order couldn't be evaded\nOrderDetails:"+this.toString()}));
             return null;
         }
         this.setUser(task.onlineUser);

@@ -75,8 +75,6 @@ public class Orderbook implements JsonAccessedData{
 
     public synchronized void addData(Values val,String mapType) {
         Limitorder ord = (Limitorder)val;
-        String orderbookEntry = ord.getUser()+":"+ord.getPrice();
-        //System.out.println(this.currentScope+"entry:"+orderbookEntry);
         ConcurrentSkipListMap<OrderSorting, Limitorder> ordermap = this.getRequestedMap(mapType);
         ordermap.put(new OrderSorting(ord.getGmt(),ord.getPrice(),ord.getOrderId()), ord);
         this.dataFlush();

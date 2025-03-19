@@ -1,4 +1,13 @@
 {
- "askMap": {},
+ "askMap": {
+  "Price: 5, Timestamp: 1742404416, OrderId: 1": {
+   "exchangeType": "ask",
+   "gmt": 1742404416,
+   "orderId": 1,
+   "price": 5,
+   "size": 4,
+   "user": "pino"
+  }
+ },
  "bidMap": {}
 }

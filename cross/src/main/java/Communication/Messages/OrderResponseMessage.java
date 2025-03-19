@@ -17,6 +17,14 @@ public class OrderResponseMessage extends ServerMessage{
         return this.getMessageColor()+"OrderResponseMessage{\norderId='"+this.orderId+"'\nMessage='"+this.message+"'\n}"+AnsiColors.RESET;
     }
 
+    public int getOrderId() {
+        return orderId;
+    }
+
+    public String getMessage() {
+        return message;
+    }
+
 
 
 }
