@@ -8,6 +8,7 @@ import Commands.Credentials.Logout;
 import Commands.Credentials.Register;
 import Commands.Credentials.UpdateCredentials;
 import Commands.Internal.ErrorMessage;
+import Commands.Internal.Help;
 import Commands.Internal.getPriceHistory;
 import Commands.Orders.CancelOrder;
 import Commands.Orders.Limitorder;
@@ -23,14 +24,6 @@ public class CommandFactory{
 
     public Values createValue(String[] command) {
         try {
-            // //Stampa di debug
-            // System.out.print(AnsiColors.ORANGE+"[CommandFactory] comando: ");
-            
-            // for(int i=0;i<command.length;i++){
-            //     System.out.println("posizione["+i+"] "+command[i]+" len:"+command[i].length());
-            // }
-
-            // System.out.println(AnsiColors.RESET);
             //sistemo il tipo di ordine per avere solo la parte significativa
             String valueType = command[0].toLowerCase();
             valueType = valueType.replace("insert", "");
@@ -69,6 +62,9 @@ public class CommandFactory{
 
                 case "logout":
                     return new Logout("unset");
+                
+                case "help":
+                    return new Help("aiutami");
                 
                 case "getpricehistory":
                     return new getPriceHistory(command[2]);

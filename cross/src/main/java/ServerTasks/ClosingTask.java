@@ -15,32 +15,34 @@ public class ClosingTask implements Runnable{
         this.generatorServer = generatorServer;
     }
     public void run(){    
-        System.out.println(AnsiColors.BRIGHT_RED+"[ClosingTask] Ctrl+C rilevato -> chiusura server in corso...");
+        System.out.println(AnsiColors.BRIGHT_RED+"[ClosingTask] Ctrl+C rilevato -> chiusura server in corso..."+AnsiColors.RESET);
 
         generatorServer.pool.shutdown();
         try {
             //Attende la terminazione dei thread attivi
             if (!generatorServer.pool.awaitTermination(10, TimeUnit.MILLISECONDS)) {
-                System.out.println("[ClosingTask] Interruzione forzata dei thread attivi...");
+                System.out.println(AnsiColors.BRIGHT_RED+"[ClosingTask] Interruzione forzata dei thread attivi..."+AnsiColors.RESET);
                 generatorServer.pool.shutdownNow();
+                
+
             }
         } catch (InterruptedException e) {
             //Forza l'arresto in caso di interruzione
             generatorServer.pool.shutdownNow();
         }
-        System.out.println("[ClosingTask] Threadpool terminato");
+        System.out.println(AnsiColors.BRIGHT_RED+"[ClosingTask] Threadpool terminato"+AnsiColors.RESET);
         generatorServer.getRegisteredUsers().getUserMap().forEach((username, user)-> user.setLogged(false));
         generatorServer.getRegisteredUsers().dataFlush();
 
         this.notifyActiveClients();
 
-        System.out.println("[ClosingTask] Utenti correttamente sloggati");
+        System.out.println(AnsiColors.BRIGHT_RED+"[ClosingTask] Utenti correttamente sloggati"+AnsiColors.RESET);
         try {
             this.generatorServer.getServer().close();
         } catch (IOException e) {
-            System.out.println("[ClosingTask] Unable to close serverSocket");
+            System.out.println(AnsiColors.BRIGHT_RED+"[ClosingTask] Unable to close serverSocket"+AnsiColors.RESET);
         }
-        System.out.println("[ClosingTask] chiusura in sicurezza del server completata"+AnsiColors.RESET);
+        System.out.println(AnsiColors.BRIGHT_RED+"[ClosingTask] chiusura in sicurezza del server completata"+AnsiColors.RESET);
     }
 
     public void notifyActiveClients(){
@@ -49,8 +51,7 @@ public class ClosingTask implements Runnable{
                 TCP proto = new TCP();
                 proto.setSender(client);
                 proto.sendMessage(new ServerMessage("Stiamo Riscontrando dei problemi gravi per i quali non possiamo garantire il funzionamento del servizio, pertanto ci occuperemo della disconnessione",408));
-                System.out.println("[ClosingTask] mandato");
-                client.close();
+                //client.close();
             }
         }catch(Exception e){
             System.out.println("[ClosingTask]"+e.getMessage() + " : "+e.getClass());
