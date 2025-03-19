@@ -44,6 +44,7 @@ public class StopOrder extends Order implements Values {
 
     @Override
     public String toString() {
+        this.setColor(getAnsiColor());
         return "StopOrder{"+super.toString()+"}";
     }
 }

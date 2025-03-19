@@ -160,10 +160,7 @@ public class Orderbook implements JsonAccessedData{
     }
 
     public String getMarketPriceOwner(String marketType){
-        //Limitorder ord = null;
-        //ConcurrentSkipListMap<OrderSorting, Limitorder> reqMap =;
         ConcurrentSkipListMap<OrderSorting, Limitorder> requestedMap = getRequestedMap(marketType);
-        //System.out.println("[Orderbook] price="+price+", tradetype="+tradeType);
         if(requestedMap == null)return null;
         if(requestedMap.isEmpty())return null;
         
