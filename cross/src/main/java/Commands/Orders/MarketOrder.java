@@ -33,7 +33,6 @@ public class MarketOrder extends Order implements Values {
         //creo una cache per memorizzare gli ordini
         OrderCache cache = new OrderCache();
         //predispongo un codice di risposta di default
-        int resp_code = this.getOrderId();
         //ciclo finchè non evado completamente l'ordine
         while(super.getSize()>0){
             //invoco evadeORder per evadere l'ordine
@@ -41,13 +40,12 @@ public class MarketOrder extends Order implements Values {
             //System.out.println("[Marketorder-execute] response "+responseMessage+", size "+this.getSize());
             //controllo il risultato dell'evadeORder
             if (responseMessage == null){
-                System.out.println("[Marketorder-evadeOrd.exception] response "+responseMessage);
+                //System.out.println("[Marketorder-evadeOrd.exception] response "+responseMessage);
                 //ripristino l'orderbook
                 orderbook.restoreOrders(cache,orderbook);
                 //imposto orderId a -1 per indicare il fallimento
                 this.setOrderId(-1);
                 responseMessage = "Order not fully Executed!";
-                resp_code = -1;
                 break;
             }
             responseMessage = "Order fully Executed";            
@@ -56,14 +54,15 @@ public class MarketOrder extends Order implements Values {
         super.notifySuccessfullTrades(cache, task.UDPsender, this.getOrderId(), task.onlineUser);
         //aggiorno i prezzi di mercato solo se ho evaso l'ordine
         orderbook.updateMarketPrice();
-        return new OrderResponseMessage(resp_code,responseMessage);
+        System.out.println("Risposta:"+this.getOrderId());
+        return new OrderResponseMessage(this.getOrderId(),responseMessage);
     }
 
     
 
     @Override
     public String toString() {
-        return "Marketorder{"+super.toString()+"}";    
+        return AnsiColors.MAGENTA+"Marketorder{"+super.toString()+"}"+AnsiColors.RESET;    
     }
 
 

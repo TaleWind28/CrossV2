@@ -24,8 +24,6 @@ public class StopOrderCheckerTask implements Runnable{
     }
 
     public void run(){
-        
-        
         while(true){
             //controllo se sono avvenute delle variazioni nei marketprice
             this.askMarketPrice = ordb.getAskMarketPrice();
@@ -43,7 +41,10 @@ public class StopOrderCheckerTask implements Runnable{
                     order.execute(ordb, "stopprice met", this.stubTask);
                 }
             }
-            
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+            }
         }
         
 
@@ -56,25 +57,20 @@ public class StopOrderCheckerTask implements Runnable{
 
     public boolean needsToBeExecuted(Order order){
         String[] marketData = getRequestedMarketData(order.getExchangeType());
-        System.out.println("[StoporderChecker] marketdata");
-        for(String piece:marketData){
-            System.out.println(piece);
-        }
-
         if(marketData == null || marketData[0] == null || marketData[1] == null)return false;
         if(order.getUser().equals(marketData[0]))return false;
-        return checkMarketPrice(marketData[2],Integer.parseInt(marketData[1]));
+        return checkMarketPrice(marketData[2],order.getPrice());
     }
 
     public boolean checkMarketPrice(String interestedMarket, int marketPrice){
         if(interestedMarket.equals("ask") && marketPrice <= this.askMarketPrice)return true;
-        if(interestedMarket.equals("bid") && marketPrice >= this.bidMarketPrice)return true;
-        return false;
+        else if(interestedMarket.equals("bid") && marketPrice >= this.bidMarketPrice)return true;
+        else return false;
     }
 
     public String[] getRequestedMarketData(String requestedMarket){
-        if(requestedMarket.equals("ask"))return new String[]{this.bidMarketPriceOwner,""+this.bidMarketPrice,"bid"};
-        if(requestedMarket.equals("bid"))return new String[]{this.askMarketPriceOwner,""+this.askMarketPrice,"ask"};
-        return null;
+        if(requestedMarket.equals("ask"))return new String[]{this.bidMarketPriceOwner,""+this.bidMarketPrice,"ask"};
+        else if(requestedMarket.equals("bid"))return new String[]{this.askMarketPriceOwner,""+this.askMarketPrice,"bid"};
+        else return null;
     }
 }

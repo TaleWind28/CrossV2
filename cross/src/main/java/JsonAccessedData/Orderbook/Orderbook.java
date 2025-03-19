@@ -33,14 +33,13 @@ public class Orderbook implements JsonAccessedData{
     private JsonAdapter<OrderClass> adapter = moshi.adapter(OrderClass.class);
     private ConcurrentSkipListMap<OrderSorting, Limitorder> askOrders = new ConcurrentSkipListMap<>(OrderSorting.PRICE_ASCENDING); // Prezzi crescenti
     private ConcurrentSkipListMap<OrderSorting, Limitorder> bidOrders = new ConcurrentSkipListMap<>(OrderSorting.PRICE_DESCENDING); // Prezzi decrescenti
-    private ConcurrentLinkedQueue<StopOrder> stopOrders = new ConcurrentLinkedQueue<>();//devo ancora capire cosa sono
+    private ConcurrentLinkedQueue<StopOrder> stopOrders = new ConcurrentLinkedQueue<>();
     private int askMarketPrice;// miglior prezzo di vendita -> prima entry dei bid ossia prezzo maggiore
     private int bidMarketPrice;// miglior prezzo d'acquisto -> prima entry degli ask ossia prezzo minore
     private String currentScope = "[ORDERBOOK]";
         
     public Orderbook(String jsonFilePath){
         this.jsonFilePath = System.getProperty("user.dir")+jsonFilePath;
-        //System.out.println(this.currentScope+"Stoporders "+this.stopOrders);
     }
     
     @Override
@@ -77,7 +76,7 @@ public class Orderbook implements JsonAccessedData{
     public synchronized void addData(Values val,String mapType) {
         Limitorder ord = (Limitorder)val;
         String orderbookEntry = ord.getUser()+":"+ord.getPrice();
-        System.out.println(this.currentScope+"entry:"+orderbookEntry);
+        //System.out.println(this.currentScope+"entry:"+orderbookEntry);
         ConcurrentSkipListMap<OrderSorting, Limitorder> ordermap = this.getRequestedMap(mapType);
         ordermap.put(new OrderSorting(ord.getGmt(),ord.getPrice(),ord.getOrderId()), ord);
         this.dataFlush();

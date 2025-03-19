@@ -1,21 +1,4 @@
 {
- "askMap": {
-  "Price: 7, Timestamp: 1741860874, OrderId: 5": {
-   "exchangeType": "ask",
-   "gmt": 1741860874,
-   "orderId": 5,
-   "price": 7,
-   "size": 5,
-   "user": "pippo"
-  },
-  "Price: 7, Timestamp: 1741860932, OrderId: 6": {
-   "exchangeType": "ask",
-   "gmt": 1741860932,
-   "orderId": 6,
-   "price": 7,
-   "size": 6,
-   "user": "pippo"
-  }
- },
+ "askMap": {},
  "bidMap": {}
 }
