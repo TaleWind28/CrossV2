@@ -5,9 +5,18 @@
    "gmt": 1742404416,
    "orderId": 1,
    "price": 5,
-   "size": 4,
+   "size": 3,
    "user": "pino"
   }
  },
- "bidMap": {}
+ "bidMap": {
+  "Price: 900, Timestamp: 1742405541, OrderId: 2": {
+   "exchangeType": "bid",
+   "gmt": 1742405541,
+   "orderId": 2,
+   "price": 900,
+   "size": 3,
+   "user": "pin"
+  }
+ }
 }

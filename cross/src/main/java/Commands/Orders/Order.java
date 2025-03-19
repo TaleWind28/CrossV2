@@ -149,7 +149,7 @@ public abstract class Order {
 
     @Override
     public String toString() {
-        return AnsiColors.MAGENTA+"user='"+this.user+"', orderId='"+this.orderId+"', timestamp='"+this.gmt+"', size='"+this.size+"', price='"+this.price+"', tradeType='"+this.exchangeType+"'"+AnsiColors.RESET;
+        return "user='"+this.user+"', orderId='"+this.orderId+"', timestamp='"+this.gmt+"', size='"+this.size+"', price='"+this.price+"', tradeType='"+this.exchangeType+"'";
     }
     
 }

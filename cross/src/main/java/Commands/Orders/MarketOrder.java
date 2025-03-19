@@ -62,7 +62,7 @@ public class MarketOrder extends Order implements Values {
 
     @Override
     public String toString() {
-        return AnsiColors.MAGENTA+"Marketorder{"+super.toString()+"}"+AnsiColors.RESET;    
+        return "Marketorder{"+super.toString()+"}";    
     }
 
 

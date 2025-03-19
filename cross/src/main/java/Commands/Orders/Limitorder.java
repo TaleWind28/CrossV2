@@ -49,14 +49,14 @@ public class Limitorder extends Order implements Values{
 
     @Override
     public String toString() {
-        return AnsiColors.MAGENTA+"Limitorder{" +
+        return "Limitorder{" +
         "exchangeType='"+this.getExchangeType()
         +"', size='"+this.getSize()+
         "', price='"+this.getPrice()+
         "', orderID='"+this.getOrderId()+
         "', utente='"+this.getUser()+
         "', timestamp='"+this.getGmt()+
-        "'}"+AnsiColors.RESET;    
+        "'}";    
     }
 
     public void addSize(int size) {

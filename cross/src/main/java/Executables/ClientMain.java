@@ -99,7 +99,7 @@ public class ClientMain extends ClientProtocol{
             System.exit(0);
         }
         catch(NullPointerException e){//in caso di sigint sul server viene sollevata questa eccezione
-            System.out.println("Stiamo riscontrando dei problemi sul server, procederemo a chiudere la connessione, ci scusiamo per il disagio");
+            System.out.println(AnsiColors.RED+"Stiamo riscontrando dei problemi sul server, procederemo a chiudere la connessione, ci scusiamo per il disagio"+AnsiColors.RESET);
             System.exit(0);
         }    
     }
