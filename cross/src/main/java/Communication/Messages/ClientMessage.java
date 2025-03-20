@@ -1,6 +1,6 @@
 package Communication.Messages;
 
-import Communication.Values;
+import Commands.Values;
 import Utils.AnsiColors;
 
 public class ClientMessage implements Message{

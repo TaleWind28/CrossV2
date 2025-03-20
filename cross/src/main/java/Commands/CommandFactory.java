@@ -16,7 +16,6 @@ import Commands.Orders.MarketOrder;
 import Commands.Orders.ShowOrderBook;
 import Commands.Orders.ShowStopOrder;
 import Commands.Orders.StopOrder;
-import Communication.Values;
 import Utils.AnsiColors;
 import Utils.CustomExceptions.UnrecognizedOrderException;
 import Utils.CustomExceptions.WrongOrderParametersException;

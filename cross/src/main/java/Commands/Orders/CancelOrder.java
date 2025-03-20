@@ -4,7 +4,7 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.concurrent.ConcurrentSkipListMap;
 
-import Communication.Values;
+import Commands.Values;
 import Communication.Messages.ServerMessage;
 import JsonAccessedData.JsonAccessedData;
 import JsonAccessedData.Orderbook.Orderbook;

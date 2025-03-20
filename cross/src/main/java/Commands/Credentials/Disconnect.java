@@ -1,6 +1,6 @@
 package Commands.Credentials;
 
-import Communication.Values;
+import Commands.Values;
 import Communication.Messages.ServerMessage;
 import JsonAccessedData.JsonAccessedData;
 import JsonAccessedData.Users.Userbook;

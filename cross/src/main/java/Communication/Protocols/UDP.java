@@ -18,7 +18,6 @@ public class UDP implements Protocol {
         //System.out.println("[UDP-Constructor] "+this.group.getHostAddress());
         this.socket = new MulticastSocket(port);
 
-        // Unirsi al gruppo multicast /*CAPIRE COME CORREGGERE IL DEPRECATO */
         socket.joinGroup(new InetSocketAddress(group, port), NetworkInterface.getByInetAddress(InetAddress.getLocalHost()));
     }
 

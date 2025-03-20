@@ -2,7 +2,7 @@ package Commands.Orders;
 
 import java.util.Map;
 
-import Communication.Values;
+import Commands.Values;
 import Communication.Messages.OrderResponseMessage;
 import Communication.Messages.ServerMessage;
 import JsonAccessedData.JsonAccessedData;

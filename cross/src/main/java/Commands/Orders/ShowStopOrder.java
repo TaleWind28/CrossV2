@@ -2,7 +2,7 @@ package Commands.Orders;
 
 import java.util.Iterator;
 
-import Communication.Values;
+import Commands.Values;
 import Communication.Messages.ServerMessage;
 import JsonAccessedData.JsonAccessedData;
 import JsonAccessedData.Orderbook.Orderbook;

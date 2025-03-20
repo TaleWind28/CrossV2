@@ -3,4 +3,6 @@ cross/target/*
 cross/!target/server.jar
 cross/!target/client.jar
 libs
-Relazione/
+Relazione/*
+!Relazione/*.pdf
+!Relazione/*.tex

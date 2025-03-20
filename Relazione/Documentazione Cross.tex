@@ -1,0 +1,70 @@
+\documentclass{article}
+
+\usepackage[italian]{babel}
+\usepackage[a4paper, margin=2cm]{geometry}
+\usepackage{xcolor}
+\usepackage{tocloft}
+\usepackage{titlesec}
+\definecolor{bluscuro}{RGB}{0, 0, 139}  % Definizione di un blu scuro
+\usepackage{amsmath}
+\usepackage{graphicx}
+\usepackage[colorlinks=true, allcolors=bluscuro]{hyperref}
+
+% Cambiare il colore delle sezioni
+\titleformat{\section}
+  {\color{bluscuro}\Large\bfseries} % Stile: colore + grande + grassetto
+  {\thesection}{1em}{}
+
+\titleformat{\subsection}
+  {\color{bluscuro}\large\bfseries} % Stile: colore + medio + grassetto
+  {\thesubsection}{1em}{}
+
+\renewcommand{\cfttoctitlefont}{\color{bluscuro}\huge\bfseries} % Titolo "Indice" in blu e grande
+
+\title{Documentazione Cross}
+\author{Martini Matteo 636694}
+
+\begin{document}
+\maketitle
+
+\tableofcontents
+
+\section{Scelte Progettuali}
+Il progetto è stato realizzato seguendo i principi SOLID per garantire modularità, scalabilità e manutenibilità 
+\subsection{Organizzazione delle unità di codice}
+La suddivisione intensiva in package garantisce la modularità per le varie funzionalità e migliora la fruibilità del codice.
+Di seguito verranno elencati i package principali
+\begin{itemize}
+    \item \textbf{Client}: contiene le task da eseguire lato Client e la classe che verrà istanziata per usufruire del servizio
+    \item \textbf{Commands}: contiene tutti i comandi che possono essere utilizzati dagli utenti, insieme alla factory per istanziarli
+    \item \textbf{Communication}: contiene i protocolli di comunicazione utilizzati insieme ai tipi di messaggio definiti per la comunicazione
+    \item \textbf{Config}: contiene le classi per configurare Client e Server
+    \item \textbf{Executables}: contiene ServerMain e ClientMain che eseguiranno rispettivamente Server e Client del servizio Cross
+    \item \textbf{JsonAccessedData}: contiene tutti i vari file Json utilizzati per mantenere informazioni persistenti
+    \item \textbf{Server}: contiene le task da eseguire lato Server e la classe che verrà istanziata per creare il Server centrale del servizio Cross
+    \item \textbf{Utils}: contiene varie classi di utilità che semplificano l'esecuzione del codice
+\end{itemize}
+
+\subsection{Comunicazione}
+La comunicazione definita nel package \textbf{Communication} contiene i due protocolli utilizzati:
+
+\begin{itemize}
+    \item \textbf{TCP}: Protocollo maggiormente utilizzato per la comunicazione Client-Server mediante il quale il Client può inviare richieste al Server. La conessione viene instaurata all'avvio del Client e persiste fino alla chiusura dello stesso o di problemi che causano la chiusura del Server
+    \item \textbf{UDP}: Protocollo utilizzato per notificare gli utenti della finalizzazione delle transazioni legate agli ordini da loro piazzati nell'orderbook
+\end{itemize}
+
+\subsection{Gestione di Orderbook e Registrazioni}
+L'orderbook viene realizzato mediante un file Json diviso in due campi principali \textbf{askMap} e \textbf{bidMap} che contengono i relativi ordini
+Questa scelta consente di persistere i dati sugli ordini anche dopo la chiusura del Server, oltre a garantire una relativa semplicita nel caricamento in memoria degli ordini tramite una struttura dati apposita.
+La gestione delle registrazioni è stata gestita in maniera simile mediante un \textbf{"Userbook"} con una chiave usermap per rendere più agevole la traduzione da Json a struttura dati, inoltre per garantire maggiore sicurezza le password sono state criptate grazie alla libreria \textbf{BCrypt}.
+
+\subsection{Sincronizzazione}
+Per garantire consistenza in un ambiente concorrente vengono utilizzati metodi \textbf{synchronized} per proteggere sezioni critiche ed inoltre le varie strutture dati presenti nella collezione \textbf{java.util.concurrent}.
+
+\subsection{Design Pattern}
+Il progetto utilizza principalmente la \textbf{Simple Factory} per generare i comandi da inviare al Server.
+Questa generazione avviene sul Client sfruttando l'interfaccia \textbf{Values} la quale offre il metodo execute che il Server utilizzerà per eseguire correttamente i vari comandi disponibili. Inoltre questo approccio consente di mantenere invariato il formato di messaggi,\textbf{Message\{Operation,Values\}} che il Client invia al server e facilita l'aggiunta di comandi in quanto è sufficiente creare una nuova implementazione di Values.
+
+\section{Schema Generale dei Thread Attivati}
+
+\end{document}

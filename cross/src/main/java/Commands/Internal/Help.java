@@ -1,6 +1,6 @@
 package Commands.Internal;
 
-import Communication.Values;
+import Commands.Values;
 import Communication.Messages.ServerMessage;
 import JsonAccessedData.JsonAccessedData;
 import Server.ServerTasks.GenericTask;

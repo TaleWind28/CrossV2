@@ -4,7 +4,7 @@ import java.util.Map;
 import java.util.TreeMap;
 import java.util.zip.DataFormatException;
 
-import Communication.Values;
+import Commands.Values;
 import Communication.Messages.ServerMessage;
 import JsonAccessedData.JsonAccessedData;
 import JsonAccessedData.PriceHistory.DailyTradeStats;

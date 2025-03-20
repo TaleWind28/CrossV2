@@ -1,4 +1,4 @@
-package Communication;
+package Commands;
 
 import Communication.Messages.ServerMessage;
 import JsonAccessedData.JsonAccessedData;
