@@ -66,7 +66,6 @@ public abstract class Order {
         this.gmt = gmt;
     }
 
-    
     public long getGmt() {
         return gmt;
     }
@@ -75,6 +74,7 @@ public abstract class Order {
         //memorizzo le transazioni per poi mandarle
         List<String> tradeNotify = new ArrayList<>();
         tradeNotify.add("You have bought/sold:\n");
+        cache.printAll();
         String responseMessage = "";
         //mando messaggio UDP
         while(cache.getSize()!=0){
@@ -116,21 +116,24 @@ public abstract class Order {
             System.out.println("[Order-evadeOrd]ordine inevdibile");
             return null;
         }
-        //salvo l'ordine rimosso dall'ordebook in caso non si possa evadere completamente il marketorder
-        cache.addOrder(evadedOrder);
         //controllo quanti btc sono stati comprati
         if(evadedOrder.getSize()>this.size){
             //sottraggo la taglia di bitcoin comprata
             evadedOrder.addSize(-(this.size));
             //rimetto l'offerta sul mercato
             orderbook.addData(evadedOrder, exchangetype);
+            //correggo la size dell'ordine in modo che venga comunicata correttamente al venditore
+            evadedOrder.setSize(this.size);
             this.size = 0;
         }
         else{
             this.size -= evadedOrder.getSize();
         }
+        //salvo l'ordine rimosso dall'ordebook in caso non si possa evadere completamente il marketorder
+        cache.addOrder(evadedOrder);
         return responseMessage;
     }
+
     public String getExchangeType(){
         return this.exchangeType;
     }

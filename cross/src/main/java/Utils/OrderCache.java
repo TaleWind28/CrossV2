@@ -28,4 +28,9 @@ public class OrderCache {
         return size;
     }
 
+    public void printAll(){
+        for(Limitorder ord:this.orderCache){
+            System.out.println("Ordine:" + ord.toString());
+        }
+    }
 }

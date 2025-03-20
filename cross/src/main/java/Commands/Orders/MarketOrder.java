@@ -28,19 +28,15 @@ public class MarketOrder extends Order implements Values {
         Orderbook orderbook = (Orderbook)data;
         //preparo le stringhe per richiesta mappa Orderbook
         String exchangetype = super.findOppositeMap(this.getExchangeType());
-        //ha senso preparare il responsemessege adesse perchè se compro compro tutto dal solito utente, il quale verrà aggiunto successivamente al messaggio
         String responseMessage = "";
         //creo una cache per memorizzare gli ordini
         OrderCache cache = new OrderCache();
-        //predispongo un codice di risposta di default
         //ciclo finchè non evado completamente l'ordine
         while(super.getSize()>0){
             //invoco evadeORder per evadere l'ordine
             responseMessage = this.evadeOrder(exchangetype, user, orderbook, cache, responseMessage);
-            //System.out.println("[Marketorder-execute] response "+responseMessage+", size "+this.getSize());
             //controllo il risultato dell'evadeORder
             if (responseMessage == null){
-                //System.out.println("[Marketorder-evadeOrd.exception] response "+responseMessage);
                 //ripristino l'orderbook
                 orderbook.restoreOrders(cache,orderbook);
                 //imposto orderId a -1 per indicare il fallimento
@@ -54,7 +50,7 @@ public class MarketOrder extends Order implements Values {
         super.notifySuccessfullTrades(cache, task.UDPsender, this.getOrderId(), task.onlineUser);
         //aggiorno i prezzi di mercato solo se ho evaso l'ordine
         orderbook.updateMarketPrice();
-        System.out.println("Risposta:"+this.getOrderId());
+        //ritorno il messaggio
         return new OrderResponseMessage(this.getOrderId(),responseMessage);
     }
 
