@@ -1,0 +1,6 @@
+cross/*.class
+cross/target/*
+cross/!target/server.jar
+cross/!target/client.jar
+libs
+Relazione/
