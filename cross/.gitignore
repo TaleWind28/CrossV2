@@ -1,6 +1,0 @@
-*.class
-target/*
-!target/server.jar
-!target/client.jar
-libs
-Relazione/
