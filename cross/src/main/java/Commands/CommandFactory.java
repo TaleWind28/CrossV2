@@ -74,7 +74,7 @@ public class CommandFactory{
             }
         }//potrei generare delle eccezioni specifiche per marketorder e cancelorder -> devo valutare se ho voglia
         catch(UnrecognizedOrderException e){
-            return new ErrorMessage(e.getMessage(),"invalid type",-1,-1);
+            return new ErrorMessage(e.getMessage());
         }
         catch(NumberFormatException e){
             if(valueType.equals("cancel"))return new ErrorMessage("Devi inserire l'order id dell'ordine che intendi cancellare");

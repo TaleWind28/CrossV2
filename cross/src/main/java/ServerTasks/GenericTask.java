@@ -1,7 +1,6 @@
 package ServerTasks;
 
 import java.net.Socket;
-import java.net.SocketException;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;

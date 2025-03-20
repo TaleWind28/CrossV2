@@ -141,7 +141,7 @@ public class ClientMain extends ClientProtocol{
                 this.canSend = false;
                 
                 //stampa di debug
-                System.out.println(AnsiColors.ORANGE+"[ClientHelper] Message Sent");
+                //System.out.println(AnsiColors.ORANGE+"[ClientHelper] Message Sent");
                     
             }
         }
