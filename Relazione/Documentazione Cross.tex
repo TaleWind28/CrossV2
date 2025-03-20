@@ -56,7 +56,7 @@ La comunicazione definita nel package \textbf{Communication} contiene i due prot
 \subsection{Gestione di Orderbook e Registrazioni}
 L'orderbook viene realizzato mediante un file Json diviso in due campi principali \textbf{askMap} e \textbf{bidMap} che contengono i relativi ordini
 Questa scelta consente di persistere i dati sugli ordini anche dopo la chiusura del Server, oltre a garantire una relativa semplicita nel caricamento in memoria degli ordini tramite una struttura dati apposita.
-La gestione delle registrazioni è stata gestita in maniera simile mediante un \textbf{"Userbook"} con una chiave usermap per rendere più agevole la traduzione da Json a struttura dati, inoltre per garantire maggiore sicurezza le password sono state criptate grazie alla libreria \textbf{BCrypt}.
+\\La gestione delle registrazioni è simile mediante un \textbf{"Userbook"} con una chiave usermap per rendere più agevole la traduzione da Json a struttura dati, inoltre per garantire maggiore sicurezza le password sono state criptate grazie alla libreria \textbf{BCrypt}.
 
 \subsection{Sincronizzazione}
 Per garantire consistenza in un ambiente concorrente vengono utilizzati metodi \textbf{synchronized} per proteggere sezioni critiche ed inoltre le varie strutture dati presenti nella collezione \textbf{java.util.concurrent}.
@@ -66,5 +66,42 @@ Il progetto utilizza principalmente la \textbf{Simple Factory} per generare i co
 Questa generazione avviene sul Client sfruttando l'interfaccia \textbf{Values} la quale offre il metodo execute che il Server utilizzerà per eseguire correttamente i vari comandi disponibili. Inoltre questo approccio consente di mantenere invariato il formato di messaggi,\textbf{Message\{Operation,Values\}} che il Client invia al server e facilita l'aggiunta di comandi in quanto è sufficiente creare una nuova implementazione di Values.
 
 \section{Schema Generale dei Thread Attivati}
+Il progetto sfrutta il multithreading per gestire la comunicazione Client-Server in maniera efficiente, oltre all'elaborazione asincrona di attività interne
+\subsection{Thread Lato Client}
+Il client attiva ed usa 3 thread durante il normale funzionamento:
+\begin{itemize}
+  \item \textbf{SenderThread}: utilizzato per inviare i comandi al server mediante connessione \textbf{TCP}.
+  \item \textbf{ReceiverThread}: utilizzato per ricevere le risposte del server mediante connessione \textbf{TCP}.
+  \item \textbf{UDPReceiverThread}: utilizzato per ricevere le notifiche legate alle transazioni che riguardano gli ordini piazzati dall'utente mediante connessione \textbf{UDP}.
+\end{itemize}
+I primi due thread vengono istanziati nella classe ClientClass e persistono le informazioni fino alla chiusura del socket, la scelta di avere due thread separati per invio e ricezione consente di ricevere in maniera asincrona le risposte del server, aiutando quindi a gestire i casi in cui si riscontrano dei problemi sul server richiedendo però l'utilizzo di una variabile per sincronizzare i due thread impedendo così di inviare al massimo 1 messaggio alla volta aspettando così la relativa risposta.
+\\ \textbf{UDPReceiverThread} viene istanziato subito dopo la ricezione del primissimo messaggio inviato dal server, che contiene le informazioni su porta e gruppo multicast al quale connettersi per ottenere informazioni sugli ordini.
+È stato scelto di utilizzare multicast per semplificare l'implementazione del paradigma Publish-Subscribe per gli ordini; un'altro vantaggio di multicast consiste nel poter assegnare ad ogni ordine dell'orderbook un gruppo multicast, vantaggio che in questo progetto non è stato sfruttato appieno in quanto non richiesto esplicitamente.
+\subsection{Thread Lato Server}
+Il Server utilizza un \textbf{FixedThreadPool} per gestire i vari client connessi che vengono rappresentati da una \textbf{GenericTask}, inoltre attiva i seguenti Thread:
+\begin{itemize}
+  \item \textbf{UDPListner}: Thread che si occupa dell'invio delle notifiche secondo il modello Publish-Subscribe.
+  \item \textbf{StopOrderChecker}: Thread che si occupa di controllare gli \textbf{StopOrder} piazzati dagli utenti ed eseguirli in caso lo stopprice lo consenta.
+  \item \textbf{ClosingTask}: Thread che si occupa di svolgere la chiusura del server in sicurezza quando si riscontrano dei problemi sul server per i quali non si può garantire la fruizione del servizio di trading.
+\end{itemize}
+
+\section{File Java}
+
+
+\section{Primitive di Sincronizzazione}
+
+\subsection{synchronized}
+
+\subsection{volatile}
+\subsection{ConcurrentSkipListMap}
+
+\section{Utilizzare il Progetto}
+
+\subsection{Requisiti di Sistema}
+
+\subsection{Struttura del Progetto}
+
+\subsection{Esecuzione del Progetto}
+
 
 \end{document}
