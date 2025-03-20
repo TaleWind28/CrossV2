@@ -2,7 +2,7 @@ package Communication;
 
 import Communication.Messages.ServerMessage;
 import JsonAccessedData.JsonAccessedData;
-import ServerTasks.GenericTask;
+import Server.ServerTasks.GenericTask;
 
 public interface Values {
     @Override

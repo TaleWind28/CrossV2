@@ -1,10 +1,10 @@
-package Executables;
+package Client;
 import java.io.IOException;
 import java.net.Socket;
 import java.net.SocketException;
 import java.util.NoSuchElementException;
 
-import ClientTask.UDPReceiverTask;
+import Client.ClientTask.UDPReceiverTask;
 import Commands.CommandFactory;
 import Commands.Credentials.Disconnect;
 import Communication.Messages.ClientMessage;

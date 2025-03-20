@@ -5,7 +5,7 @@ import Communication.Messages.ServerMessage;
 import JsonAccessedData.JsonAccessedData;
 import JsonAccessedData.Users.User;
 import JsonAccessedData.Users.Userbook;
-import ServerTasks.GenericTask;
+import Server.ServerTasks.GenericTask;
 
 public class UpdateCredentials implements Values{
     private String username;

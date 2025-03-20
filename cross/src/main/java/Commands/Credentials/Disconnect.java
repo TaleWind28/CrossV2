@@ -4,7 +4,7 @@ import Communication.Values;
 import Communication.Messages.ServerMessage;
 import JsonAccessedData.JsonAccessedData;
 import JsonAccessedData.Users.Userbook;
-import ServerTasks.GenericTask;
+import Server.ServerTasks.GenericTask;
 
 public class Disconnect implements Values{
     private String username;

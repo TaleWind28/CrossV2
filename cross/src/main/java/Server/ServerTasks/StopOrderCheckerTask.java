@@ -1,4 +1,4 @@
-package ServerTasks;
+package Server.ServerTasks;
 
 import java.util.Iterator;
 

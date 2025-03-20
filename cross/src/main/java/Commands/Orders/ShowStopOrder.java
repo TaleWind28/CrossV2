@@ -6,7 +6,7 @@ import Communication.Values;
 import Communication.Messages.ServerMessage;
 import JsonAccessedData.JsonAccessedData;
 import JsonAccessedData.Orderbook.Orderbook;
-import ServerTasks.GenericTask;
+import Server.ServerTasks.GenericTask;
 import Utils.AnsiColors;
 
 public class ShowStopOrder extends Order implements Values{

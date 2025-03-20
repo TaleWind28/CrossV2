@@ -7,7 +7,7 @@ import Communication.Messages.OrderResponseMessage;
 import Communication.Messages.ServerMessage;
 import JsonAccessedData.JsonAccessedData;
 import JsonAccessedData.Orderbook.Orderbook;
-import ServerTasks.GenericTask;
+import Server.ServerTasks.GenericTask;
 import Utils.AnsiColors;
 import Utils.OrderCache;
 

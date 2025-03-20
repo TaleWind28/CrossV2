@@ -1,4 +1,4 @@
-package ServerTasks;
+package Server.ServerTasks;
 
 import java.net.Socket;
 import java.util.concurrent.Executors;
@@ -11,8 +11,8 @@ import Communication.Messages.ServerMessage;
 import Communication.Protocols.Protocol;
 import Communication.Protocols.TCP;
 import Communication.Protocols.UDP;
-import Executables.ServerClass;
 import JsonAccessedData.JsonAccessedData;
+import Server.ServerClass;
 import Utils.AnsiColors;
 
 public class GenericTask implements Runnable {

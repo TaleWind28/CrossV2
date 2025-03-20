@@ -1,4 +1,4 @@
-package ServerTasks;
+package Server.ServerTasks;
 
 import java.io.IOException;
 import java.net.Socket;
@@ -6,7 +6,7 @@ import java.util.concurrent.TimeUnit;
 
 import Communication.Messages.ServerMessage;
 import Communication.Protocols.TCP;
-import Executables.ServerClass;
+import Server.ServerClass;
 import Utils.AnsiColors;
 
 public class ClosingTask implements Runnable{

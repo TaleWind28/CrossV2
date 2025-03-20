@@ -3,6 +3,7 @@ package Executables;
 import com.squareup.moshi.JsonAdapter;
 import com.squareup.moshi.Moshi;
 
+import Client.ClientClass;
 import Config.ClientConfig;
 import okio.BufferedSource;
 import okio.Okio;

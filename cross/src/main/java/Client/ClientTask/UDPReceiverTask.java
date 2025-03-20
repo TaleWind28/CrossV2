@@ -1,8 +1,8 @@
-package ClientTask;
+package Client.ClientTask;
 
+import Client.ClientClass;
 import Communication.Messages.UDPMessage;
 import Communication.Protocols.UDP;
-import Executables.ClientClass;
 
 public class UDPReceiverTask implements Runnable{
     private UDP UDPUpdater;

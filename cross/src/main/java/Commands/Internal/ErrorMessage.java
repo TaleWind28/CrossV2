@@ -3,7 +3,7 @@ package Commands.Internal;
 import Communication.Values;
 import Communication.Messages.ServerMessage;
 import JsonAccessedData.JsonAccessedData;
-import ServerTasks.GenericTask;
+import Server.ServerTasks.GenericTask;
 import Utils.AnsiColors;
 
 public class ErrorMessage implements Values{
