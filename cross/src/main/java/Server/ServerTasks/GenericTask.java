@@ -11,14 +11,14 @@ import Communication.Messages.ServerMessage;
 import Communication.Protocols.Protocol;
 import Communication.Protocols.TCP;
 import Communication.Protocols.UDP;
-import Executables.ServerMain;
+import Executables.ServerClass;
 import JsonAccessedData.JsonAccessedData;
 import Utils.AnsiColors;
 
 public class GenericTask implements Runnable {
     private Socket client;
     private long CONNECTION_TIMEOUT = 600;//tempo in secondi
-    private ServerMain generatorServer;
+    private ServerClass generatorServer;
     private ScheduledExecutorService timeoutScheduler;
     private ScheduledFuture<?> timeoutTask;
     private TCP protocol;
@@ -47,7 +47,7 @@ public class GenericTask implements Runnable {
 
     String currentHelpMessage = "";
     //costruttore per StopOrderChecker
-    public GenericTask(ServerMain server){
+    public GenericTask(ServerClass server){
         this.generatorServer = server;
         this.UDPsender = server.getUDPListner();
         this.tid = server.getActiveClients().size();
@@ -55,7 +55,7 @@ public class GenericTask implements Runnable {
     }
 
     //costruttore
-    public GenericTask(Socket client_socket,ServerMain server,Protocol protocol) throws Exception{
+    public GenericTask(Socket client_socket,ServerClass server,Protocol protocol) throws Exception{
         super();
         this.client = client_socket;
         this.protocol = (TCP)protocol;

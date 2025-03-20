@@ -15,10 +15,14 @@ public class Disconnect implements Values{
 
     @Override
     public ServerMessage execute(JsonAccessedData data, String user,GenericTask task) throws ClassCastException{
+        //se l'utente non è loggato posso semplicemente chiudere la connessione
         if(task.onlineUser.equals(""))return new ServerMessage("Disconnessione avvenuta con successo",100);    
+        //altrimenti devo recuperare la entry dell'userbook corrispondente e mettere logged a false
         Userbook userbook = (Userbook)data;
         userbook.getUserMap().get(task.onlineUser).setLogged(false);
+        //faccio un flush dei dati per aggiornarli
         userbook.dataFlush();
+        //ritorno il successo dell'operazione
         return new ServerMessage("[Server]Disconnessione avvenuta con successo", 100);
     }
 

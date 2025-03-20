@@ -6,12 +6,12 @@ import java.util.concurrent.TimeUnit;
 
 import Communication.Messages.ServerMessage;
 import Communication.Protocols.TCP;
-import Executables.ServerMain;
+import Executables.ServerClass;
 import Utils.AnsiColors;
 
 public class ClosingTask implements Runnable{
-    private ServerMain generatorServer;
-    public ClosingTask(ServerMain generatorServer){
+    private ServerClass generatorServer;
+    public ClosingTask(ServerClass generatorServer){
         this.generatorServer = generatorServer;
     }
     public void run(){    

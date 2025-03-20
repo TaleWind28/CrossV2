@@ -6,15 +6,15 @@ import Commands.CommandFactory;
 import Communication.Messages.Message;
 import Communication.Messages.ServerMessage;
 import Communication.Protocols.Protocol;
-import Executables.ServerMain;
+import Executables.ServerClass;
 
 public class DisconnectTask implements Runnable{
     private Protocol protocol;
     private Socket socket;
-    private ServerMain server;
+    private ServerClass server;
     private GenericTask handlerClient;
 
-    public DisconnectTask(Protocol proto, Socket socket, ServerMain server, GenericTask hanlder){
+    public DisconnectTask(Protocol proto, Socket socket, ServerClass server, GenericTask hanlder){
         this.protocol = proto;
         this.socket = socket;
         this.server = server;
