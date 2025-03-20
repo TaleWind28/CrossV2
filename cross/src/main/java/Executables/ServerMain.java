@@ -6,6 +6,7 @@ import java.io.InputStreamReader;
 import java.net.InetSocketAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.net.SocketException;
 import java.nio.charset.StandardCharsets;
 import java.util.Map;
 import java.util.concurrent.ConcurrentSkipListMap;
@@ -89,20 +90,25 @@ public class ServerMain extends ServerProtocol{
     
     public void dial(){
             try {
-                //String bindAddress = "0.0.0.0"; // Ascolta su tutte le interfacce di rete
                 this.server = new ServerSocket();
                 this.server.bind(new InetSocketAddress(this.bindAddress,this.PORT));
                 System.out.println(AnsiColors.ORANGE+"[ServerMain] server in attesa di connessioni...");
                 while(true){
-                    //creo il socket per ocmunicare col client
+                    //creo il socket per comunicare col client
                     Socket client_Socket = server.accept();
                     //creo la task per gestire il client
                     GenericTask task = new GenericTask(client_Socket,this,new TCP());
                     //aggiungo il client alla lista di client attivi
                     addClient(client_Socket);
+                    //sottometto il task al pool
                     this.pool.execute(task);
                 }
-            } catch (Exception e) {
+            }
+            catch(SocketException e){
+                System.out.println(AnsiColors.BRIGHT_RED+"[InternalComms] Socket lato server in chiusura..."+AnsiColors.RESET);
+                System.exit(0);
+            }
+            catch (Exception e) {
                 System.out.println(e.getClass()+": "+e.getMessage());
                 System.exit(0);
             }

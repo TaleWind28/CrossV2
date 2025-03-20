@@ -1,6 +1,7 @@
 package ServerTasks;
 
 import java.net.Socket;
+import java.net.SocketException;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
@@ -99,14 +100,14 @@ public class GenericTask implements Runnable {
                 /*CONTROLLI PRE-INVIO RISPOSTA */
                 if(responseMessage.response == 100 && this.onlineUser.equals("") && clientRequest.operation.equals("login")){
                     this.onlineUser = clientRequest.values.getUsername();
-                    System.out.println(AnsiColors.ORANGE+this.printScope+" Username: "+this.onlineUser);
+                    System.out.println(AnsiColors.ORANGE+this.printScope+" Username: "+this.onlineUser+AnsiColors.RESET);
                 }
                 
                 //invio il messaggio al client
                 protocol.sendMessage(responseMessage);
                 
-                System.out.println(AnsiColors.ORANGE+this.printScope+" messaggio inviato: \n"+responseMessage.toString());
-                System.out.println(AnsiColors.ORANGE+"//////////////////////////////////////////////////////////////////////////////////");
+                System.out.println(AnsiColors.ORANGE+this.printScope+" messaggio inviato: \n"+responseMessage.toString()+AnsiColors.RESET);
+                System.out.println(AnsiColors.ORANGE+"//////////////////////////////////////////////////////////////////////////////////"+AnsiColors.RESET);
 
                 /*CONTROLLI POST-INVIO RISPOSTA*/
                 if (responseMessage.response == 100 && (clientRequest.operation.equals("logout") || clientRequest.operation.toLowerCase().equals("exit"))){

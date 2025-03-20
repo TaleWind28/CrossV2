@@ -23,11 +23,12 @@ import Utils.CustomExceptions.UnrecognizedOrderException;
 public class CommandFactory{
 
     public Values createValue(String[] command) {
+        //sistemo il tipo di ordine per avere solo la parte significativa
+        String valueType = command[0].toLowerCase();
+        valueType = valueType.replace("insert", "");
+        valueType = valueType.replace("order", "");
+        
         try {
-            //sistemo il tipo di ordine per avere solo la parte significativa
-            String valueType = command[0].toLowerCase();
-            valueType = valueType.replace("insert", "");
-            valueType = valueType.replace("order", "");
             //creo il comando in base al tipo di operazione
             switch (valueType) {    
                 case "cancel":
@@ -73,7 +74,11 @@ public class CommandFactory{
             }
         }//potrei generare delle eccezioni specifiche per marketorder e cancelorder -> devo valutare se ho voglia
         catch(UnrecognizedOrderException e){
-            return new ErrorMessage(e.getMessage());
+            return new ErrorMessage(e.getMessage(),"invalid type",-1,-1);
+        }
+        catch(NumberFormatException e){
+            if(valueType.equals("cancel"))return new ErrorMessage("Devi inserire l'order id dell'ordine che intendi cancellare");
+            return new ErrorMessage("Sintassi sbagliata, devi inserire un numero subito dopo il tipo(ask/bid) di ordine che intendi piazzare",command[1],-1,-1);
         }
         catch(DataFormatException e){
             //System.out.println(e.getMessage());

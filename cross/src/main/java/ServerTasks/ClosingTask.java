@@ -23,8 +23,6 @@ public class ClosingTask implements Runnable{
             if (!generatorServer.pool.awaitTermination(10, TimeUnit.MILLISECONDS)) {
                 System.out.println(AnsiColors.BRIGHT_RED+"[ClosingTask] Interruzione forzata dei thread attivi..."+AnsiColors.RESET);
                 generatorServer.pool.shutdownNow();
-                
-
             }
         } catch (InterruptedException e) {
             //Forza l'arresto in caso di interruzione

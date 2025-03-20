@@ -10,7 +10,6 @@ import com.squareup.moshi.Moshi;
 import ClientTask.UDPReceiverTask;
 import Commands.CommandFactory;
 import Commands.Credentials.Disconnect;
-import Commands.Internal.ErrorMessage;
 import Communication.Messages.ClientMessage;
 import Communication.Messages.ServerMessage;
 import Communication.Protocols.ClientProtocol;
@@ -28,10 +27,10 @@ public class ClientMain extends ClientProtocol{
     public CommandFactory factory;
     public UDP UDPUpdater;
     public Thread UDPReceiver;
-    public String onlineUser = "";
-    public String cmdSent = "";
-    //public CountDownLatch latch = new CountDownLatch(1);
+    public volatile String onlineUser = "";
+    public volatile String cmdSent = "";
     private volatile boolean sigintTermination = false;
+
     public ClientMain(String IP, int PORT){
         super(IP,PORT);
         this.canSend = false;   
@@ -67,16 +66,13 @@ public class ClientMain extends ClientProtocol{
                         this.UDPReceiver.start();
                         continue;
                     case 100:
-                        if (serverAnswer.errorMessage.contains("Disconnessione avvenuta con successo")){
-                            System.out.println("Chiusura Connessione");
+                        if (cmdSent.toLowerCase().equals("logout")){
+                            System.out.println("Chiusura Connessione"+AnsiColors.RESET);
                             this.sock.close();
                             this.protocol.close();
                             System.exit(0);
                         }
-                        System.out.println("[TCPReceiver]"+serverAnswer.toString());
-                        
-                        this.canSend = true;
-                        continue;
+                        break;
                     //disconnessione
                     case 408:
                         System.out.println(serverAnswer.errorMessage);
@@ -88,10 +84,11 @@ public class ClientMain extends ClientProtocol{
                     //default
                     default:
                         if(this.cmdSent.equals("login"))this.onlineUser = "";
-                        System.out.println("[Server]"+serverAnswer.toString());
-                        this.canSend = true;
-                        continue;
-                }            
+                        break;
+                }
+                System.out.println("[ServerAnswer]"+serverAnswer.toString());        
+                this.canSend = true;
+                                    
             }
         }
         catch(IOException e){
@@ -121,15 +118,17 @@ public class ClientMain extends ClientProtocol{
                 
                 //splitto la stringa per ottenere il comando da passare alla factory
                 String[] clientRequest = rawClientRequest.split(" ");    
-                //creo la richiesta da mandare al server
+                
+                //creo la tramite simple factory la richiesta da mandare al server
                 ClientMessage userMessage = new ClientMessage(clientRequest[0],this.factory.createValue(clientRequest));
 
-                if(userMessage.values.getClass()==ErrorMessage.class){
-                    System.out.println(userMessage.values.execute(null, "", null).toString());
-                    continue;
-                }
+                // if(userMessage.values.getClass()==ErrorMessage.class){
+                //     System.out.println(userMessage.values.execute(null, "", null).toString());
+                //     continue;
+                // }
+
                 //aggiorno il comando inviato per controllare sul receiver
-                this.cmdSent = clientRequest[0];
+                this.cmdSent = userMessage.operation;
                 //controllo il caso di messaggio di aiuto
                 if(userMessage.operation.equals("")|| userMessage.operation.equals("aiuto"))userMessage.operation = "help";
                 //imposto l'username corrente
@@ -153,13 +152,12 @@ public class ClientMain extends ClientProtocol{
         try {
             //apro il socket lato client
             this.sock = new Socket(this.ip,this.port);
-            //stampa di debug
-            //System.out.println("socket"+this.sock.toString());
             //imposto il protocollo di comunicazione
             this.setProtocol(new TCP());
-            //imposto receiver, sender e receiverThread
+            //imposto la ricezione e l'invio dei messaggi sul socket TCP
             this.protocol.setReceiver(sock);
             this.protocol.setSender(sock);
+            //imposto il thread di ricezione
             this.setReceiverThread();
             //attivo il thread di ricezione
             this.receiverThread.start();
