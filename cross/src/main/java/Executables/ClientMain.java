@@ -166,7 +166,6 @@ public class ClientMain extends ClientProtocol{
         }
         //disconnessione accidentale
         catch (SocketException e) {
-            //System.out.println(e.getClass());
             System.out.println("Il server al momento non è disponibile :( , ci scusiamo per il disagio ");
         }
         //input errato
@@ -183,7 +182,7 @@ public class ClientMain extends ClientProtocol{
         }
         //eccezione generica
         catch(ArrayIndexOutOfBoundsException e ){        
-            
+            System.out.println("[ClientMain]Out of Bounds");
         }
         finally{
             //se il socket non è stato aperto termino direttamente perchè non ho niente da chiudere

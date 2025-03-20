@@ -19,37 +19,40 @@ import Commands.Orders.StopOrder;
 import Communication.Values;
 import Utils.AnsiColors;
 import Utils.CustomExceptions.UnrecognizedOrderException;
+import Utils.CustomExceptions.WrongOrderParametersException;
 
 public class CommandFactory{
 
     public Values createValue(String[] command) {
+        //controllare meglio i parametri
         //sistemo il tipo di ordine per avere solo la parte significativa
         String valueType = command[0].toLowerCase();
-        valueType = valueType.replace("insert", "");
-        valueType = valueType.replace("order", "");
         
         try {
+            // if(valueType.contains("order") && !valueType.contains("insert"))throw new UnrecognizedOrderException();
+            System.out.println("[factory]valueType: "+valueType);
+        
             //creo il comando in base al tipo di operazione
             switch (valueType) {    
                 case "cancel":
                     return new CancelOrder(Integer.parseInt(command[2]),command[1]);    
 
-                case "market":
-                    if(!command[2].equals("ask") && !command[2].equals("bid"))throw new UnrecognizedOrderException("Tipo di scambio non corretto, sono accettati solo ask e bid");
+                case "insertmarketorder":
+                    if(!command[2].equals("ask") && !command[2].equals("bid"))throw new WrongOrderParametersException();
                     return new MarketOrder(command[1],command[2],Integer.parseInt(command[3]));
                 
-                case "limit":
-                    if(!command[2].equals("ask") && !command[2].equals("bid"))throw new UnrecognizedOrderException("Tipo di scambio non corretto, sono accettati solo ask e bid");
+                case "insertlimitorder":
+                    if(!command[2].equals("ask") && !command[2].equals("bid"))throw new WrongOrderParametersException();
                     return new Limitorder(command[1],command[2],Integer.parseInt(command[3]),Integer.parseInt(command[4]));
                 
-                case "stop":
-                    if(!command[2].equals("ask") && !command[2].equals("bid"))throw new UnrecognizedOrderException("Tipo di scambio non corretto, sono accettati solo ask e bid");    
+                case "insertstoporder":
+                    if(!command[2].equals("ask") && !command[2].equals("bid"))throw new WrongOrderParametersException();    
                     return new StopOrder(command[1],command[2],Integer.parseInt(command[3]),Integer.parseInt(command[4]));
                 
-                case "showbook":
+                case "showorderbook":
                     return new ShowOrderBook();
                 
-                case "showstop":
+                case "showstoporder":
                     return new ShowStopOrder();
 
                 case "register":
@@ -72,16 +75,19 @@ public class CommandFactory{
                 default:
                     throw new UnrecognizedOrderException("comando non gestito");        
             }
-        }//potrei generare delle eccezioni specifiche per marketorder e cancelorder -> devo valutare se ho voglia
+        }
         catch(UnrecognizedOrderException e){
             return new ErrorMessage(e.getMessage());
         }
+        catch(WrongOrderParametersException e){
+            return new ErrorMessage(e.getMessage());
+
+        }
         catch(NumberFormatException e){
-            if(valueType.equals("cancel"))return new ErrorMessage("Devi inserire l'order id dell'ordine che intendi cancellare");
-            return new ErrorMessage("Sintassi sbagliata, devi inserire un numero subito dopo il tipo(ask/bid) di ordine che intendi piazzare",command[1],-1,-1);
+            if(valueType.equals("cancelorder"))return new ErrorMessage("Devi inserire l'order id dell'ordine che intendi cancellare");
+            return new ErrorMessage("Sintassi sbagliata, devi inserire un numero subito dopo il tipo(ask/bid) di ordine che intendi piazzare");
         }
         catch(DataFormatException e){
-            //System.out.println(e.getMessage());
             return new ErrorMessage(e.getMessage());
         }
         catch (Exception e) {

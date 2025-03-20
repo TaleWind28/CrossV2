@@ -19,7 +19,7 @@ public class StopOrder extends Order implements Values {
     }
 
     @Override
-    public ServerMessage execute(JsonAccessedData data,String user,GenericTask task){
+    public ServerMessage execute(JsonAccessedData data,String user,GenericTask task)throws ClassCastException{
         //controllo che l'utente sia autenticato
         if(user.equals(""))return new OrderResponseMessage(-1,"User not logged in");
         //aggiorno orderId

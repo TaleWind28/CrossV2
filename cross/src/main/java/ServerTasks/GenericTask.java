@@ -17,7 +17,7 @@ import Utils.AnsiColors;
 
 public class GenericTask implements Runnable {
     private Socket client;
-    private long CONNECTION_TIMEOUT = 60;//tempo in secondi
+    private long CONNECTION_TIMEOUT = 600;//tempo in secondi
     private ServerMain generatorServer;
     private ScheduledExecutorService timeoutScheduler;
     private ScheduledFuture<?> timeoutTask;
@@ -101,6 +101,8 @@ public class GenericTask implements Runnable {
                     this.onlineUser = clientRequest.values.getUsername();
                     System.out.println(AnsiColors.ORANGE+this.printScope+" Username: "+this.onlineUser+AnsiColors.RESET);
                 }
+
+                if(responseMessage.response != 100)responseMessage.errorMessage = AnsiColors.RED+responseMessage.errorMessage+AnsiColors.RESET;
                 
                 //invio il messaggio al client
                 protocol.sendMessage(responseMessage);
@@ -129,9 +131,11 @@ public class GenericTask implements Runnable {
         catch(NullPointerException e){
             this.generatorServer.onClientDisconnect(client, "Disconnessione Client");
             this.protocol.close();
-            //Thread.currentThread().interrupt();
             System.out.println(this.printScope+"terminato");
             return;
+        }
+        catch(ClassCastException e){
+            this.protocol.sendMessage(new ServerMessage("Comando non riconosciuto, per una lista digitare help",101));
         }
         catch(Exception e){
             System.out.println(e.getClass()+" : "+e.getCause()+" Stack:"+e.getStackTrace()+":"+e.getLocalizedMessage()+" : "+e.getSuppressed());

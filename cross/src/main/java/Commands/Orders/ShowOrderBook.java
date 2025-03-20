@@ -14,7 +14,7 @@ import Utils.OrderSorting;
 
 public class ShowOrderBook implements Values {
     @Override
-    public ServerMessage execute(JsonAccessedData data,String user,GenericTask task){
+    public ServerMessage execute(JsonAccessedData data,String user,GenericTask task)throws ClassCastException{
         Orderbook orderbook = (Orderbook) data;
         if(user.equals(""))return new OrderResponseMessage(-1,"Per consultare l'orderbook bisogna creare un account o accedervi");
         StringBuilder output = new StringBuilder();

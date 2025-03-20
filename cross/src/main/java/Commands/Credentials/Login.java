@@ -18,7 +18,7 @@ public class Login implements Values{
     }
 
     @Override
-    public ServerMessage execute(JsonAccessedData data,String user,GenericTask task){
+    public ServerMessage execute(JsonAccessedData data,String user,GenericTask task) throws ClassCastException{
         Userbook userbook = (Userbook)data;
         //System.out.println("[Login]"+this.toString());
         // if(userbook.getUserMap().containsKey(this.onlineUser))

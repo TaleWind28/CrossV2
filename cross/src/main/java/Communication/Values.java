@@ -7,7 +7,7 @@ import ServerTasks.GenericTask;
 public interface Values {
     @Override
     public String toString();
-    public ServerMessage execute(JsonAccessedData data,String user, GenericTask genericTask);
+    public ServerMessage execute(JsonAccessedData data,String user, GenericTask genericTask)throws ClassCastException;
     public void setUsername(String user);
     public String getUsername();
 }

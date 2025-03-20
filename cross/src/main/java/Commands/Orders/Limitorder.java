@@ -19,7 +19,7 @@ public class Limitorder extends Order implements Values{
     }
 
     @Override
-    public ServerMessage execute(JsonAccessedData data,String user,GenericTask task){
+    public ServerMessage execute(JsonAccessedData data,String user,GenericTask task)throws ClassCastException{
         //controllo che l'utente sia loggato
         if(task.onlineUser.equals(""))return new OrderResponseMessage(-1,"Per effettuare ordini bisogna creare un account o accedervi");
         //imposto l'orderId

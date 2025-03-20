@@ -22,7 +22,7 @@ public class ShowStopOrder extends Order implements Values{
     }
 
     @Override
-    public ServerMessage execute(JsonAccessedData data, String user, GenericTask genericTask) {
+    public ServerMessage execute(JsonAccessedData data, String user, GenericTask genericTask) throws ClassCastException{
         String prettyStopOrders = new String();
         Orderbook orderbook = (Orderbook) data;
         if(genericTask.onlineUser.equals("")) return new ServerMessage("Devi essere loggato per poter visualizzare gli stoporder",101);

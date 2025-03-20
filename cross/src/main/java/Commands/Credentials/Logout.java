@@ -14,7 +14,7 @@ public class Logout implements Values{
     }
 
     @Override
-    public ServerMessage execute(JsonAccessedData data,String user,GenericTask task){
+    public ServerMessage execute(JsonAccessedData data,String user,GenericTask task)throws ClassCastException{
         Userbook userbook = (Userbook)data;
         //controllo che esista l'utente
         if(userbook.accessData(user) == 404)return new ServerMessage("Utente non registrato",101);

@@ -20,7 +20,7 @@ public class CancelOrder  extends Order implements Values{
     }
     
     @Override
-    public ServerMessage execute(JsonAccessedData data,String utente,GenericTask task){
+    public ServerMessage execute(JsonAccessedData data,String utente,GenericTask task)throws ClassCastException{
         //potrebbe essere una funzione
         if(this.getUser().equals(""))return new ServerMessage("Devi effettuare l'accesso per piazzare ordini", 104);
         Orderbook orderbook = (Orderbook)data;

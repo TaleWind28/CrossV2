@@ -14,7 +14,7 @@ public class Disconnect implements Values{
     }
 
     @Override
-    public ServerMessage execute(JsonAccessedData data, String user,GenericTask task) {
+    public ServerMessage execute(JsonAccessedData data, String user,GenericTask task) throws ClassCastException{
         if(task.onlineUser.equals(""))return new ServerMessage("Disconnessione avvenuta con successo",100);    
         Userbook userbook = (Userbook)data;
         userbook.getUserMap().get(task.onlineUser).setLogged(false);

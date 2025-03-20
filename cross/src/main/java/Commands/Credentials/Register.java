@@ -18,8 +18,10 @@ public class Register implements Values{
     }
 
     @Override
-    public ServerMessage execute(JsonAccessedData data,String user,GenericTask task) {
+    public ServerMessage execute(JsonAccessedData data,String user,GenericTask task) throws ClassCastException{
         Userbook userbook = (Userbook)data;
+        //controllo che l'utente non sia già loggato
+        if(!task.onlineUser.equals(""))return new ServerMessage("Non puoi registrarti mentre sei loggato",103);
         //controllare che username non esista già
         if(userbook.accessData(username) == 200)return new ServerMessage(" Utente già presente nel database",102);
         //memorizzare username e password
