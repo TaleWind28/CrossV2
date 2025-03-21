@@ -22,16 +22,6 @@ public class UDP implements Protocol {
     }
 
     @Override
-    public void setReceiver(Socket input) {
-        throw new UnsupportedOperationException("UDP non usa connessioni dirette con Socket.");
-    }
-
-    @Override
-    public void setSender(Socket output) {
-        throw new UnsupportedOperationException("UDP non usa connessioni dirette con Socket.");
-    }
-
-    @Override
     public int sendMessage(Message mess) {
         try {
             UDPMessage message = (UDPMessage)mess;

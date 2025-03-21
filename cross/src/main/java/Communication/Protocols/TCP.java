@@ -56,6 +56,7 @@ public class TCP implements Protocol{
         .build();
 
     protected JsonAdapter<Message>adapter = moshi.adapter(Message.class);
+    
     //implementazione metodi interfaccia
     public void setReceiver(Socket receiver) {
         try{

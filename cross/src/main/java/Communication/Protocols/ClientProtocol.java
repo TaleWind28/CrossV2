@@ -2,11 +2,12 @@ package Communication.Protocols;
 
 import java.util.Scanner;
 
-public abstract class ClientProtocol extends CommunicationProtocol{
+public abstract class ClientProtocol{
     public int port;
     public String ip;
     public Scanner userInput;
     public Thread receiverThread;
+    public TCP protocol;
 
 
     public ClientProtocol(String IP,int PORT){
@@ -24,5 +25,9 @@ public abstract class ClientProtocol extends CommunicationProtocol{
     public abstract void sendBehaviour();
 
     public abstract void receiveBehaviour();
+
+    public void setProtocol(TCP protocol){
+        this.protocol = protocol;
+    }
 
 }

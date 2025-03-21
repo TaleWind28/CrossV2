@@ -4,10 +4,11 @@ import java.util.concurrent.*;
 import java.util.*;
 import java.net.Socket;
 
-public abstract class ServerProtocol extends CommunicationProtocol{
+public abstract class ServerProtocol {
     public int PORT;
     public ExecutorService pool;
     private List<Socket> activeClients;
+    public Protocol protocol;
 
     public ServerProtocol(int port, int numThreads){
         this.PORT = port;
@@ -33,6 +34,10 @@ public abstract class ServerProtocol extends CommunicationProtocol{
 
     public List<Socket> getActiveClients() {
         return activeClients;
+    }
+
+    public void setProtocol(Protocol protocol){
+        this.protocol = protocol;
     }
 
     //apre il socket e passa al threadpool i vari client

@@ -9,6 +9,9 @@
 \usepackage{amsmath}
 \usepackage{graphicx}
 \usepackage[colorlinks=true, allcolors=bluscuro]{hyperref}
+\usepackage{wrapfig}
+
+\graphicspath{{immagini/}}
 
 % Cambiare il colore delle sezioni
 \titleformat{\section}
@@ -86,6 +89,22 @@ Il Server utilizza un \textbf{FixedThreadPool} per gestire i vari client conness
 \end{itemize}
 
 \section{File Java}
+Il progetto sfrutta i java package per organizzare meglio i file Java contenenti le classi che verranno usate per fornire il servizio di trading; Di seguito verranno analizzati i vari package ed alcuni file tra i più importanti, motivando le scelte fatte.
+\subsection{Communication}
+Questo package contiene i protocolli di comunicazione utilizzati dal progetto, insieme ai tipi di messaggio che vengono scambiati tra Client e Server.
+I protocolli, come menzionato precedentemente, sono \textbf{UDP} e \textbf{TCP} che vengono realizzati implementando l'interfaccia \textbf{Protocol} che richiede un metodo rispettivamente per invio e ricezione di messaggi ed uno per la chiusura del protocollo;
+Inoltre \textbf{TCP} utilizza i metodi forniti da \textbf{Moshi} per realizzare uno scambio di messaggi in formato Json, sfruttando le varie implementazioni dell'interfaccia \textbf{Values}.
+
+\begin{wrapfigure}{r}{0.5\textwidth} % "r" = destra, "l" = sinistra
+  \centering
+  \includegraphics[width=\linewidth]{Moshi-Classi.png} % Assicurati che il nome sia corretto
+  %\caption{Aggiunta delle sottoclassi di Values a Moshi}
+\end{wrapfigure}
+
+Moshi si è rivelato più facilmente manutenibile rispetto a Gson in quanto non perde le informazioni della sottoclasse di \textbf{Values} incapsulata nel messggio inviato/ricevuto. Questo si è rivelato fondamentale in quanto ha permesso di mantenere la struttura dei messaggi richiesta dalla consegna. Questo si ottiene registrando tutti le Classi o sottoclassi che potrebbero essere passata nei Messaggi come si può notare nella fiigura affianco.
+Inoltre per finire la configurazione di Moshi è bastato creare un \textbf{JsonAdapter$<$Message$>$} che, similmente a Gson, si occuperà di serializzare/deserializzare il messaggio in formato Json.
+
+\subsection{Commands}
 
 \subsection{Utils}
 
