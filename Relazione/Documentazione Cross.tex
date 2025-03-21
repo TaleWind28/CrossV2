@@ -81,6 +81,7 @@ Il client attiva ed usa 3 thread durante il normale funzionamento:
 I primi due thread vengono istanziati nella classe ClientClass e persistono le informazioni fino alla chiusura del socket, la scelta di avere due thread separati per invio e ricezione consente di ricevere in maniera asincrona le risposte del server, aiutando quindi a gestire i casi in cui si riscontrano dei problemi sul server richiedendo però l'utilizzo di una variabile per sincronizzare i due thread impedendo così di inviare al massimo 1 messaggio alla volta aspettando così la relativa risposta.
 \\ \textbf{UDPReceiverThread} viene istanziato subito dopo la ricezione del primissimo messaggio inviato dal server, che contiene le informazioni su porta e gruppo multicast al quale connettersi per ottenere informazioni sugli ordini.
 È stato scelto di utilizzare multicast per semplificare l'implementazione del paradigma Publish-Subscribe per gli ordini; un'altro vantaggio di multicast consiste nel poter assegnare ad ogni ordine dell'orderbook un gruppo multicast, vantaggio che in questo progetto non è stato sfruttato appieno in quanto non richiesto esplicitamente.
+
 \subsection{Thread Lato Server}
 Il Server utilizza un \textbf{FixedThreadPool} per gestire i vari client connessi che vengono rappresentati da una \textbf{GenericTask}, inoltre attiva i seguenti Thread:
 \begin{itemize}
@@ -88,7 +89,7 @@ Il Server utilizza un \textbf{FixedThreadPool} per gestire i vari client conness
   \item \textbf{StopOrderChecker}: Thread che si occupa di controllare gli \textbf{StopOrder} piazzati dagli utenti ed eseguirli in caso lo stopprice lo consenta.
   \item \textbf{ClosingTask}: Thread che si occupa di svolgere la chiusura del server in sicurezza quando si riscontrano dei problemi sul server per i quali non si può garantire la fruizione del servizio di trading.
 \end{itemize}
-
+Tutti i thread nominati prima vengono istanziati dalla classe \textbf{ServerClass}, i primi due subito dopo aver fatto la bind dell'indirizzo del socket, mentre l'ultimo viene aggiunto come \textbf{ShutdownHook} alla JVM per consentire di terminare il servizio in maniera sicura in qualsiasi momento si dovesse verificare un problema lato Server per il quale sia richiesta al chiusura, aumentando così al \textbf{Fault Tollerance} del progetto. 
 \newpage
 
 \section{File Java}
@@ -170,7 +171,6 @@ Sfruttando il multithreading è necessario controllare che le sezioni critiche n
 \subsection{ConcurrentSkipListMap}
 
 \subsection{ConcurrentLinkedQueue}
-
 
 \newpage
 \section{Utilizzare il Progetto}
