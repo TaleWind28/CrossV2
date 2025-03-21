@@ -15,12 +15,12 @@ import Communication.Protocols.UDP;
 import Utils.AnsiColors;
 
 public class ClientClass extends ClientProtocol{
-    public volatile boolean canSend = true;
     public Socket sock = null;
     public String helpMessage = "Comandi:\nregister<username,password> -> ti permette di registrarti per poter accedere al servizio di trading\nlogin<username,password> -> permette di accedere ad un account registrato\nupdateCredentials<username,currentPasswd,newPasswd> -> permette di aggiornare le credenziali\nlogout<username> -> permette di uscire dal servizio di trading";
     public CommandFactory factory;
     public UDP UDPUpdater;
     public Thread UDPReceiver;
+    public volatile boolean canSend = true;
     public volatile String onlineUser = "";
     public volatile String cmdSent = "";
     private volatile boolean sigintTermination = false;
@@ -44,7 +44,7 @@ public class ClientClass extends ClientProtocol{
                         this.UDPReceiver.start();
                         continue;
                     case 100:
-                        if (cmdSent.toLowerCase().equals("logout")){
+                        if (cmdSent.toLowerCase().equals("logout") || cmdSent.toLowerCase().equals("exit")){
                             System.out.println("Chiusura Connessione"+AnsiColors.RESET);
                             this.sock.close();
                             this.protocol.close();

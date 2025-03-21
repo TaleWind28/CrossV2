@@ -10,6 +10,7 @@
 \usepackage{graphicx}
 \usepackage[colorlinks=true, allcolors=bluscuro]{hyperref}
 \usepackage{wrapfig}
+\usepackage{caption}
 
 \graphicspath{{immagini/}}
 
@@ -34,19 +35,19 @@
 \newpage
 
 \section{Scelte Progettuali}
-Il progetto è stato realizzato seguendo i principi SOLID per garantire modularità, scalabilità e manutenibilità 
+Il progetto è stato realizzato seguendo i principi SOLID per garantire modularità, scalabilità e manutenibilità.
 \subsection{Organizzazione delle unità di codice}
 La suddivisione intensiva in package garantisce la modularità per le varie funzionalità e migliora la fruibilità del codice.
-Di seguito verranno elencati i package principali
+Di seguito verranno elencati i package principali:
 \begin{itemize}
-    \item \textbf{Client}: contiene le task da eseguire lato Client e la classe che verrà istanziata per usufruire del servizio
-    \item \textbf{Commands}: contiene tutti i comandi che possono essere utilizzati dagli utenti, insieme alla factory per istanziarli
-    \item \textbf{Communication}: contiene i protocolli di comunicazione utilizzati insieme ai tipi di messaggio definiti per la comunicazione
-    \item \textbf{Config}: contiene le classi per configurare Client e Server
-    \item \textbf{Executables}: contiene ServerMain e ClientMain che eseguiranno rispettivamente Server e Client del servizio Cross
-    \item \textbf{JsonAccessedData}: contiene tutti i vari file Json utilizzati per mantenere informazioni persistenti
-    \item \textbf{Server}: contiene le task da eseguire lato Server e la classe che verrà istanziata per creare il Server centrale del servizio Cross
-    \item \textbf{Utils}: contiene varie classi di utilità che semplificano l'esecuzione del codice
+    \item \textbf{Client}: contiene le task da eseguire lato Client e la classe che verrà istanziata per usufruire del servizio.
+    \item \textbf{Commands}: contiene tutti i comandi che possono essere utilizzati dagli utenti, insieme alla factory per istanziarli.
+    \item \textbf{Communication}: contiene i protocolli di comunicazione utilizzati insieme ai tipi di messaggio definiti per la comunicazione.
+    \item \textbf{Config}: contiene le classi per configurare Client e Server.
+    \item \textbf{Executables}: contiene ServerMain e ClientMain che eseguiranno rispettivamente Server e Client del servizio Cross.
+    \item \textbf{JsonAccessedData}: contiene tutti i vari file Json utilizzati per mantenere informazioni persistenti.
+    \item \textbf{Server}: contiene le task da eseguire lato Server e la classe che verrà istanziata per creare il Server centrale del servizio Cross.
+    \item \textbf{Utils}: contiene varie classi di utilità che semplificano l'esecuzione del codice.
 \end{itemize}
 
 \subsection{Comunicazione}
@@ -87,9 +88,10 @@ Il Server utilizza un \textbf{FixedThreadPool} per gestire i vari client conness
 \begin{itemize}
   \item \textbf{UDPListner}: Thread che si occupa dell'invio delle notifiche secondo il modello Publish-Subscribe.
   \item \textbf{StopOrderChecker}: Thread che si occupa di controllare gli \textbf{StopOrder} piazzati dagli utenti ed eseguirli in caso lo stopprice lo consenta.
-  \item \textbf{ClosingTask}: Thread che si occupa di svolgere la chiusura del server in sicurezza quando si riscontrano dei problemi sul server per i quali non si può garantire la fruizione del servizio di trading.
+  \item \textbf{ClosingTask}: Thread che si occupa di svolgere la chiusura del server in sicurezza quando si riscontrano dei problemi sul server per i quali non si può garantire la fruizione del servizio di trading. 
 \end{itemize}
 Tutti i thread nominati prima vengono istanziati dalla classe \textbf{ServerClass}, i primi due subito dopo aver fatto la bind dell'indirizzo del socket, mentre l'ultimo viene aggiunto come \textbf{ShutdownHook} alla JVM per consentire di terminare il servizio in maniera sicura in qualsiasi momento si dovesse verificare un problema lato Server per il quale sia richiesta al chiusura, aumentando così al \textbf{Fault Tollerance} del progetto. 
+Il timeout viene gestito mediante uno scheduler che dopo 10 minuti esegue un \textbf{DisconnectTask} per disconnettere per inattività il client; questo scheduler viene istanziato da ogni GenericTask per il proprio client.
 \newpage
 
 \section{File Java}
@@ -160,26 +162,92 @@ GenericTask si occupa quindi di comunicare direttamente col Client e di eseguire
 
 \newpage
 
-\section{Primitive di Sincronizzazione}
-Sfruttando il multithreading è necessario controllare che le sezioni critiche non vengano compromesse da accessi simultanei da parte di più thread, per fare questo sono state utilizate varie primitive di sincronizzazione.
+\section{Sincronizzazione}
+Sfruttando il multithreading è necessario controllare che le sezioni critiche non vengano compromesse da accessi simultanei da parte di più thread,
+per fare questo sono state utilizate \textbf{primitive di sincronizzazione} e strutture dati \textbf{Thread-Safe} che verranno elencate e descritte di seguito.
 \subsection{synchronized}
+La keyword synchronized viene utilizzata per proteggere sezioni di codice critiche, consentendo l'accesso a solo un thread per volta.
 
 \subsection{volatile}
+La keyword volatile garantisce la visibilità immediata delle modifiche a variabili condivise tra thread.
+
+\begin{table}[h]
+  \captionsetup{justification=raggedright, singlelinecheck=false}
+  \caption*{\textbf{Variabili volatile del progetto}}
+  \center
+  \begin{tabular}{|p{4cm}|p{2cm}|p{7.4cm}|}
+    \hline
+    \textbf{Variabile} & \textbf{Classe} & \textbf{Utilizzo} \\
+    \hline
+    \centering canSend   & ClientClass   & Impedire l'invio di più richieste senza prima aver ricevuto una risposta\\
+    \hline
+    \centering onlineUser   & ClientClass   & Memorizzare il nome utente con cui l'utente si è loggato per personalizzare il prompt\\
+    \hline
+    \centering cmdSent   & ClientClass   & Memorizzare l'ultimo comando mandato dall'utente al server \\
+    \hline
+    \centering sigintTermination & ClientClass & Controllare se la terminazione sta avvenendo a causa di un sigInt sul client\\
+    \hline
+    \centering registerdUsers & ServerClass & Accedere all'userbook\\
+    \hline
+    \centering orderbook & ServerClass & Accedere all'orderbook\\
+    \hline
+    \centering progressiveOrderNumber & ServerClass & generare l'orderId degli ordini\\
+    \hline
+  \end{tabular}
+\end{table}
 
 \subsection{ConcurrentHashMap}
+La ConcurrentHashMap è una struttura dati ottimizzata per l'accesso concorrente, segmentando la mappa in più 
+sezioni per ridurre il blocco globale. È la rappresentazione in memoria dell'Userbook ed è stata scelta in quanto 
+non deve essere ordinata e garantisce l'unicità delle chiavi usate, tali chiavi sono rappresentate dall'username scelto dall'utente.
 
 \subsection{ConcurrentSkipListMap}
+La ConcurrentSkipListMap è una struttura dati che fornisce una versione Thread-Safe della Skip List, ossia 
+una struttura dati probabilistica che permette ricerche con complessità O$($log n$)$ al caso medio 
+e mantiene l'ordinamento naturale delle chiavi, se sono implementazioni di comparable, oppure mediante un comparator fornito al costruttore.
+Questa struttura è stata utilizzata per rappresentare in memoria \textbf{askMap} e \textbf{bidMap} in quanto devono essere ordinati rispettando:
+\begin{enumerate}
+  \item \textbf{Prezzo}
+  \item \textbf{Timestamp}
+\end{enumerate} 
+L'ordinamento è mantenuto mediante la classe \textbf{OrderSorting} che implementa \textbf{Comparable} ed inoltre 
+\\gli ordinamenti crescente e decrescente vengono implementati mediante un comparator che sfrutta il metodo compareTo implementato dalla classe OrderSorting.
 
 \subsection{ConcurrentLinkedQueue}
+La ConcurrentLinkedQueue è una struttura dati non bloccante che rispetta l'ordinamento \textbf{FIFO}, necessario per garantire la corretta priorità agli ordini, progettata per operazioni concorrenti ad alte prestazioni viene utilizzata per matenere gli stoporder in attesa di elaborazione. 
+\\La natura lock-free di questa struttura garantisce un elevato throughput anche con un elevato numero di accessi.
 
 \newpage
-\section{Utilizzare il Progetto}
 
+\section{Utilizzare il Progetto}
+Questo capitolo agisce da manuale per l'esecuzione del progetto, per la struttura si rimanda al paragrafo 1.1 .
 \subsection{Requisiti di Sistema}
 
-\subsection{Struttura del Progetto}
+\begin{itemize}
+  \item \textbf{Java Development Kit (JDK)}: Versione 8 o superiore.
+\end{itemize}
+
+\subsection{Dipendenze Esterne}
+  \begin{itemize}
+    \item \textbf{Moshi}: Libreria per manipolare oggetti Json.
+    \item \textbf{Moshi Adapters}: Libreria aggiuntiva per Moshi che semplifica la gestione di polimorfismi e situazioni complesse nella serializzazione Json.
+    \item \textbf{Okio}: Libreria I/O moderna che semplifica ed ottimizza operazioni di input/output, è una dipendenza di Moshi.
+    \item \textbf{BCrypt}: Libreria che fornisce la utility per hashing sicuro delle password, indipendenti dal framework Spring Security, oltre alla cifratura e decifratura di chiavi.
+    \item \textbf{Apache Commons Lang3}: Libreria che fornisce utility che estendono l'API di Java e che risolvono problemi comuni come gestione di null e manipolazione di stringhe.
+    \item \textbf{Apache Commons Logging}: Dipendenza di Apache Commons Lang3.
+  \end{itemize}
 
 \subsection{Esecuzione del Progetto}
+Il progetto include due componenti principali, ovvero \textbf{Client} e \textbf{Server}, che devono essere avviati separatamente.
 
+\subsubsection{Avvio del Server}
+Eseguire il comando: \textbf{java -jar server.jar}
+come prima cosa verrà caricato il file \textbf{ServerConfig.json} contenente 
+le informazioni necessarie al caricamento dei file Json in memoria, ed indirizzi e porte necessari per instaurare 
+le connessioni TCP ed UDP.
+
+\subsubsection{Avvio del Client}
+Eseguire il comando: \textbf{java -jar client.jar}
+come prima cosa verrà caricato il file \textbf{ClientConfig.json} contenente indirizzi e porta TCP per connettersi al Server.
 
 \end{document}

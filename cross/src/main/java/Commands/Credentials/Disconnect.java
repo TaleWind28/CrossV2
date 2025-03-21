@@ -15,6 +15,7 @@ public class Disconnect implements Values{
 
     @Override
     public ServerMessage execute(JsonAccessedData data, String user,GenericTask task) throws ClassCastException{
+        if(this.username.equals("volontaria") && !task.onlineUser.equals(""))return new ServerMessage("Non puoi usare questo comando dopo aver effettuato il login, utilizza logout",101);
         //se l'utente non è loggato posso semplicemente chiudere la connessione
         if(task.onlineUser.equals(""))return new ServerMessage("Disconnessione avvenuta con successo",100);    
         //altrimenti devo recuperare la entry dell'userbook corrispondente e mettere logged a false

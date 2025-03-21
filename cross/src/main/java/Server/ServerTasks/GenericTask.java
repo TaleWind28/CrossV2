@@ -32,10 +32,11 @@ public class GenericTask implements Runnable {
                         "register<username,password> -> ti permette di registrarti per poter accedere al servizio di trading\n" + 
                         "login<username,password> -> permette di accedere ad un account registrato\n" +
                         "updateCredentials<username,currentPasswd,newPasswd> -> permette di aggiornare le credenziali\n"+
+                        "exit -> permette di uscire dal servizio di trading"+
                         "---------------------------------------------------------------------------------------------------";
     private String loggedUserMessage = "------------------------------------------------------------------------------------------------------------\n"+
                         "Comandi:\n"+
-                        "logout<username> -> permette di uscire dal servizio di trading\n"+
+                        "logout -> permette di uscire dal servizio di trading\n"+
                         "showorderbook -> permette di visualizzare l'orderbook\n"+
                         "showstoporder -> permette di visualizzare gli stoporder precedentemente piazzati"+
                         "insertmarketorder <ask/bid> <qtà di bitcoin da vendere/comprare> -> inserisce un marketorder\n"+

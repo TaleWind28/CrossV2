@@ -22,17 +22,15 @@ public class UpdateCredentials implements Values{
     public ServerMessage execute(JsonAccessedData data,String user,GenericTask task)throws ClassCastException{
         Userbook userbook = (Userbook)data;
         if (!task.onlineUser.equals(""))return new ServerMessage("Non puoi cambiare le credenziali mentre sei loggato",104);
-        System.out.println("[UpdateCredentials]"+this.toString());
         //controllare che le due password non coincidano
         if(this.password.equals(this.newPassword))return new ServerMessage("La nuova password DEVE essere diversa da quella precedente",103);
         //controllare che username e password corrispondano
         User usr = new User(this.username,this.password);
-        //
         int retvalue = userbook.checkCredentials(usr);
-        if(retvalue == 400)return new ServerMessage("Password non valida",101);
+        if(retvalue == 400)return new ServerMessage("Password non valida",102);
         else if(retvalue == 404)return new ServerMessage("Utente non registrato",102);
         //si -> sostituire password esistente con nuova password
-        if(userbook.getUserMap().get(this.username).getLogged()==true)return new ServerMessage("Non puoi cambiare la password di un utente loggato",104);
+        if(userbook.getUserMap().get(this.username).getLogged()==true)return new ServerMessage("Non puoi cambiare la password di un utente loggato",105);
         //aggiorno l'userbook
         userbook.updateData(usr, this.newPassword);
         return new ServerMessage("Credenziali aggiornate con successo", 100);

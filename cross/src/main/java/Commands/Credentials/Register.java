@@ -26,7 +26,6 @@ public class Register implements Values{
         if(userbook.accessData(username) == 200)return new ServerMessage(" Utente già presente nel database",102);
         //memorizzare username e password
         userbook.addData(new User(username, password));
-        //System.out.println("entro");
         return new ServerMessage(AnsiColors.GREEN_MEDIUM+"Utente correttamente registrato col nome "+username+AnsiColors.RESET ,100);
     }
 

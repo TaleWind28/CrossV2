@@ -3,6 +3,7 @@ package Commands;
 
 import java.util.zip.DataFormatException;
 
+import Commands.Credentials.Disconnect;
 import Commands.Credentials.Login;
 import Commands.Credentials.Logout;
 import Commands.Credentials.Register;
@@ -23,13 +24,9 @@ import Utils.CustomExceptions.WrongOrderParametersException;
 public class CommandFactory{
 
     public Values createValue(String[] command) {
-        //controllare meglio i parametri
         //sistemo il tipo di ordine per avere solo la parte significativa
         String valueType = command[0].toLowerCase();
-        
         try {
-            // if(valueType.contains("order") && !valueType.contains("insert"))throw new UnrecognizedOrderException();
-            System.out.println("[factory]valueType: "+valueType);
         
             //creo il comando in base al tipo di operazione
             switch (valueType) {    
@@ -71,6 +68,8 @@ public class CommandFactory{
                 
                 case "getpricehistory":
                     return new getPriceHistory(command[2]);
+                case "exit":
+                    return new Disconnect("volontaria");
                 default:
                     throw new UnrecognizedOrderException("comando non gestito");        
             }
