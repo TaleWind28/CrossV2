@@ -69,22 +69,7 @@ public class Userbook implements JsonAccessedData{
             System.exit(0);
         }
     }
-    
-    // public void loadData(){
-    //     try (InputStream inputStream = Orderbook.class.getClassLoader().getResourceAsStream(this.jsonFilePath)) {
-    //         if (inputStream == null) {
-    //             throw new IOException("File UserBook non trovato: " + this.jsonFilePath);
-    //         }
-            
-    //         try (BufferedSource source = Okio.buffer(Okio.source(inputStream))) {
-    //             UserMap loadedMap = adapter.fromJson(source);
-    //             this.userMap.putAll(loadedMap.usermap);
-    //         }
 
-    //     }catch(Exception e){
-    //         return;
-    //     }
-    // }
     public void dataFlush(){
         UserMap mappa = new UserMap(this.userMap);
         try(JsonWriter writer = JsonWriter.of(Okio.buffer(Okio.sink(new File(this.jsonFilePath))))){

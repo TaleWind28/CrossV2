@@ -3,7 +3,7 @@
     "TCPaddress":"0.0.0.0",
     "UDPport":5000,
     "UDPaddress":"230.0.0.1",
-    "Storico":"\\src\\main\\java\\JsonAccessedData\\JsonFiles\\storicoOrdini.json",
+    "Storico":"\\src\\main\\resources\\storicoOrdini.json",
     "OrderBook":"\\src\\main\\java\\JsonAccessedData\\JsonFiles\\OrderBook.json",
     "Userbook":"\\src\\main\\java\\JsonAccessedData\\JsonFiles\\Users.json"
 }

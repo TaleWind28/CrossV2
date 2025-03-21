@@ -100,11 +100,6 @@ public class ClientClass extends ClientProtocol{
                 //creo la tramite simple factory la richiesta da mandare al server
                 ClientMessage userMessage = new ClientMessage(clientRequest[0],this.factory.createValue(clientRequest));
 
-                // if(userMessage.values.getClass()==ErrorMessage.class){
-                //     System.out.println(userMessage.values.execute(null, "", null).toString());
-                //     continue;
-                // }
-
                 //aggiorno il comando inviato per controllare sul receiver
                 this.cmdSent = userMessage.operation;
                 //controllo il caso di messaggio di aiuto
@@ -117,9 +112,6 @@ public class ClientClass extends ClientProtocol{
 
                 //imposto la variabile a false per impedire di inviare altri messaggi prima che mi ritorni la risposta a quello attuale
                 this.canSend = false;
-                
-                //stampa di debug
-                //System.out.println(AnsiColors.ORANGE+"[ClientHelper] Message Sent");
                     
             }
         }

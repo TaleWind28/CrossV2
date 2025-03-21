@@ -6,3 +6,4 @@ libs
 Relazione/*
 !Relazione/*.pdf
 !Relazione/*.tex
+!Relazione/Immagini

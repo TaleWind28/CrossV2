@@ -31,6 +31,7 @@
 \maketitle
 
 \tableofcontents
+\newpage
 
 \section{Scelte Progettuali}
 Il progetto è stato realizzato seguendo i principi SOLID per garantire modularità, scalabilità e manutenibilità 
@@ -88,6 +89,8 @@ Il Server utilizza un \textbf{FixedThreadPool} per gestire i vari client conness
   \item \textbf{ClosingTask}: Thread che si occupa di svolgere la chiusura del server in sicurezza quando si riscontrano dei problemi sul server per i quali non si può garantire la fruizione del servizio di trading.
 \end{itemize}
 
+\newpage
+
 \section{File Java}
 Il progetto sfrutta i java package per organizzare meglio i file Java contenenti le classi che verranno usate per fornire il servizio di trading; Di seguito verranno analizzati i vari package ed alcuni file tra i più importanti, motivando le scelte fatte.
 \subsection{Communication}
@@ -98,29 +101,78 @@ Inoltre \textbf{TCP} utilizza i metodi forniti da \textbf{Moshi} per realizzare 
 \begin{wrapfigure}{r}{0.5\textwidth} % "r" = destra, "l" = sinistra
   \centering
   \includegraphics[width=\linewidth]{Moshi-Classi.png} % Assicurati che il nome sia corretto
-  %\caption{Aggiunta delle sottoclassi di Values a Moshi}
+  \caption{\footnotesize Aggiunta delle sottoclassi di Values}
 \end{wrapfigure}
 
-Moshi si è rivelato più facilmente manutenibile rispetto a Gson in quanto non perde le informazioni della sottoclasse di \textbf{Values} incapsulata nel messggio inviato/ricevuto. Questo si è rivelato fondamentale in quanto ha permesso di mantenere la struttura dei messaggi richiesta dalla consegna. Questo si ottiene registrando tutti le Classi o sottoclassi che potrebbero essere passata nei Messaggi come si può notare nella fiigura affianco.
+Moshi si è rivelato più facilmente manutenibile rispetto a Gson in quanto non perde le informazioni della sottoclasse di \textbf{Values} incapsulata nel messggio inviato/ricevuto.
+\\Questo si è rivelato fondamentale in quanto ha permesso di mantenere la struttura dei messaggi richiesta dalla consegna. Questo si ottiene registrando tutti le Classi o sottoclassi che potrebbero essere passata nei Messaggi ad un builder di moshi tramite \textbf{JsonAdapterFactory}, come si può notare nella figura affianco.
 Inoltre per finire la configurazione di Moshi è bastato creare un \textbf{JsonAdapter$<$Message$>$} che, similmente a Gson, si occuperà di serializzare/deserializzare il messaggio in formato Json.
 
 \subsection{Commands}
+Questo package contiene tutti i comandi che il Client può inviare al Server e la factory che si occupa di crearli. La creazione avviene lato Client per rispettare il formato dei messaggi da scambiare ed inoltre consente di alleggerire il dei gestori lato Server che si limiteranno ad usare il metodo execute fornito dall'interfaccia \textbf{Values}.
+I comandi sono divisi in base al tipo di dato Json che richiedono per essere eseguiti:
+\begin{itemize}
+  \item \textbf{Credentials}: comandi che aggiungono o modificano informazioni nell'\textbf{Userbook}
+  \item \textbf{Order}: comandi che aggiungono o modificano informazioni nell'\textbf{Orderbook}
+  \item \textbf{Internal}: comandi che non richiedono alcun tipo di Json e sono utilizzati per operazioni interne, ad esempio i messaggi d'errore.
+\end{itemize}
+Le strutture dati che rappresentano i file Json verranno poi successivamente aggiunte al comando nel \textbf{GenericTask}, lato Server, prima di essere eseguito.\\
+L'unica eccezione è \textbf{getPriceHistory} che richiede lo storico degli ordini per il suo funzionamento però tale file è richeisto nella configurazione del Server in quanto viene usato come risorsa a sola lettura. 
+\\Questa scelta di utilizzare sottoclassi di Values e una \textbf{SimpleFactory} semplifica l'aggiunta di nuovi comandi in quanto è sufficiente:
+\begin{enumerate}
+  \item \textbf{Creare} un classe Java che implementi Values
+  \item \textbf{Aggiungere} alla factory la creazione della nuova classe
+  \item \textbf{Aggiungere} nel builder di moshi la sottoclasse appena creata
+\end{enumerate}
 
 \subsection{Utils}
+Questo package contiene le varie classi utilizzate per semplificare la manipolazione dei file Json, le eccezzioni create per gestire i parametri errati nella creazione dei comandi mediante factory ed una cache per il mantenimento in memoria degli ordini evasi durante l'esecuzione di un ordine.
 
 \subsection{JsonAccessedData}
+Questo package contiene le classi che rappresentano in memoria i file Json, ed i file Json veri e propri ad eccezzione dello storico ordini come discusso precedentemente.
 
-\subsection{ClientClass}
+\subsubsection{Orderbook}
+L'orderbook è il cuore del servizio offerto in quanto contiene i limitorder piazzati dagli utenti e deve essere sempre acceduto per ogni ordine. È suddiviso in \textbf{askMap} e \textbf{bidMap} dove verranno memorizzati i relativi ordini, mentre gli StopOrder verranno memorizzati in una \textbf{ConcurrentLinkedQueue}.
+\subsubsection{Userbook}
+L'userbook contiene le informazioni sugli account degli utenti e viene acceduto per poter iniziare ad usare il servizio di trading. È costituito da una \textbf{userMap} che contiene tutti gli utenti, questo è stato fatto per facilitare lettura e scrittura in memoria tramite \textbf{Moshi}. 
+\subsubsection{Storico Ordini}
+Lo storico ordini sebbene venga trattato come risorsa a sola lettura presenta una struttura singolare che andremo ad analizzare.
+\\Viene caricato in memoria come \textbf{TreeMap$<$Integer,TreeMap$<$DayTime,Trade$>$$>$}, dove la chiave Integer della prima TreeMap rappresenta l'anno in cui è avvenuta la transazione, mentre la TreeMap interna ha come chiave la classe \textbf{Daytime} che contiene informazioni su ora giorno e mese in cui è avvenuta la transazione, mentre il valore è rappresentato dal \textbf{Trade} ossia la transazione effettiva.
+\textbf{DailyTradeStats} è la classe che viene usata per rappresentare i seguenti parametri registrati giorno per giorno:
+\begin{itemize}
+  \item Prezzo di apertura
+  \item Prezzo di chiusura
+  \item Minimo prezzo di una transazione di tipo Ask
+  \item Minimo prezzo di una transazione di tipo Bid
+  \item Massimo prezzo di una transazione di tipo Ask
+  \item Massimo prezzo di una transazione di tipo Bid
+\end{itemize}
+Questo per consentire una più agevole esecuzione del comando \textbf{getPriceHistory}.
 
-\subsection{ServerClass}
+\subsection{Client}
+La classe ClientClass, contenuta nel package Client, si occupa di comunicare col server sfruttando il \textbf{multithreading} per poter riceve richieste TCP \textbf{asincrone} dal Server, oltre a predisporre un Thread di ricezione UDP per essere notificato sullo stato delle transazioni. 
+Questa è la classe che viene istanziata dal ClientMain per realizzare il client del servizio offerto.
+
+\subsection{Server}
+La classe ServerClass, contenuta nel package Server, si occupa di creare il ServerSocket sul quale accetterà le connessioni dei client e che verranno gestite mediante \textbf{GenericTask} che verrà passata al threadpool.\\
+GenericTask si occupa quindi di comunicare direttamente col Client e di eseguire i comandi da lui richiesti.
+
+\newpage
 
 \section{Primitive di Sincronizzazione}
-
+Sfruttando il multithreading è necessario controllare che le sezioni critiche non vengano compromesse da accessi simultanei da parte di più thread, per fare questo sono state utilizate varie primitive di sincronizzazione.
 \subsection{synchronized}
 
 \subsection{volatile}
+
+\subsection{ConcurrentHashMap}
+
 \subsection{ConcurrentSkipListMap}
 
+\subsection{ConcurrentLinkedQueue}
+
+
+\newpage
 \section{Utilizzare il Progetto}
 
 \subsection{Requisiti di Sistema}

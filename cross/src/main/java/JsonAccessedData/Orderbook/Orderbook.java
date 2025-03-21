@@ -26,9 +26,6 @@ import okio.Okio;
 
 public class Orderbook implements JsonAccessedData{
     private String jsonFilePath;
-    //snippet che forse non uso
-    //.add(PolymorphicJsonAdapterFactory.of(Order.class,"Order").withSubtype(Limitorder.class, "Limitorder"))
-    //private Gson gson = new GsonBuilder().setPrettyPrinting().create();
     private Moshi moshi = new Moshi.Builder().add(new OrderSortingAdapter()).add(PolymorphicJsonAdapterFactory.of(ZonedDateTime.class,"GMT")).add(PolymorphicJsonAdapterFactory.of(Order.class,"Order").withSubtype(Limitorder.class, "Limitorder")).build();
     private JsonAdapter<OrderClass> adapter = moshi.adapter(OrderClass.class);
     private ConcurrentSkipListMap<OrderSorting, Limitorder> askOrders = new ConcurrentSkipListMap<>(OrderSorting.PRICE_ASCENDING); // Prezzi crescenti
